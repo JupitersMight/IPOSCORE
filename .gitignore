@@ -1,0 +1,10 @@
+*.tmp
+*.xls
+*.xlsx
+*.csv
+/Python/venv/*
+/Python/.idea/*
+
+# Excel temporary
+~$*.xls*
+~$*.xlsx*
