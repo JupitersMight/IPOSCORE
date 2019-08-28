@@ -62,6 +62,23 @@ def check_and_change_dataframe(column, dataframe, dataframe_columns, values):
     return dataframe
 
 
+def create_dataframe(data, column_name, prefix):
+    cod = retrieve_array_of_numbers(data[column_name])
+    prefix_cod = cod.copy()
+
+    for i in range(0, len(prefix_cod)):
+        prefix_cod[i] = prefix + prefix_cod[i]
+
+    default_matrix = np.zeros(shape=(data.shape[0], len(prefix_cod)), dtype=np.int32)
+
+    matrix = pd.DataFrame(data=default_matrix,
+                                       columns=prefix_cod,
+                                       index=np.arange(0, default_matrix.shape[0])
+                                       )
+
+    return check_and_change_dataframe(data[column_name], matrix, prefix_cod, cod)
+
+
 DATASET_NAME = 'BaseDados_08.03.2019_IPOscore.xlsx'
 SHEET_NAME = 'Folha1'
 NUMERICAL_WITH_DECIMALS_COLUMNS = ['dias na UCI',
@@ -127,21 +144,9 @@ data.drop(columns=['data pedido anestesia'])
 
 data = check_and_replace_mistakes_in_numerical_columns(data)
 
-cod = retrieve_array_of_numbers(data['Intervenções_ICD10'])
-intervencoes_cod = cod.copy()
+intervencoes_matrix = create_dataframe(data, 'Intervenções_ICD10', 'ICD_')
+ce_matrix = create_dataframe(data, 'classificação ACS complicações específicas', 'ACS_CE_')
 
-for i in range(0, len(intervencoes_cod)):
-    intervencoes_cod[i] = 'ICD' + intervencoes_cod[i]
-
-default_matrix = np.zeros(shape=(data.shape[0], len(intervencoes_cod)), dtype=np.int32)
-
-intervencoes_matrix = pd.DataFrame(data=default_matrix,
-                                   columns=intervencoes_cod,
-                                   index=np.arange(0, default_matrix.shape[0])
-                                   )
-
-intervencoes_matrix = check_and_change_dataframe(data['Intervenções_ICD10'], intervencoes_matrix, intervencoes_cod, cod)
-
-data = pd.concat([data, intervencoes_matrix], axis=1, sort=False)
+data = pd.concat([data, intervencoes_matrix, ce_matrix], axis=1, sort=False)
 
 data.to_csv('data.csv', index=False)
