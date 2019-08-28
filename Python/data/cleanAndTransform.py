@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 
 def is_digit(string):
@@ -27,6 +28,38 @@ def check_and_replace_mistakes_in_numerical_columns(data):
                 data.loc[index, column] = new_value
                 index += 1
     return data
+
+
+def retrieve_array_of_numbers(column):
+    array = []
+    for value in column:
+        if pd.isna(value):
+            continue
+        number = ''
+        seq = False
+        for i in range(0, len(value)):
+            if is_digit(value[i]):
+                number += value[i]
+                seq = True
+            else:
+                seq = False
+            if (not seq) and (number != ''):
+                if not (number in array):
+                    array.append(number)
+                number = ''
+    return array
+
+
+def check_and_change_dataframe(column, dataframe, dataframe_columns, values):
+    index = 0
+    for value in column:
+        if pd.isna(value):
+            continue
+        for i in range(0, len(dataframe_columns)):
+            if values[i] in value:
+                dataframe.loc[index, dataframe_columns[i]] = 1
+        index += 1
+    return dataframe
 
 
 DATASET_NAME = 'BaseDados_08.03.2019_IPOscore.xlsx'
@@ -74,7 +107,6 @@ data.replace({'sem dados': 'n/a'}, regex=True)
 data.replace({'indefinido': 'n/a'}, regex=True)
 data.replace({'%': ''}, regex=True)
 
-
 data.rename(columns={'risco médio': 'risco médio - complicações sérias (%)',
                      'risco médio.1': 'risco médio - qualquer complicação (%)',
                      'risco médio.2': 'risco médio - pneumonia (%)',
@@ -91,6 +123,25 @@ data.rename(columns={'risco médio': 'risco médio - complicações sérias (%)'
                      'risco médio.13': 'risco médio - Discharge to Nursing or Rehab Facility (%)'
                      }, inplace=True)
 
+data.drop(columns=['data pedido anestesia'])
+
 data = check_and_replace_mistakes_in_numerical_columns(data)
 
-data.to_csv('cleanedData.csv', index=False)
+cod = retrieve_array_of_numbers(data['Intervenções_ICD10'])
+intervencoes_cod = cod.copy()
+
+for i in range(0, len(intervencoes_cod)):
+    intervencoes_cod[i] = 'ICD' + intervencoes_cod[i]
+
+default_matrix = np.zeros(shape=(data.shape[0], len(intervencoes_cod)), dtype=np.int32)
+
+intervencoes_matrix = pd.DataFrame(data=default_matrix,
+                                   columns=intervencoes_cod,
+                                   index=np.arange(0, default_matrix.shape[0])
+                                   )
+
+intervencoes_matrix = check_and_change_dataframe(data['Intervenções_ICD10'], intervencoes_matrix, intervencoes_cod, cod)
+
+data = pd.concat([data, intervencoes_matrix], axis=1, sort=False)
+
+data.to_csv('data.csv', index=False)
