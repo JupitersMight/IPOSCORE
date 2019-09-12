@@ -1,33 +1,31 @@
+from .GlobalVariables import *
 import pandas as pd
 import numpy as np
 
 
 def is_digit(string):
-    return string in ['1','2','3','4','5','6','7','8','9']
+    return string in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
-
-def check_and_replace_mistakes_in_numerical_columns(data):
-    for column in data.columns:
-        if column in NUMERICAL_WITH_DECIMALS_COLUMNS:
-            index = 0
-            for value in data[column]:
-                if pd.isna(value):
-                    index += 1
-                    continue
-                new_value = ''
-                second_comma = False
-                for i in range(0, len(value)):
-                    if is_digit(value[i]):
-                        new_value.join(value[i])
-                    elif value[i] == '.' or value[i] == ',':
-                        if second_comma:
-                            break
-                        else:
-                            new_value.join('.')
-                            second_comma = True
-                data.loc[index, column] = new_value
-                index += 1
-    return data
+def retrieve_numbers_ACS(column):
+    array = []
+    for value in column:
+        if pd.isna(value):
+            continue
+        number = ''
+        can_start_again = True
+        start_seq = False
+        for i in range(0, len(value)):
+            if value[i] == '+':
+                can_start_again = True
+            if is_digit(value[i]) and can_start_again:
+                number += value[i]
+            else:
+                if number != '' and (i+1) < len(value) and (''+value[i]+value[i+1]) == ' -':
+                    if not (number in array):
+                        array.append(number)
+                    can_start_again = False
+                number = ''
+    return array
 
 
 def retrieve_array_of_numbers(column):
@@ -54,16 +52,20 @@ def check_and_change_dataframe(column, dataframe, dataframe_columns, values):
     index = 0
     for value in column:
         if pd.isna(value):
+            index += 1
             continue
         for i in range(0, len(dataframe_columns)):
             if values[i] in value:
-                dataframe.loc[index, dataframe_columns[i]] = 1
+                dataframe.at[index, dataframe_columns[i]] = 1
         index += 1
     return dataframe
 
 
-def create_dataframe(data, column_name, prefix):
-    cod = retrieve_array_of_numbers(data[column_name])
+def create_dataframe(data, column_name, prefix, ACS):
+    if ACS:
+        cod = retrieve_numbers_ACS(data[column_name])
+    else:
+        cod = retrieve_array_of_numbers(data[column_name])
     prefix_cod = cod.copy()
 
     for i in range(0, len(prefix_cod)):
@@ -78,51 +80,35 @@ def create_dataframe(data, column_name, prefix):
 
     return check_and_change_dataframe(data[column_name], matrix, prefix_cod, cod)
 
+def checkForMistake(string):
+    for i in range(0,len(string)):
+        if (not is_digit(string[i])) and (not (string[i] == '.')):
+            return True
+    return False
 
-DATASET_NAME = 'BaseDados_08.03.2019_IPOscore.xlsx'
+
+DATASET_NAME = 'ipodata.xlsx'
 SHEET_NAME = 'Folha1'
-NUMERICAL_WITH_DECIMALS_COLUMNS = ['dias na UCI',
-                                   'total pontos NAS',
-                                   'pontos NAS por dia',
-                                   '% morbilidade P-Possum',
-                                   '% mortalidade P-Possum',
-                                   'ACS peso',
-                                   'complicações sérias (%)',
-                                   'qualquer complicação (%)',
-                                   'pneumonia (%)',
-                                   'complicações cardíacas (%)',
-                                   'infeção cirúrgica (%)',
-                                   'ITU (%)',
-                                   'tromboembolismo venoso (%)',
-                                   'falência renal (%)',
-                                   'ileus (%)',
-                                   'fuga anastomótica (%)',
-                                   'readmissão (%)',
-                                   'reoperação (%)',
-                                   'morte (%)',
-                                   'Discharge to Nursing or Rehab Facility (%)',
-                                   'risco médio - complicações sérias (%)',
-                                   'risco médio - qualquer complicação (%)',
-                                   'risco médio - pneumonia (%)',
-                                   'risco médio - complicações cardíacas (%)',
-                                   'risco médio - infeção cirúrgica (%)',
-                                   'risco médio - ITU (%)',
-                                   'risco médio - tromboembolismo venoso (%)',
-                                   'risco médio - falência renal (%)',
-                                   'risco médio - ileus (%)',
-                                   'risco médio - fuga anastomótica (%)',
-                                   'risco médio - readmissão (%)',
-                                   'risco médio - reoperação (%)',
-                                   'risco médio - morte (%)',
-                                   'risco médio - Discharge to Nursing or Rehab Facility (%)',
-                                   'ACS - previsão dias internamento'
-                                   ]
 
-data = pd.read_excel(DATASET_NAME, sheet_name=SHEET_NAME, dtype=str)
+data = pd.read_excel(DATASET_NAME, sheet_name=SHEET_NAME, dtype=str, header=1)
 
-data.replace({'sem dados': 'n/a'}, regex=True)
-data.replace({'indefinido': 'n/a'}, regex=True)
-data.replace({'%': ''}, regex=True)
+data.rename(columns={data.columns[136]: 'Comorbilidades pré-operatórias'}, inplace=True)
+
+for column in data.columns:
+    index = 0
+    for value in data[column]:
+        if pd.isna(value):
+            index += 1
+            continue
+        if 'sem dados' in value or 'indefinido' in value or 'n/a' in value:
+            data.at[index, column] = 'NaN'
+        if '%' in value:
+            data.at[index, column] = value.replace('%', '')
+        if column in NUMERICAL_CONTINUOUS:
+            if ',' in value:
+                data.at[index, column] = value.replace(',', '.')
+        index += 1
+
 
 data.rename(columns={'risco médio': 'risco médio - complicações sérias (%)',
                      'risco médio.1': 'risco médio - qualquer complicação (%)',
@@ -140,13 +126,47 @@ data.rename(columns={'risco médio': 'risco médio - complicações sérias (%)'
                      'risco médio.13': 'risco médio - Discharge to Nursing or Rehab Facility (%)'
                      }, inplace=True)
 
-data.drop(columns=['data pedido anestesia'])
+#data.drop(columns=['data pedido anestesia'])
 
-data = check_and_replace_mistakes_in_numerical_columns(data)
+for column in data.columns:
+    if column in NUMERICAL_CONTINUOUS:
+        index = 0
+        for value in data[column]:
+            if pd.isna(value):
+                index += 1
+                continue
+            new_value = ''
+            second_comma = False
+            for i in range(0, len(value)):
+                if is_digit(value[i]):
+                    new_value += value[i]
+                elif value[i] == '.' or value[i] == ',':
+                    if second_comma:
+                        break
+                    else:
+                        new_value += '.'
+                        second_comma = True
+            data.at[index, column] = new_value
+            index += 1
 
-intervencoes_matrix = create_dataframe(data, 'Intervenções_ICD10', 'ICD_')
-ce_matrix = create_dataframe(data, 'classificação ACS complicações específicas', 'ACS_CE_')
+for column in data.columns:
+    if column in NUMERICAL_DISCRETE or\
+    column in NUMERICAL_CONTINUOUS or\
+    column in CATEGORICAL or\
+    column in BINARY:
+        index = 0
+        for value in data[column]:
+            if pd.isna(value) or (not checkForMistake(value)):
+                index += 1
+            else:
+                data.at[index, column] = 'NaN'
+                index += 1
 
-data = pd.concat([data, intervencoes_matrix, ce_matrix], axis=1, sort=False)
+intervencoes_matrix = create_dataframe(data, 'Intervenções_ICD10', 'ICD_', False)
+acs_proc = create_dataframe(data, 'ACS_procedimento', 'ACS_', True)
+ce_matrix = create_dataframe(data, 'classificação ACS complicações específicas', 'ACS_CE_', False)
+
+data = pd.concat([data, intervencoes_matrix, ce_matrix, acs_proc], axis=1, sort=False)
 
 data.to_csv('data.csv', index=False)
+print('done')
