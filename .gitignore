@@ -2,8 +2,8 @@
 *.xls
 *.xlsx
 *.csv
-/Python/venv/*
-/Python/.idea/*
+/iposcore/venv/*
+/iposcore/.idea/*
 
 # Excel temporary
 ~$*.xls*

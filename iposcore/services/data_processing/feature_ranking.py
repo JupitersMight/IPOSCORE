@@ -1,4 +1,4 @@
-from .GlobalVariables import *
+from data.global_variables import *
 import numpy as np
 import pandas as pd
 from sklearn.feature_selection import mutual_info_classif, mutual_info_regression
@@ -29,12 +29,12 @@ for column in data.columns:
         #Still Thinking on how to approach
 
         #cv = CountVectorizer(max_df=0.95, min_df=2,
-                            # max_features=10000)
+                          #  max_features=10000)
         #X_vec = cv.fit_transform(labels[1])
 
         #print(dict(zip(cv.get_feature_names(),
-                       #mutual_info_classif(X_vec, labels[0], discrete_features=True)
-                       #)))
+                      # mutual_info_classif(X_vec, labels[0], discrete_features=True)
+                      # )))
     if column in BINARY:
         BINARY_M.append([column, mutual_info_classif(labels[column].to_frame(name=column), labels[CLASS_LABEL])[0]])
     elif column in CATEGORICAL:
