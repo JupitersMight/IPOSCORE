@@ -2,82 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="aa5dba0e-1325-4f7c-89ce-50d9661c164a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../iposcore/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/.idea/iposcore.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/.idea/other.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/data/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/services/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/services/data_manager/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/services/data_manager/clean_and_transform.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/services/data_manager/utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/services/data_processing/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/services/data_processing/utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Lib/site-packages/pandas/compat/_optional.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Lib/site-packages/pandas/io/excel/_base.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/Activate.ps1" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_asyncio.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_bz2.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_ctypes.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_ctypes_test.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_decimal.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_distutils_findvs.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_elementtree.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_hashlib.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_lzma.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_msi.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_multiprocessing.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_overlapped.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_socket.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_sqlite3.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_ssl.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_testbuffer.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_testcapi.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_testconsole.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_testimportmultiple.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_testmultiphase.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/_tkinter.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/activate" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/activate.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/deactivate.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/easy_install-3.6-script.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/easy_install-3.6.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/easy_install-3.6.exe.manifest" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/easy_install-script.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/easy_install.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/easy_install.exe.manifest" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/f2py.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/pip-script.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/pip.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/pip.exe.manifest" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/pip3-script.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/pip3.6-script.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/pip3.6.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/pip3.6.exe.manifest" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/pip3.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/pip3.exe.manifest" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/pyexpat.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/python.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/python3.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/python36.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/pythonw.exe" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/runxlrd.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/select.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/sqlite3.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/tcl86t.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/tk86t.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/unicodedata.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/vcruntime140.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/Scripts/winsound.pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/pip-selfcheck.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../iposcore/venv/pyvenv.cfg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Data analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/../iposcore/services/data_processing/data_analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/GlobalVariables.py" beforeDir="false" afterPath="$PROJECT_DIR$/../iposcore/data/global_variables.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cleanAndTransform.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/featureRanking.py" beforeDir="false" afterPath="$PROJECT_DIR$/../iposcore/services/data_processing/feature_ranking.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/iposcore.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/iposcore.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/data_manager/clean_and_transform.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/data_manager/clean_and_transform.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/data_manager/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/data_manager/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/data_processing/data_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/data_processing/data_analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/data_processing/feature_ranking.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/data_processing/feature_ranking.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/data_processing/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/data_processing/utils.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -92,8 +24,8 @@
     <SUITE FILE_PATH="coverage/Python$cleanAndTransform.coverage" NAME="cleanAndTransform Coverage Results" MODIFIED="1568559777432" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data" />
     <SUITE FILE_PATH="coverage/Python$Data_analysis.coverage" NAME="Data analysis Coverage Results" MODIFIED="1564053131098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Python$Data_analysis__1_.coverage" NAME="Data analysis (1) Coverage Results" MODIFIED="1568298226341" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/data" />
-    <SUITE FILE_PATH="coverage/Python$clean_and_transform.coverage" NAME="clean_and_transform Coverage Results" MODIFIED="1568564904318" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../iposcore/services/data-manager" />
-    <SUITE FILE_PATH="coverage/Python$clean_and_transform__1_.coverage" NAME="clean_and_transform (1) Coverage Results" MODIFIED="1568565762792" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../iposcore/services/data_manager" />
+    <SUITE FILE_PATH="coverage/Python$clean_and_transform.coverage" NAME="clean_and_transform Coverage Results" MODIFIED="1568564904318" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/services/data-manager" />
+    <SUITE FILE_PATH="coverage/Python$clean_and_transform__1_.coverage" NAME="clean_and_transform (1) Coverage Results" MODIFIED="1568565762792" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/services/data_manager" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -193,26 +125,85 @@
         </counts>
       </usages-collector>
     </session>
+    <session id="773041465">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.open.time.49" value="1" />
+          <entry key="project.opened" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="py" value="9" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="Python" value="9" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.edit">
+        <counts>
+          <entry key="dummy" value="3" />
+          <entry key="py" value="765" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.edit">
+        <counts>
+          <entry key="PLAIN_TEXT" value="3" />
+          <entry key="Python" value="765" />
+        </counts>
+      </usages-collector>
+    </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/../iposcore/services/data_processing/data_analysis.py">
+        <entry file="file://$PROJECT_DIR$/services/data_processing/data_analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+            <state relative-caret-position="1292">
+              <caret line="76" column="16" lean-forward="true" selection-start-line="76" selection-start-column="16" selection-end-line="76" selection-end-column="16" />
+              <folding>
+                <element signature="e#0#19#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../iposcore/services/data_processing/utils.py">
+        <entry file="file://$PROJECT_DIR$/services/data_processing/feature_ranking.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2074">
-              <caret line="122" column="29" lean-forward="true" selection-start-line="122" selection-start-column="29" selection-end-line="122" selection-end-column="29" />
+            <state relative-caret-position="323">
+              <caret line="19" column="29" lean-forward="true" selection-start-line="19" selection-start-column="29" selection-end-line="19" selection-end-column="29" />
               <folding>
-                <element signature="e#0#18#0" expanded="true" />
-                <marker date="1568563829710" expanded="true" signature="54:55" ph="..." />
+                <element signature="e#1#19#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/services/data_manager/clean_and_transform.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="306">
+              <caret line="18" column="52" lean-forward="true" selection-start-line="18" selection-start-column="52" selection-end-line="18" selection-end-column="52" />
+              <folding>
+                <element signature="e#0#19#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/services/data_manager/utils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="5" column="11" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="11" />
+              <folding>
+                <element signature="e#0#19#0" expanded="true" />
+                <marker date="1568594791110" expanded="true" signature="103:127" ph="..." />
+                <marker date="1568594791110" expanded="true" signature="122:123" ph="..." />
+                <marker date="1568594791110" expanded="true" signature="4164:4170" ph="..." />
               </folding>
             </state>
           </provider>
@@ -230,6 +221,12 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>,</find>
+      <find>preprocess_substitute_na_with_average</find>
+      <find>calculate_mean_with_na</find>
+      <find>calculate_mean</find>
+      <find>distribution</find>
+      <find>number_of_missing_values</find>
+      <find>calculate_meadian</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -248,18 +245,21 @@
         <option value="$PROJECT_DIR$/data/GlobalVariables.py" />
         <option value="$PROJECT_DIR$/data/__init__.py" />
         <option value="$PROJECT_DIR$/data/cleanAndTransform.py" />
-        <option value="$PROJECT_DIR$/../iposcore/data/__init__.py" />
-        <option value="$PROJECT_DIR$/../iposcore/services/data-manager/__init__.py" />
-        <option value="$PROJECT_DIR$/../iposcore/services/data-processing/__init__.py" />
-        <option value="$PROJECT_DIR$/../iposcore/services/__init__.py" />
-        <option value="$PROJECT_DIR$/../iposcore/__init__.py" />
-        <option value="$PROJECT_DIR$/../iposcore/services/data-processing/data_analysis.py" />
-        <option value="$PROJECT_DIR$/../iposcore/services/data-processing/utils.py" />
-        <option value="$PROJECT_DIR$/../iposcore/data/global_variables.py" />
-        <option value="$PROJECT_DIR$/../iposcore/services/data-manager/utils.py" />
-        <option value="$PROJECT_DIR$/../iposcore/services/data-manager/clean_and_transform.py" />
-        <option value="$PROJECT_DIR$/../iposcore/services/data_manager/utils.py" />
-        <option value="$PROJECT_DIR$/../iposcore/services/data_manager/clean_and_transform.py" />
+        <option value="$PROJECT_DIR$/data/__init__.py" />
+        <option value="$PROJECT_DIR$/services/data-manager/__init__.py" />
+        <option value="$PROJECT_DIR$/services/data-processing/__init__.py" />
+        <option value="$PROJECT_DIR$/services/__init__.py" />
+        <option value="$PROJECT_DIR$/__init__.py" />
+        <option value="$PROJECT_DIR$/services/data-processing/data_analysis.py" />
+        <option value="$PROJECT_DIR$/services/data-processing/utils.py" />
+        <option value="$PROJECT_DIR$/data/global_variables.py" />
+        <option value="$PROJECT_DIR$/services/data-manager/utils.py" />
+        <option value="$PROJECT_DIR$/services/data-manager/clean_and_transform.py" />
+        <option value="$PROJECT_DIR$/services/data_manager/utils.py" />
+        <option value="$PROJECT_DIR$/services/data_manager/clean_and_transform.py" />
+        <option value="$PROJECT_DIR$/services/data_processing/utils.py" />
+        <option value="$PROJECT_DIR$/services/data_processing/feature_ranking.py" />
+        <option value="$PROJECT_DIR$/services/data_processing/data_analysis.py" />
       </list>
     </option>
   </component>
@@ -268,6 +268,11 @@
   <component name="JsGulpfileManager">
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="NodePackageJsonFileManager">
+    <packageJsonPaths>
+      <path value="$PROJECT_DIR$/venv/Lib/site-packages/matplotlib/backends/web_backend/jquery-ui-1.12.1/package.json" />
+    </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-7" />
@@ -280,31 +285,32 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="Python" type="b2602c69:ProjectViewProjectNode" />
+              <item name="iposcore" type="b2602c69:ProjectViewProjectNode" />
               <item name="iposcore" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="Python" type="b2602c69:ProjectViewProjectNode" />
+              <item name="iposcore" type="b2602c69:ProjectViewProjectNode" />
               <item name="iposcore" type="462c0819:PsiDirectoryNode" />
               <item name="data" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="Python" type="b2602c69:ProjectViewProjectNode" />
+              <item name="iposcore" type="b2602c69:ProjectViewProjectNode" />
               <item name="iposcore" type="462c0819:PsiDirectoryNode" />
               <item name="services" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="Python" type="b2602c69:ProjectViewProjectNode" />
+              <item name="iposcore" type="b2602c69:ProjectViewProjectNode" />
               <item name="iposcore" type="462c0819:PsiDirectoryNode" />
               <item name="services" type="462c0819:PsiDirectoryNode" />
               <item name="data_manager" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="Python" type="b2602c69:ProjectViewProjectNode" />
+              <item name="iposcore" type="b2602c69:ProjectViewProjectNode" />
               <item name="iposcore" type="462c0819:PsiDirectoryNode" />
               <item name="services" type="462c0819:PsiDirectoryNode" />
               <item name="data_processing" type="462c0819:PsiDirectoryNode" />
@@ -313,7 +319,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -363,32 +368,6 @@
       <option name="CUSTOM_SETTINGS" value="false" />
       <option name="USE_OPTIONS" value="false" />
       <option name="OPTIONS" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
-      <module name="iposcore" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="ADDITIONAL_ARGS" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="PyLettuceRunConfigurationType" factoryName="Lettuce">
-      <module name="iposcore" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="ADDITIONAL_ARGS" value="" />
       <method v="2" />
     </configuration>
     <configuration name="Data analysis (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -465,12 +444,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../iposcore/services/data_manager" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/services/data_manager" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../iposcore/services/data_manager/clean_and_transform.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/services/data_manager/clean_and_transform.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -487,12 +466,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../iposcore/services/data-manager" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/services/data-manager" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../iposcore/services/data-manager/clean_and_transform.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/services/data-manager/clean_and_transform.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -534,18 +513,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="launchJavascriptDebuger" value="false" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="Tox" factoryName="Tox">
-      <module name="iposcore" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <method v="2" />
     </configuration>
     <configuration default="true" type="tests" factoryName="Doctests">
@@ -670,8 +637,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.23614073" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23880596" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="0" weight="0.32968238" />
@@ -703,15 +671,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/../iposcore/services/data_manager/clean_and_transform.py</url>
-          <line>170</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="x" />
@@ -719,14 +678,14 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../iposcore/venv/Lib/site-packages/pandas/io/excel/_base.py">
+    <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/pandas/io/excel/_base.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="380">
           <caret line="305" selection-start-line="305" selection-end-line="305" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../iposcore/venv/Lib/site-packages/pandas/compat/_optional.py">
+    <entry file="file://$PROJECT_DIR$/venv/Lib/site-packages/pandas/compat/_optional.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1513">
           <caret line="92" selection-start-line="92" selection-end-line="92" />
@@ -769,7 +728,7 @@
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/data/transform.py" />
-    <entry file="file://$PROJECT_DIR$/../iposcore/data/data.csv">
+    <entry file="file://$PROJECT_DIR$/data/data.csv">
       <provider selected="true" editor-type-id="csv-text-editor">
         <state relative-caret-position="459">
           <caret line="27" column="44" selection-start-line="27" selection-start-column="44" selection-end-line="27" selection-end-column="44" />
@@ -812,38 +771,19 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/services/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/services/data_processing/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/services/data_manager/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/data/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="12" selection-start-column="12" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../iposcore/services/data_processing/feature_ranking.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="47" column="31" lean-forward="true" selection-start-line="47" selection-start-column="31" selection-end-line="47" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../iposcore/services/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/../iposcore/services/data_processing/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../iposcore/services/data_manager/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../iposcore/data/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../iposcore/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/__init__.py" />
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python36-32/Lib/site-packages/xlrd/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="423">
@@ -851,56 +791,67 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../iposcore/services/data_manager/clean_and_transform.py">
+    <entry file="file://$PROJECT_DIR$/data/global_variables.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-10">
-          <caret line="3" column="22" lean-forward="true" selection-start-line="3" selection-start-column="22" selection-end-line="3" selection-end-column="22" />
-          <folding>
-            <marker date="1568566456608" expanded="true" signature="163:224" ph="..." />
-            <marker date="1568566456608" expanded="true" signature="182:224" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../iposcore/services/data_manager/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="112" column="8" selection-start-line="112" selection-start-column="8" selection-end-line="112" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-            <marker date="1568566456672" expanded="true" signature="102:126" ph="..." />
-            <marker date="1568566456672" expanded="true" signature="121:122" ph="..." />
-            <marker date="1568566456672" expanded="true" signature="3791:3797" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../iposcore/data/global_variables.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="24" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="24" />
+        <state relative-caret-position="119">
+          <caret line="7" column="21" lean-forward="true" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />
           <folding>
             <marker date="1568564904182" expanded="true" signature="58:187" ph="..." />
-            <marker date="1568564904182" expanded="true" signature="58:209" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../iposcore/services/data_processing/utils.py">
+    <entry file="file://$PROJECT_DIR$/services/data_processing/utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2074">
-          <caret line="122" column="29" lean-forward="true" selection-start-line="122" selection-start-column="29" selection-end-line="122" selection-end-column="29" />
+        <state relative-caret-position="299">
+          <caret line="68" lean-forward="true" selection-start-line="68" selection-end-line="68" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
-            <marker date="1568563829710" expanded="true" signature="54:55" ph="..." />
+            <marker date="1568594791141" expanded="true" signature="54:55" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../iposcore/services/data_processing/data_analysis.py">
+    <entry file="file://$PROJECT_DIR$/services/data_manager/clean_and_transform.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+        <state relative-caret-position="306">
+          <caret line="18" column="52" lean-forward="true" selection-start-line="18" selection-start-column="52" selection-end-line="18" selection-end-column="52" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/services/data_processing/feature_ranking.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="29" lean-forward="true" selection-start-line="19" selection-start-column="29" selection-end-line="19" selection-end-column="29" />
+          <folding>
+            <element signature="e#1#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/services/data_manager/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="11" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="11" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+            <marker date="1568594791110" expanded="true" signature="103:127" ph="..." />
+            <marker date="1568594791110" expanded="true" signature="122:123" ph="..." />
+            <marker date="1568594791110" expanded="true" signature="4164:4170" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/services/data_processing/data_analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1292">
+          <caret line="76" column="16" lean-forward="true" selection-start-line="76" selection-start-column="16" selection-end-line="76" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

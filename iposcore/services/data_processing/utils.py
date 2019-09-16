@@ -10,65 +10,18 @@ class Utils:
             self.counter = age
 
     @staticmethod
-    def preprocess_substitute_na_with_average(dataset):
-        list_of_columns = dataset.columns
-        array_of_mean_values = []
-        for column_name in list_of_columns:
-            if column_name == "class":
-                continue
-            list_of_items = dataset[column_name]
-
-            array_of_mean_values.append(Utils.calculate_mean_with_na(list_of_items))
-
-        i = 0
-
-        for column_name in list_of_columns:
-            if column_name == "class":
-                continue
-            dataset[column_name].fillna(str(array_of_mean_values[i]))
-            i += 1
-
-    @staticmethod
-    def calculate_mean_with_na(list):
-        sum_value = 0
-        counter = 0
-        for value in list:
-            if value != "na":
-                if isinstance(value, str):
-                    value = float(value)
-                sum_value = sum_value + value
-                counter += 1
-        return sum_value / counter
-
-    @staticmethod
-    def calculate_mean(dataset):
-        mean_values = []
-        for column_name in dataset.columns:
-            if column_name == "class":
-                continue
-            sum_values = 0
-            i = 0
-            for value in dataset[column_name]:
-                if value == 'n/a':
-                    continue
-                sum_values += float(value)
-                i += 1
-            mean_values.append(str(sum_values / i))
-        return mean_values
-
-    @staticmethod
     def distribution(column):
         different_values = []
         for value in column:
             if value == 'n/a':
                 continue
-            isInArray = False
+            is_in_array = False
             for i in range(len(different_values)):
                 if value == different_values[i].name:
-                    isInArray = True
+                    is_in_array = True
                     different_values[i].counter += 1
                     break
-            if not isInArray:
+            if not is_in_array:
                 different_values.append(Utils.data_column(value, 1))
         return different_values
 

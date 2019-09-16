@@ -1,14 +1,14 @@
-from data.global_variables import *
 import numpy as np
 import pandas as pd
 from sklearn.feature_selection import mutual_info_classif, mutual_info_regression
 from sklearn.feature_extraction.text import CountVectorizer
+from data.global_variables import GlobalVariables
 
 
 data = pd.read_csv(r'data.csv')
 
-class_data = data[CLASS_LABEL]
-data.drop(columns=[CLASS_LABEL])
+class_data = data[GlobalVariables.DatasetColumns.class_label]
+data.drop(columns=[GlobalVariables.DatasetColumns.class_label])
 
 BINARY_M = []
 NUMERICAL_DISCRETE_M = []
@@ -22,9 +22,9 @@ for column in data.columns:
     labels = pd.concat([true_label, pred_label], axis=1, sort=False)
     labels = labels.dropna()
     labels = labels.reset_index(drop=True)
-    if column in IGNORE:
+    if column in GlobalVariables.DatasetColumns.ignored_columns:
         continue
-    if column in TEXT:
+    if column in GlobalVariables.DatasetColumns.text:
         print('')
         #Still Thinking on how to approach
 
@@ -35,20 +35,50 @@ for column in data.columns:
         #print(dict(zip(cv.get_feature_names(),
                       # mutual_info_classif(X_vec, labels[0], discrete_features=True)
                       # )))
-    if column in BINARY:
-        BINARY_M.append([column, mutual_info_classif(labels[column].to_frame(name=column), labels[CLASS_LABEL])[0]])
-    elif column in CATEGORICAL:
-        CATEGORICAL_M.append([column, mutual_info_classif(labels[column].to_frame(name=column), labels[CLASS_LABEL])[0]])
-    elif column in NUMERICAL_DISCRETE:
-        NUMERICAL_DISCRETE_M.append([column, mutual_info_classif(labels[column].to_frame(name=column), labels[CLASS_LABEL], discrete_features=True)[0]])
-    elif column in NUMERICAL_CONTINUOUS:
-        NUMERICAL_CONTINUOUS_M.append([column, mutual_info_regression(labels[column].to_frame(name=column), labels[CLASS_LABEL])[0]])
+    if column in GlobalVariables.DatasetColumns.binary:
+        BINARY_M.append(
+            [column,
+             mutual_info_classif(
+                 labels[column].to_frame(name=column),
+                 labels[GlobalVariables.DatasetColumns.class_label]
+             )[0]
+             ]
+        )
+    elif column in GlobalVariables.DatasetColumns.categorical:
+        CATEGORICAL_M.append(
+            [column,
+             mutual_info_classif(
+                 labels[column].to_frame(name=column),
+                 labels[GlobalVariables.DatasetColumns.class_label]
+             )[0]]
+        )
+    elif column in GlobalVariables.DatasetColumns.numerical_discrete:
+        NUMERICAL_DISCRETE_M.append(
+            [column,
+             mutual_info_classif(
+                 labels[column].to_frame(name=column),
+                 labels[GlobalVariables.DatasetColumns.class_label],
+                 discrete_features=True
+             )[0]]
+        )
+    elif column in GlobalVariables.DatasetColumns.numerical_continuous:
+        NUMERICAL_CONTINUOUS_M.append(
+            [column,
+             mutual_info_regression(
+                 labels[column].to_frame(name=column),
+                 labels[GlobalVariables.DatasetColumns.class_label]
+             )[0]]
+        )
     else:
-        for value in PREFIXS:
+        for value in GlobalVariables.DatasetColumns.prefix_for_generated_columns:
             if value in column:
-                BINARY_M.append([column, mutual_info_classif(labels[column].to_frame(name=column), labels[CLASS_LABEL])[0]])
+                BINARY_M.append(
+                    [column, mutual_info_classif(
+                        labels[column].to_frame(name=column),
+                        labels[GlobalVariables.DatasetColumns.class_label]
+                    )[0]]
+                )
                 break
-
 
 
 print('\n BINARY \n')

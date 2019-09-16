@@ -2,21 +2,23 @@ import pandas as pd
 import numpy as np
 from data.global_variables import GlobalVariables
 
+
 class Utils:
 
     @staticmethod
     def is_digit(string):
+        # Check if string is a valid number
         return string in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
     @staticmethod
     def retrieve_numbers_acs(column):
+        # Parse text retrieving the valid numbers
         array = []
         for value in column:
             if pd.isna(value):
                 continue
             number = ''
             can_start_again = True
-            start_seq = False
             for i in range(0, len(value)):
                 if value[i] == '+':
                     can_start_again = True
@@ -32,6 +34,7 @@ class Utils:
 
     @staticmethod
     def retrieve_array_of_numbers(column):
+        # Parse text retrieving the valid numbers
         array = []
         for value in column:
             if pd.isna(value):
@@ -52,6 +55,7 @@ class Utils:
 
     @staticmethod
     def check_and_change_dataframe(column, dataframe, dataframe_columns, values):
+        # Change to 1 where the number is present in the row
         index = 0
         for value in column:
             if pd.isna(value):
@@ -64,13 +68,15 @@ class Utils:
         return dataframe
 
     @staticmethod
-    def create_dataframe(data, column_name, prefix, ACS):
-        if ACS:
+    def create_dataframe(data, column_name, prefix, acs):
+        # Creates a dataframe based on the column to be parsed
+        # Retrieve array of distinct numbers of column
+        if acs:
             cod = Utils.retrieve_numbers_acs(data[column_name])
         else:
             cod = Utils.retrieve_array_of_numbers(data[column_name])
-        prefix_cod = cod.copy()
 
+        prefix_cod = cod.copy()
         for i in range(0, len(prefix_cod)):
             prefix_cod[i] = prefix + prefix_cod[i]
 
@@ -85,6 +91,7 @@ class Utils:
 
     @staticmethod
     def check_if_number_valid(string):
+        # Checks if the number contains characters that aren't numbers or dots
         for i in range(0, len(string)):
             if (not Utils.is_digit(string[i])) and (not (string[i] == '.')):
                 return True
@@ -110,7 +117,8 @@ class Utils:
         return data
 
     @staticmethod
-    def normalize_values(data):
+    def remove_numerical_mistakes(data):
+        # Remove extra dots or semicolons
         for column in data.columns:
             if column in GlobalVariables.DatasetColumns.numerical_continuous:
                 index = 0
@@ -131,7 +139,7 @@ class Utils:
                                 second_comma = True
                     data.at[index, column] = new_value
                     index += 1
-
+        # Substitute invalid numbers and other NaN values with a default NaN value
         for column in data.columns:
             if column in GlobalVariables.DatasetColumns.numerical_discrete or\
                 column in GlobalVariables.DatasetColumns.numerical_continuous or\
@@ -145,4 +153,27 @@ class Utils:
                         data.at[index, column] = 'NaN'
                         index += 1
 
+        return data
+
+    @staticmethod
+    def rename_columns(data):
+        data.rename(columns={data.columns[136]: 'Comorbilidades pré-operatórias'}, inplace=True)
+
+        data.rename(columns={'risco médio': 'risco médio - complicações sérias (%)',
+                             'risco médio.1': 'risco médio - qualquer complicação (%)',
+                             'risco médio.2': 'risco médio - pneumonia (%)',
+                             'risco médio.3': 'risco médio - complicações cardíacas (%)',
+                             'risco médio.4': 'risco médio - infeção cirúrgica (%)',
+                             'risco médio.5': 'risco médio - ITU (%)',
+                             'risco médio.6': 'risco médio - tromboembolismo venoso (%)',
+                             'risco médio.7': 'risco médio - falência renal (%)',
+                             'risco médio.8': 'risco médio - ileus (%)',
+                             'risco médio.9': 'risco médio - fuga anastomótica (%)',
+                             'risco médio.10': 'risco médio - readmissão (%)',
+                             'risco médio.11': 'risco médio - reoperação (%)',
+                             'risco médio.12': 'risco médio - morte (%)',
+                             'risco médio.13': 'risco médio - Discharge to Nursing or Rehab Facility (%)'
+                             }, inplace=True)
+
+        # data.drop(columns=['data pedido anestesia'])
         return data

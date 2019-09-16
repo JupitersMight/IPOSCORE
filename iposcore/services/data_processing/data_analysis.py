@@ -1,6 +1,5 @@
 import pandas as pd
-
-#################################### All Data ####################################
+from services.data_processing.utils import Utils
 
 
 data = pd.read_csv(r'data.csv', dtype=str)
@@ -66,7 +65,7 @@ file.write('There are '+str(len(reinternamentoN[reinternamentoN['complicação p
 file.write('There are '+str(len(reinternamentoN[reinternamentoN['complicação pós-cirúrgica'] == '0']))+ ' patients without post cirurgy complications (não reinternamento na UCI) \n\n')
 
 
-missings = number_of_missing_values(data)
+missings = Utils.number_of_missing_values(data)
 i=0
 for value in missings:
     percentage = value*100/len(data['complicação pós-cirúrgica'])
@@ -78,7 +77,7 @@ for value in missings:
 file.write('\n')
 
 for column in data.columns:
-    d = distribution(data[column])
+    d = Utils.distribution(data[column])
     for i in range(len(d)):
         total = 0
         for j in range(len(d)):
