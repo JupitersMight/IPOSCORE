@@ -2,8 +2,8 @@
 class GlobalVariables:
 
     class DatabaseConfigurations:
-        user = 'postgres'
-        password = ''
+        user = 'work'
+        password = '123'
         host = '127.0.0.1'
         port = '5432'
         database = 'test'
@@ -157,7 +157,8 @@ class GlobalVariables:
 
         ignored_columns = ['Intervenções_ICD10',
                            'ACS_procedimento',
-                           'nº IPO', 'classificação ACS complicações específicas'
+                           'nº IPO',
+                           'classificação ACS complicações específicas'
                            ]#4
 
         prefix_for_generated_columns = ['ACS_',
