@@ -1,6 +1,6 @@
 #sidebar {
   z-index: 1000;
-  position: absolute;
+  position: relative;
   left: 0;
   width: 250px;
   height: 100%;

@@ -10,11 +10,12 @@ function render(graphData){
         })
     }
 
-    const svg = d3.select("svg"),
+    const svg = d3.select(".content-svgs").append('svg'),
         margin = {top: 20, right: 20, bottom: 30, left: 40},
         width = 500 - margin.left - margin.right - 50,
         height = 500 - margin.top - margin.bottom - 150
 
+    svg.attr('width',500).attr('height',500)
     // set the ranges
     let x = d3.scaleBand().rangeRound([0, width]).paddingInner(0.1),
         y = d3.scaleLinear().rangeRound([height, 0])
@@ -39,7 +40,7 @@ function render(graphData){
 
     g.append("g")
         .attr("class", "axis axis--y")
-        .call(d3.axisLeft(y).ticks(10, ""))
+        .call(d3.axisLeft(y).ticks(10))
         .append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
