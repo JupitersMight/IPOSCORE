@@ -1,3 +1,4 @@
 .content{
-    left: 250px;
+    margin-left: 250px;
+    overflow: auto;
 }

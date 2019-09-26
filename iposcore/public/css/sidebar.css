@@ -1,11 +1,9 @@
 #sidebar {
   z-index: 1000;
-  position: fixed;
-  left: 250px;
+  position: absolute;
+  left: 0;
   width: 250px;
   height: 100%;
-  margin-left: -250px;
-  overflow-y: auto;
   background: #37474F;
   font-size: 16px;
 }
