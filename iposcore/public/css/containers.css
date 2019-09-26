@@ -1,6 +1,7 @@
 .content-svgs{
     display: flex;
     overflow: auto;
+    width:100%;
 }
 .main-container{
     display:flex;

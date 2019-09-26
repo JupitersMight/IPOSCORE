@@ -79,12 +79,33 @@
                 <div class="content-svgs"></div>
             </div>
         </div>
-
-
-
         <script>
             const graphData = {{data | safe}}
-            render(graphData)
+
+            let processedData = []
+            for(let i = 0; i< graphData[0].length; ++i){
+                processedData.push({
+                    column_name : graphData[0][i],
+                    column_value : graphData[1][i]
+                })
+            }
+
+            const element = d3.select('.content-svgs').node()
+            const width = element.getBoundingClientRect().width-250
+            const height = element.getBoundingClientRect().height-56
+            render(
+                processedData,
+                {
+                    width,
+                    height,
+                    MAX_LABEL_SIZE_Y: 250,
+                    MAX_LABEL_SIZE_X: 100,
+                    top: 20,
+                    right: 20,
+                    bottom: 30,
+                    left: 60
+                }
+            )
         </script>
     </body>
 </html>

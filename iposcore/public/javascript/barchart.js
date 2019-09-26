@@ -1,31 +1,21 @@
 'use strict'
 
-function render(graphData){
-    let data = []
-
-    for(let i = 0; i< graphData[0].length; ++i){
-        data.push({
-            column_name : graphData[0][i],
-            column_value : graphData[1][i]
-        })
-    }
+function render(data, properties){
 
     const svg = d3.select(".content-svgs").append('svg'),
-        margin = {top: 20, right: 20, bottom: 30, left: 40},
-        width = 500 - margin.left - margin.right - 50,
-        height = 500 - margin.top - margin.bottom - 150
+        width = properties.width - properties.left - properties.right - properties.MAX_LABEL_SIZE_X,
+        height = properties.height - properties.top - properties.bottom - properties.MAX_LABEL_SIZE_Y
 
-    svg.attr('width',500).attr('height',500)
+    svg.attr('width',properties.width).attr('height',properties.height)
     // set the ranges
     let x = d3.scaleBand().rangeRound([0, width]).paddingInner(0.1),
         y = d3.scaleLinear().rangeRound([height, 0])
 
-
-    x.domain(data.map(function(d) { return d.column_name; }));
-    y.domain([0, 100]);
+    x.domain(data.map(d => d.column_name))
+    y.domain([0, 100])
 
     let g = svg.append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + properties.left + "," + properties.top + ")")
 
     g.append("g")
         .attr("class", "axis axis--x")
@@ -52,9 +42,9 @@ function render(graphData){
       .data(data)
       .enter().append("rect")
         .attr("class", "bar")
-        .attr("x", function(d) { return x(d.column_name); })
-        .attr("y", function(d) { return y(d.column_value); })
+        .attr("x", d => x(d.column_name))
+        .attr("y", d => y(d.column_value))
         .attr("width", x.bandwidth())
-        .attr("height", function(d) { return height - y(d.column_value); })
+        .attr("height", d => height - y(d.column_value))
 
 }
