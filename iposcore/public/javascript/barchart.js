@@ -2,7 +2,7 @@
 
 function render(data, properties){
 
-    const svg = d3.select(".content-svgs").append('svg'),
+    const svg = d3.select(".content-svgs").append('div').attr('class','centered_svg').append('svg'),
         width = properties.width - properties.left - properties.right - properties.MAX_LABEL_SIZE_X,
         height = properties.height - properties.top - properties.bottom - properties.MAX_LABEL_SIZE_Y
 

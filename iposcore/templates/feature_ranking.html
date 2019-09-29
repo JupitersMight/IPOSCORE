@@ -1,111 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>IPOscore</title>
-        <meta name="author" content="Chris Mills">
-        <meta name="description" content="The MDN Web Docs Learning Area aims to provide
-        complete beginners to the Web with all they need to know to get
-        started with developing web sites and applications.">
+{% extends 'layout.html' %}
+{% block head %}
+    <link rel="stylesheet" href="css/containers.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <script type="text/javascript" src="javascript/barchart.js"></script>
+{% endblock %}
 
-        <link rel="shortcut icon" type="image/png" href="images/favicon.ico"/>
-        <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css">
-        <link rel="stylesheet" href="css/sidebar.css">
-        <link rel="stylesheet" href="css/containers.css">
-        <link rel="stylesheet" href="css/navbar.css">
-        <script type="text/javascript" src="javascript/d3/jquery-3.4.1.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="javascript/bootstrap/bootstrap.min.js"></script>
-        <script type="text/javascript" src="javascript/d3/d3.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="javascript/d3/d3.js" charset="utf-8"></script>
-        <script type="text/javascript" src="javascript/d3/d3-tip.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="javascript/d3/d3-tip.js" charset="utf-8"></script>
-        <script type="text/javascript" src="javascript/barchart.js"></script>
-    </head>
-    <body>
-        <div class="main-container">
-            <!-- Navbar -->
-            <nav class="navbar navbar-light nav_body">
-                <a class="navbar-brand text-white" href="">
-                    <img src="images/LogoIPOPorto1_270x169.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
-                    IPOscore
-                </a>
-                <div class="navbar-nav mr-auto">
-                    <a class="nav-link text-white" href="">Home <span class="sr-only"></span></a>
-                </div>
-                <button class="navbar-toggler bg-white" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div class="navbar-nav">
-                        <a class="nav-item nav-link text-white" href="">Features</a>
-                    </div>
-                </div>
-            </nav>
-            <div class="content">
-                <!-- Sidebar -->
-                <div id="sidebar">
-                    <header>
-                        <a href="">Attributes</a>
-                    </header>
-                    <ul class="nav">
-                        <li>
-                            <a href="">
-                                <i></i> Numerical Continuous
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                <i></i> Numerical Discrete
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                <i></i> Categorical
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                <i></i> Binary
-                            </a>
-                        </li>
-                        <li>
-                            <a href="">
-                                <i></i> Text
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- Content -->
-                <div class="content-svgs"></div>
-            </div>
-        </div>
-        <script>
-            const graphData = {{data | safe}}
+{% block content %}
+    <!-- Content -->
+    <div class="content-svgs"></div>
+    <script>
+        const graphData = {{data | safe}}
 
-            let processedData = []
-            for(let i = 0; i< graphData[0].length; ++i){
-                processedData.push({
-                    column_name : graphData[0][i],
-                    column_value : graphData[1][i]
-                })
+        let processedData = []
+        for(let i = 0; i< graphData[0].length; ++i){
+            processedData.push({
+                column_name : graphData[0][i],
+                column_value : graphData[1][i]
+            })
+        }
+
+        const element = d3.select('.content-svgs').node()
+        const width = 1024
+        const height = 768
+        render(
+        processedData,
+            {
+                width,
+                height,
+                MAX_LABEL_SIZE_Y: 250,
+                MAX_LABEL_SIZE_X: 100,
+                top: 20,
+                right: 20,
+                bottom: 30,
+                left: 60
             }
-
-            const element = d3.select('.content-svgs').node()
-            const width = element.getBoundingClientRect().width-250
-            const height = element.getBoundingClientRect().height-56
-            render(
-                processedData,
-                {
-                    width,
-                    height,
-                    MAX_LABEL_SIZE_Y: 250,
-                    MAX_LABEL_SIZE_X: 100,
-                    top: 20,
-                    right: 20,
-                    bottom: 30,
-                    left: 60
-                }
-            )
-        </script>
-    </body>
-</html>
+        )
+    </script>
+{% endblock %}
