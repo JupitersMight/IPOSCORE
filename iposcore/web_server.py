@@ -20,8 +20,8 @@ def favicon():
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
-@app.route('/')
-def index():
+@app.route('/feature_ranking')
+def feature_ranking():
     data = pd.read_csv(path.join(Path(__file__).resolve().parents[0], 'data', r'data.csv'), dtype=str)
     numerical_continuous = FeatureRanking.numerical_continuous(
         data,
@@ -30,6 +30,10 @@ def index():
     )
 
     return render_template("feature_ranking.html", data=numerical_continuous)
+
+@app.route('/')
+def home():
+    return render_template("home.html")
 
 
 if __name__ == "__main__":

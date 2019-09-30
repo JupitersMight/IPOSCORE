@@ -1,7 +1,5 @@
 {% extends 'layout.html' %}
 {% block head %}
-    <link rel="stylesheet" href="css/containers.css">
-    <link rel="stylesheet" href="css/navbar.css">
     <script type="text/javascript" src="javascript/barchart.js"></script>
 {% endblock %}
 
@@ -11,6 +9,27 @@
     <script>
         const graphData = {{data | safe}}
 
+        // this is the size of the svg container -- the white part
+        const fullwidth = 1024
+        const fullheight = 768
+
+        const width = fullwidth - 60 - 20
+        const height = fullheight - 20 - 30
+
+        const heightScale = d3.scaleLinear().range([height, 0])
+
+        const widthScale = d3.scaleBand().rangeRound([20, width]).padding(0.3)
+
+        const yAxis = d3.axisLeft(heightScale)
+
+        const xAxis = d3.axisBottom(widthScale)
+
+        const svg = d3.select('.content-svgs')
+            .append('svg')
+            .attr('width', fullwidth)
+            .attr('height', fullheight)
+
+
         let processedData = []
         for(let i = 0; i< graphData[0].length; ++i){
             processedData.push({
@@ -19,21 +38,24 @@
             })
         }
 
-        const element = d3.select('.content-svgs').node()
-        const width = 1024
-        const height = 768
         render(
         processedData,
-            {
-                width,
-                height,
-                MAX_LABEL_SIZE_Y: 250,
-                MAX_LABEL_SIZE_X: 100,
-                top: 20,
-                right: 20,
-                bottom: 30,
-                left: 60
-            }
+        {
+            width,
+            height,
+            MAX_LABEL_SIZE_Y: 250,
+            MAX_LABEL_SIZE_X: 100,
+            top: 20,
+            right: 20,
+            bottom: 30,
+            left: 60,
+            svg,
+            widthScale,
+            heightScale,
+            xAxis,
+            yAxis,
+        },
+        true
         )
     </script>
 {% endblock %}

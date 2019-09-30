@@ -1,50 +1,77 @@
 'use strict'
 
-function render(data, properties){
+function render(data, properties, init){
 
-    const svg = d3.select(".content-svgs").append('div').attr('class','centered_svg').append('svg'),
-        width = properties.width - properties.left - properties.right - properties.MAX_LABEL_SIZE_X,
-        height = properties.height - properties.top - properties.bottom - properties.MAX_LABEL_SIZE_Y
+	properties.heightScale.domain([0,100])
 
-    svg.attr('width',properties.width).attr('height',properties.height)
-    // set the ranges
-    let x = d3.scaleBand().rangeRound([0, width]).paddingInner(0.1),
-        y = d3.scaleLinear().rangeRound([height, 0])
+    const width_domain = []
 
-    x.domain(data.map(d => d.column_name))
-    y.domain([0, 100])
+    for (let i = 0; i < data.length; ++i)
+        width_domain.push(data[i].column_name)
 
-    let g = svg.append("g")
-        .attr("transform", "translate(" + properties.left + "," + properties.top + ")")
+	properties.widthScale.domain(width_domain)
+	properties.xAxis.scale(properties.widthScale)
+	properties.yAxis.scale(properties.heightScale)
 
-    g.append("g")
-        .attr("class", "axis axis--x")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x))
-        .selectAll("text")
-        .attr("y", 0)
-        .attr("x", 9)
-        .attr("dy", ".35em")
-        .attr("transform", "rotate(60)")
-        .style("text-anchor", "start")
+	if (init)
+		properties.svg.append('text')
+		.attr('x', (properties.width / 2) + properties.left)
+		.attr("y", properties.top / 2)
+		.attr("text-anchor", "middle")
+		.style("font-size", "20px")
+		.style('fill', '#b3b3b3')
+		.style('text-decoration', 'underline')
+		.text('Attributes')
 
-    g.append("g")
-        .attr("class", "axis axis--y")
-        .call(d3.axisLeft(y).ticks(10))
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", "0.71em")
-        .attr("text-anchor", "end")
-        .text("Frequency")
+	const bar = properties.svg.selectAll('.bar')
+		.data(data)
 
-    g.selectAll(".bar")
-      .data(data)
-      .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", d => x(d.column_name))
-        .attr("y", d => y(d.column_value))
-        .attr("width", x.bandwidth())
-        .attr("height", d => height - y(d.column_value))
+	bar.exit().remove()
+	bar.enter()
+		.append('rect').merge(bar)
+		.attr('class', 'bar')
+		.attr('id', d => 'bar_' + d.column_name)
+		.transition('bar').duration(500)
+		.attr('fill', d => d.selected ? '#ec7014' : '#238443')
+		.attr('x', d => properties.left + properties.widthScale(d.column_name))
+		.attr('y', d => properties.heightScale(d.column_value))
+		.attr('width', properties.widthScale.bandwidth())
+		.attr('height',  d => properties.height-  properties.heightScale(d.column_value))
 
+	// Add the axes
+	if (init) {
+		properties.svg.append('g')
+			.attr('id', 'axis-y')
+			.attr('class', 'y axis')
+			.style("font-size", "14px")
+			.attr('transform', 'translate(' + properties.left + ',' + properties.height + ')')
+			.call(properties.xAxis)
+            .selectAll("text")
+            .attr("y", 0)
+            .attr("x", 9)
+            .attr("dy", ".35em")
+            .attr("transform", "rotate(45)")
+            .style("text-anchor", "start")
+
+		properties.svg.append('g')
+			.attr('id', 'axis-y')
+			.attr('class', 'y axis')
+			.style("font-size", "14px")
+			.attr('transform', 'translate(' + properties.left + ',0)')
+			.call(properties.yAxis)
+
+		properties.svg.append('text')
+			.attr('id', 'usd')
+			.attr('class', 'xlabel')
+			.attr('transform', 'translate(' + (properties.left + properties.width / 2) + ' ,' + (properties.height + properties.bottom + 30) + ')')
+			.style('text-anchor', 'middle')
+			.attr('dy', '12')
+			.style("font-size", "16px")
+			.style('fill', '#b3b3b3')
+			.text('Descriptive percentage')
+
+	} else {
+		properties.svg.select('#axis-x').transition('xaxis_bar').duration(500).call(properties.xAxis)
+		properties.svg.select('#axis-y').transition('yaxis_bar').duration(500).call(properties.yAxis)
+	}
 }
