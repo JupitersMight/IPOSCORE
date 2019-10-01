@@ -23,13 +23,19 @@ def favicon():
 @app.route('/feature_ranking')
 def feature_ranking():
     data = pd.read_csv(path.join(Path(__file__).resolve().parents[0], 'data', r'data.csv'), dtype=str)
-    numerical_continuous = FeatureRanking.numerical_continuous(
+    feature_ranking = FeatureRanking.feature_ranking(
         data,
-        GlobalVariables.DatasetColumns.numerical_continuous,
+        [
+            GlobalVariables.DatasetColumns.numerical_continuous,
+            GlobalVariables.DatasetColumns.numerical_discrete,
+            GlobalVariables.DatasetColumns.categorical,
+            GlobalVariables.DatasetColumns.binary,
+            GlobalVariables.DatasetColumns.text
+         ],
         GlobalVariables.DatasetColumns.class_label
     )
 
-    return render_template("feature_ranking.html", data=numerical_continuous)
+    return render_template("feature_ranking.html", data=feature_ranking)
 
 @app.route('/')
 def home():

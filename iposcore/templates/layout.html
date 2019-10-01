@@ -21,25 +21,25 @@
 </head>
 <body>
     <div class="main-container">
-            <!-- Navbar -->
-            <nav class="navbar navbar-light nav_body">
-                <a class="navbar-brand text-white" href="">
-                    <img src="images/LogoIPOPorto1_270x169.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
-                    IPOscore
-                </a>
-                <div class="navbar-nav mr-auto">
-                    <a class="nav-link text-white" href="">Home <span class="sr-only"></span></a>
+        <!-- Navbar -->
+        <nav class="navbar navbar-light nav_body">
+            <a class="navbar-brand text-white" href="">
+                <img src="images/LogoIPOPorto1_270x169.jpg" width="30" height="30" class="d-inline-block align-top" alt="">
+                IPOscore
+            </a>
+            <div class="navbar-nav mr-auto">
+                <a class="nav-link text-white" href="">Home <span class="sr-only"></span></a>
+            </div>
+            <button class="navbar-toggler bg-white" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link text-white" href="/feature_ranking">Feature Ranking</a>
                 </div>
-                <button class="navbar-toggler bg-white" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div class="navbar-nav">
-                        <a class="nav-item nav-link text-white" href="/feature_ranking">Feature Ranking</a>
-                    </div>
-                </div>
-            </nav>
-            {% block content %}{% endblock %}
-        </div>
+            </div>
+        </nav>
+        {% block content %}{% endblock %}
+    </div>
 </body>
 </html>

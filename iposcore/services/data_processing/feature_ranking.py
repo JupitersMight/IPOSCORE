@@ -28,177 +28,107 @@ def sort(colunas,valores):
 class FeatureRanking:
 
     @staticmethod
-    def numerical_continuous(data, columns, class_label):
-        numerical_continuous_m = []
-
-        class_data = data[class_label]
-        data.drop(columns=[class_label])
-
-        for column in columns:
-            true_label = class_data.__deepcopy__()
-            pred_label = data[column]
-
-            labels = pd.concat([true_label, pred_label], axis=1, sort=False)
-            labels = labels.dropna()
-            labels = labels.reset_index(drop=True)
-            numerical_continuous_m.append(
-                [column,
-                 mutual_info_regression(
-                     labels[column].to_frame(name=column),
-                     labels[GlobalVariables.DatasetColumns.class_label]
-                 )[0]]
-            )
-
-        colunas = []
-        valores = []
-        for value in numerical_continuous_m:
-            if (int(value[1] * 100)) == 0:
-                continue
-            colunas.append(value[0])
-            valores.append(int(value[1] * 100))
-        aux = sort(colunas, valores)
-        aux[0] = aux[0][:10]
-        aux[1] = aux[1][:10]
-        return aux
-
-    @staticmethod
-    def numerical_discrete(data, columns, class_label):
-        numerical_discrete_m = []
-
-        class_data = data[class_label]
-        data.drop(columns=[class_label])
-        for column in columns:
-            true_label = class_data.__deepcopy__()
-            pred_label = data[column]
-
-            labels = pd.concat([true_label, pred_label], axis=1, sort=False)
-            labels = labels.dropna()
-            labels = labels.reset_index(drop=True)
-
-            numerical_discrete_m.append(
-                [column,
-                 mutual_info_classif(
-                     labels[column].to_frame(name=column),
-                     labels[GlobalVariables.DatasetColumns.class_label],
-                     discrete_features=True
-                 )[0]]
-            )
-
-        colunas = []
-        valores = []
-        for value in numerical_discrete_m:
-            if (int(value[1] * 100)) == 0:
-                continue
-            colunas.append(value[0])
-            valores.append(int(value[1] * 100))
-
-        aux = sort(colunas, valores)
-        aux[0] = aux[0][:10]
-        aux[1] = aux[1][:10]
-        return aux
-
-    @staticmethod
-    def categorical(data, columns, class_label):
-        categorical_m = []
-
-        class_data = data[class_label]
-        data.drop(columns=[class_label])
-        for column in columns:
-            true_label = class_data.__deepcopy__()
-            pred_label = data[column]
-
-            labels = pd.concat([true_label, pred_label], axis=1, sort=False)
-            labels = labels.dropna()
-            labels = labels.reset_index(drop=True)
-            categorical_m.append(
-                [column,
-                 mutual_info_classif(
-                     labels[column].to_frame(name=column),
-                     labels[GlobalVariables.DatasetColumns.class_label]
-                 )[0]]
-            )
-
-        colunas = []
-        valores = []
-        for value in categorical_m:
-            if (int(value[1] * 100)) == 0:
-                continue
-            colunas.append(value[0])
-            valores.append(int(value[1] * 100))
-
-        aux = sort(colunas, valores)
-        aux[0] = aux[0][:10]
-        aux[1] = aux[1][:10]
-        return aux
-
-    @staticmethod
-    def binary(data, columns, class_label):
+    def feature_ranking(data, columns, class_label):
         binary_m = []
-
-        class_data = data[class_label]
-        data.drop(columns=[class_label])
-        for column in columns:
-            true_label = class_data.__deepcopy__()
-            pred_label = data[column]
-
-            labels = pd.concat([true_label, pred_label], axis=1, sort=False)
-            labels = labels.dropna()
-            labels = labels.reset_index(drop=True)
-
-            binary_m.append(
-                [column,
-                 mutual_info_classif(
-                     labels[column].to_frame(name=column),
-                     labels[GlobalVariables.DatasetColumns.class_label]
-                 )[0]
-                 ]
-            )
-        colunas = []
-        valores = []
-        for value in binary_m:
-            if (int(value[1] * 100)) == 0:
-                continue
-            colunas.append(value[0])
-            valores.append(int(value[1] * 100))
-
-        aux = sort(colunas, valores)
-        aux[0] = aux[0][:10]
-        aux[1] = aux[1][:10]
-        return aux
-
-    @staticmethod
-    def text(data, columns, class_label):
+        categorical_m = []
+        numerical_discrete_m = []
+        numerical_continuous_m = []
         text = []
 
         class_data = data[class_label]
         data.drop(columns=[class_label])
-        for column in columns:
+
+        joined_array = []
+        for array in columns:
+            joined_array = joined_array + array
+
+        for column in joined_array:
             true_label = class_data.__deepcopy__()
             pred_label = data[column]
 
             labels = pd.concat([true_label, pred_label], axis=1, sort=False)
             labels = labels.dropna()
             labels = labels.reset_index(drop=True)
-            cv = CountVectorizer(max_df=0.95, min_df=2,
-                                 max_features=10000)
 
-            X_vec = cv.fit_transform(labels[column])
+            if column in GlobalVariables.DatasetColumns.binary:
+                binary_m.append(
+                    [column,
+                     mutual_info_classif(
+                         labels[column].to_frame(name=column),
+                         labels[GlobalVariables.DatasetColumns.class_label]
+                     )[0]
+                     ]
+                )
+            elif column in GlobalVariables.DatasetColumns.categorical:
+                categorical_m.append(
+                    [column,
+                     mutual_info_classif(
+                         labels[column].to_frame(name=column),
+                         labels[GlobalVariables.DatasetColumns.class_label]
+                     )[0]
+                     ]
+                )
+            elif column in GlobalVariables.DatasetColumns.numerical_discrete:
+                numerical_discrete_m.append(
+                    [column,
+                     mutual_info_classif(
+                         labels[column].to_frame(name=column),
+                         labels[GlobalVariables.DatasetColumns.class_label]
+                     )[0]
+                     ]
+                )
+            elif column in GlobalVariables.DatasetColumns.numerical_continuous:
+                numerical_continuous_m.append(
+                    [column,
+                     mutual_info_classif(
+                         labels[column].to_frame(name=column),
+                         labels[GlobalVariables.DatasetColumns.class_label]
+                     )[0]
+                     ]
+                )
+            elif column in GlobalVariables.DatasetColumns.text:
+                cv = CountVectorizer(max_df=0.95, min_df=2, max_features=10000)
 
-            dictionary = dict(zip(cv.get_feature_names(),
-                                  mutual_info_classif(X_vec, labels[GlobalVariables.DatasetColumns.class_label],
-                                                      discrete_features=True)
-                                  ))
+                X_vec = cv.fit_transform(labels[column])
+
+                dictionary = dict(
+                    zip(
+                        cv.get_feature_names(),
+                        mutual_info_classif(
+                            X_vec,
+                            labels[GlobalVariables.DatasetColumns.class_label],
+                            discrete_features=True
+                        )
+                    )
+                )
+
+                colunas = []
+                valores = []
+                for col, val in dictionary.items():
+                    if val == 0:
+                        continue
+                    colunas.append(col)
+                    valores.append(val)
+
+                aux = sort(colunas, valores)
+                aux[0] = aux[0][:10]
+                aux[1] = aux[1][:10]
+                text.append(aux)
+
+        arrays = [binary_m, categorical_m, numerical_discrete_m, numerical_continuous_m]
+        index = 0
+        for array in arrays:
             colunas = []
             valores = []
-            for col, val in dictionary.items():
-                if (val * 100) == 0:
+            for value in array:
+                if value[1] == 0:
                     continue
-                colunas.append(col)
-                valores.append(val * 100)
-
+                colunas.append(value[0])
+                valores.append(value[1])
             aux = sort(colunas, valores)
             aux[0] = aux[0][:10]
             aux[1] = aux[1][:10]
-            text.append(aux)
-
-        return text
+            arrays[index] = aux
+            index = index + 1
+        arrays.append(text)
+        return arrays

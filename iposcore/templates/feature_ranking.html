@@ -4,23 +4,42 @@
 {% endblock %}
 
 {% block content %}
+    <div class="container-fluid">
+        <div class="row"><text></text>Feature Ranking</div>
+        <div class="row text-center">
+            <div class="col-sm-3"><button type="button" class="btn btn-primary" onclick="render(combined[get_next_prev(-1)],properties,false)"><---</button></div>
+            <div class="col-sm-3"><button type="button" class="btn btn-secondary">Display all</button></div>
+            <div class="col-sm-3"><button type="button" class="btn btn-info">Help</button></div>
+            <div class="col-sm-3"><button type="button" class="btn btn-primary" onclick="render(combined[get_next_prev(1)],properties,false)">---></button></div>
+        </div>
+    </div>
     <!-- Content -->
     <div class="content-svgs"></div>
     <script>
         const graphData = {{data | safe}}
 
+        const margins = {
+            top: 30,
+            right: 20,
+            bottom: 30,
+            left: 60
+        }
+
+        const MAX_LABEL_SIZE_Y = 200,
+            MAX_LABEL_SIZE_X = 150
+
         // this is the size of the svg container -- the white part
         const fullwidth = 1024
         const fullheight = 768
 
-        const width = fullwidth - 60 - 20
-        const height = fullheight - 20 - 30
+        const width = fullwidth - margins.left - margins.right - MAX_LABEL_SIZE_X
+        const height = fullheight - margins.top - margins.bottom - MAX_LABEL_SIZE_Y
 
         const heightScale = d3.scaleLinear().range([height, 0])
 
-        const widthScale = d3.scaleBand().rangeRound([20, width]).padding(0.3)
+        const widthScale = d3.scaleBand().rangeRound([0, width]).padding(0.3)
 
-        const yAxis = d3.axisLeft(heightScale)
+        const yAxis = d3.axisLeft(heightScale).tickFormat(d3.format(".0%"))
 
         const xAxis = d3.axisBottom(widthScale)
 
@@ -28,34 +47,44 @@
             .append('svg')
             .attr('width', fullwidth)
             .attr('height', fullheight)
+            .attr('class','centered')
 
 
-        let processedData = []
-        for(let i = 0; i< graphData[0].length; ++i){
-            processedData.push({
-                column_name : graphData[0][i],
-                column_value : graphData[1][i]
-            })
+        const binary = []
+        const categorical = []
+        const numerical_discrete = []
+        const numerical_continuous = []
+        const text = []
+        const combined = [binary, categorical, numerical_discrete, numerical_continuous]
+
+        for(let x = 0; x< combined.length; ++x)
+            for(let y = 0; y< graphData[x][0].length; ++y){
+                combined[x].push({
+                    column_name : graphData[x][0][y],
+                    column_value : graphData[x][1][y]
+                })
+            }
+        let i = 0;
+        function get_next_prev(value){
+            i = (i + value)%4
+            if(i < 0)
+                i = 3
+            return i
         }
-
-        render(
-        processedData,
-        {
+        const properties = {
             width,
             height,
-            MAX_LABEL_SIZE_Y: 250,
-            MAX_LABEL_SIZE_X: 100,
-            top: 20,
-            right: 20,
-            bottom: 30,
-            left: 60,
+            margins,
             svg,
             widthScale,
             heightScale,
             xAxis,
             yAxis,
-        },
-        true
+        }
+        render(
+            combined[0],
+            properties,
+            true
         )
     </script>
 {% endblock %}
