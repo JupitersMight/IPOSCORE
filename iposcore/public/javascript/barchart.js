@@ -8,7 +8,7 @@ function fade(opacity, d) {
 
 function render(data, properties, init){
 
-	properties.heightScale.domain([0,1])
+	properties.heightScale.domain([0,properties.heightMax])
 
     const width_domain = []
 
