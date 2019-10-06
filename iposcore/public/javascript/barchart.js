@@ -1,7 +1,7 @@
 'use strict'
 
 function fade(opacity, d) {
-	d3.select('#bar_' + d.id)
+	d3.select('#' + d.id)
 		.transition()
 		.style('opacity', opacity)
 }
@@ -19,15 +19,15 @@ function render(data, properties, init){
 	properties.xAxis.scale(properties.widthScale)
 	properties.yAxis.scale(properties.heightScale)
 
-	if (init)
-		properties.svg.append('text')
-		.attr('x', (properties.width / 2) + properties.margins.left)
-		.attr("y", (properties.margins.top / 2) - properties.margins.top)
-		.attr("text-anchor", "middle")
-		.style("font-size", "20px")
-		.style('fill', '#b3b3b3')
-		.style('text-decoration', 'underline')
-		.text('Attributes')
+    const tip = d3.tip()
+		.attr('class', 'd3-tip')
+		.offset([-10, 0])
+		.html(d =>
+            '<strong>Column name: </strong>' + d.column_name + '</br>' +
+            '<strong>Value: </strong>' + (Math.round(d.column_value * 10000)/100)
+        )
+
+    properties.svg.call(tip)
 
 	const bar = properties.svg.selectAll('.bar')
 		.data(data)
@@ -36,14 +36,15 @@ function render(data, properties, init){
 	bar.enter()
 		.append('rect').merge(bar)
 		.attr('class', 'bar')
-		.attr('id', d => 'bar_' + d.column_name)
-		.on('mouseover', d => {
+		.attr('id', (d,i) => d.id = properties.chartName+'_bar_' + i)
+		.attr('pointer-events','all')
+		.on('mouseover', function(d) {
 			fade(0.5, d)
-			//tip.show(d)
+			tip.show(d,this)
 		})
-		.on('mouseout', d => {
+		.on('mouseout', function(d) {
 			fade(1, d)
-			//tip.hide(d)
+			tip.hide(d,this)
 		})
 		.transition('bar').duration(500)
 		.attr('fill', '#158896')
@@ -83,5 +84,6 @@ function render(data, properties, init){
             .attr("transform", "rotate(45)")
             .style("text-anchor", "start")
 		properties.svg.select('#axis-y').transition('yaxis_bar').duration(500).call(properties.yAxis)
+        d3.select('.content-svgs').select('h3').text(properties.chartName)
 	}
 }
