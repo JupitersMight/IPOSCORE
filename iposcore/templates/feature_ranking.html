@@ -100,7 +100,7 @@
             properties.height = 500 - properties.margins.top - properties.margins.bottom - MAX_LABEL_SIZE_Y
             properties.heightScale = d3.scaleLinear().range([properties.height, 0])
             properties.widthScale = d3.scaleBand().rangeRound([0, properties.width]).padding(0.3)
-            properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(".0%"))
+            properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(".1%"))
             properties.xAxis = d3.axisBottom(properties.widthScale)
 
             for(let i = 0; i< data.length; ++i){
@@ -142,7 +142,7 @@
             properties.height = fullheight - margins.top - margins.bottom - MAX_LABEL_SIZE_Y
             properties.heightScale = d3.scaleLinear().range([properties.height, 0])
             properties.widthScale = d3.scaleBand().rangeRound([0, properties.width]).padding(0.3)
-            properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(".0%"))
+            properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(".1%"))
             properties.xAxis = d3.axisBottom(properties.widthScale)
             properties.chartName = graphNames[properties.curr ? properties.curr : curr]
             if(init) {
