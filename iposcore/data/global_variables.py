@@ -9,7 +9,7 @@ class GlobalVariables:
         database = 'test'
 
     class DatasetColumns:
-        class_label = 'complicação pós-cirúrgica'
+        class_label = ['complicação pós-cirúrgica','classificação clavien-dindo']
 
         numerical_continuous = ['dias na UCI',
                                    'total pontos NAS',
@@ -90,10 +90,9 @@ class GlobalVariables:
                         'CHARLSON Malignidade',
                         'complicação principal_COD',
                         'classificação ACS complicações gerais',
-                        'classificação clavien-dindo',
                         'destino após IPO',
                         'óbito_tempo decorrido após data cirurgia (até 1 ano)'
-                        ]#45
+                        ]#44
 
         numerical_discrete = ['idade',
                               'dias no  IPOP',

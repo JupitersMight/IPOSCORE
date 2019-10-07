@@ -12,7 +12,7 @@
         <div class="row text-center">
             <div class="col-sm-3">
                 <button id="prev" type="button" class="btn btn-secondary"
-                        onclick="renderSingleBarchart(combined, properties, false, get_next_prev(-1))">
+                        onclick="renderSingleBarchart(graphData, properties, false, get_next_prev(-1))">
                     <---
                 </button>
             </div>
@@ -28,7 +28,7 @@
             </div>
             <div class="col-sm-3">
                 <button id="next" type="button" class="btn btn-secondary"
-                        onclick="renderSingleBarchart(combined, properties, false, get_next_prev(1))">
+                        onclick="renderSingleBarchart(graphData, properties, false, get_next_prev(1))">
                     --->
                 </button>
             </div>
@@ -62,22 +62,7 @@
             margins,
             heightMax : 1
         }
-        const graphNames = ['Binary','Categorical','Numerical_Discrete','Numerical_Continuous']
-        const binary = []
-        const categorical = []
-        const numerical_discrete = []
-        const numerical_continuous = []
-        const text = []
-        const combined = [binary, categorical, numerical_discrete, numerical_continuous]
-
-        for(let x = 0; x< combined.length; ++x) {
-            for (let y = 0; y < graphData[x][0].length; ++y) {
-                combined[x].push({
-                    column_name: graphData[x][0][y],
-                    column_value: graphData[x][1][y]
-                })
-            }
-        }
+        const graphNames = Object.keys(graphData)
 
         function renderMultipleBarcharts(data, properties){
             let container = d3.select('.content-svgs')
@@ -88,10 +73,10 @@
             let currRow = container.append('div').attr('class','row')
 
             let max = 0
-            for(let i = 0; i<data.length; ++i){
-                for(let x = 0; x<data.length; ++x){
-                    if(max < data[i][x].column_value)
-                        max = data[i][x].column_value
+            for(let i = 0; i<graphNames.length; ++i){
+                for(let x = 0; x<data[graphNames[i]].length; ++x){
+                    if(max < data[graphNames[i]][x].column_value)
+                        max = data[graphNames[i]][x].column_value
                 }
             }
 
@@ -103,15 +88,15 @@
             properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(".1%"))
             properties.xAxis = d3.axisBottom(properties.widthScale)
 
-            for(let i = 0; i< data.length; ++i){
+            for(let i = 0; i< graphNames.length; ++i){
                 properties.chartName = graphNames[i]
                 properties.svg = currRow.append('div').attr('class','col-sm-6')
                 properties.svg.append('h3').attr("align", "center").style("text-decoration", "underline").text(graphNames[i])
                 properties.svg =  properties.svg.append('svg').attr('width', 500).attr('height', 500).attr('class','centered')
-                properties.svg.on('click',()=>renderSingleBarchart(combined,properties,true,i))
-                render(data[i],properties,true)
+                properties.svg.on('click',()=>renderSingleBarchart(graphData,properties,true,i))
+                render(data[graphNames[i]],properties,true)
             }
-            d3.select('#displayall').on('click',()=>renderSingleBarchart(combined,properties,true,0)).text("Hide All")
+            d3.select('#displayall').on('click',()=>renderSingleBarchart(graphData,properties,true,0)).text("Hide All")
             d3.select('#prev').attr('disabled','disabled')
             d3.select('#next').attr('disabled','disabled')
         }
@@ -133,9 +118,9 @@
             const fullheight = 768
 
             let max = 0
-            for(let i = 0; i < data[data_index].length; ++i)
-                if(max < data[data_index][i].column_value)
-                    max = data[data_index][i].column_value
+            for(let i = 0; i < data[graphNames[data_index]].length; ++i)
+                if(max < data[graphNames[data_index]][i].column_value)
+                    max = data[graphNames[data_index]][i].column_value
 
             properties.heightMax = max
             properties.width = fullwidth - margins.left - margins.right - MAX_LABEL_SIZE_X
@@ -156,11 +141,11 @@
             d3.select('#displayall').on('click',()=>renderMultipleBarcharts(data, properties)).text("Display All")
             d3.select('#prev').attr('disabled',null)
             d3.select('#next').attr('disabled',null)
-            render(data[data_index], properties, init)
+            render(data[graphNames[data_index]], properties, init)
         }
-        d3.select('#displayall').on('click',()=>renderMultipleBarcharts(combined, properties))
+        d3.select('#displayall').on('click',()=>renderMultipleBarcharts(graphData, properties))
         renderSingleBarchart(
-            combined,
+            graphData,
             properties,
             true,
             0
