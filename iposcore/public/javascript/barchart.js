@@ -24,7 +24,7 @@ function render(data, properties, init){
 		.offset([-10, 0])
 		.html(d =>
             '<strong>Column name: </strong>' + d.column_name + '</br>' +
-            '<strong>Value: </strong>' + d.column_value
+            '<strong>Value: </strong>' +  (d.column_value * (properties.curr_scoring_functions.indexOf('chi2_') !== -1 ? 1 : 100))
         )
 
     properties.svg.call(tip)
@@ -36,7 +36,7 @@ function render(data, properties, init){
 	bar.enter()
 		.append('rect').merge(bar)
 		.attr('class', 'bar')
-		.attr('id', (d,i) => d.id = properties.chartName+'_bar_' + i)
+		.attr('id', (d,i) => d.id = properties.curr_data_type+'_bar_' + i)
 		.attr('pointer-events','all')
 		.on('mouseover', function(d) {
 			fade(0.5, d)
@@ -84,7 +84,10 @@ function render(data, properties, init){
             .attr("transform", "rotate(45)")
             .style("text-anchor", "start")
 		properties.svg.select('#axis-y').transition('yaxis_bar').duration(500).call(properties.yAxis)
-        d3.select('.content-svgs').select('h3').text(properties.chartName)
+        if(properties.displayingAll)
+        	d3.select('#h3_'+properties.curr_data_type).text(properties.curr_data_type)
+		else
+			d3.select('h3').text(properties.curr_data_type)
 	}
 }
 
@@ -92,17 +95,22 @@ function renderMultipleBarcharts(properties, init){
     properties.displayingAll = true
 
 	let container = d3.select('.content-svgs')
-	d3.select('.content-svgs').selectAll('svg').remove()
-	d3.select('.content-svgs').selectAll('.col-sm-6').remove()
-	d3.select('.content-svgs').selectAll('.row').remove()
-	d3.selectAll('.d3-tip').remove()
-	let currRow = container.append('div').attr('class','row')
+	let currRow
+	if(init){
+		container.selectAll('svg').remove()
+		container.selectAll('.col-sm-6').remove()
+		container.selectAll('.row').remove()
+		d3.selectAll('.d3-tip').remove()
+		currRow = d3.select('.content-svgs').append('div').attr('class','row centered')
+	}
+	else
+		currRow = d3.select('.content-svgs').select('.row')
 
 	let max = 0
 	for(let i = 0; i<properties.data_types.length; ++i){
 		for(let x = 0; x<properties.data[properties.curr_class_label][properties.data_types[i]][properties.curr_scoring_functions].length; ++x){
 			if(max < properties.data[properties.curr_class_label][properties.data_types[i]][properties.curr_scoring_functions][x].column_value)
-				max = properties.data[properties.curr_class_label][properties.data_types[i]][properties.curr_scoring_functions].column_value
+				max = properties.data[properties.curr_class_label][properties.data_types[i]][properties.curr_scoring_functions][x].column_value
 		}
 	}
 
@@ -111,38 +119,55 @@ function renderMultipleBarcharts(properties, init){
 	properties.height = 500 - properties.margins.top - properties.margins.bottom - properties.MAX_LABEL_SIZE_Y
 	properties.heightScale = d3.scaleLinear().range([properties.height, 0])
 	properties.widthScale = d3.scaleBand().rangeRound([0, properties.width]).padding(0.3)
-	properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(".1%"))
+	properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(properties.curr_scoring_functions.indexOf('chi2_') !== -1 ? '.5~s' : ".1%"))
 	properties.xAxis = d3.axisBottom(properties.widthScale)
 
-	for(let i = 0; i< data_types.length; ++i){
-		properties.svg = currRow
-            .append('div')
-            .attr('class','col-sm-6')
 
-		properties.svg.append('h3')
-            .attr("align", "center")
-            .style("text-decoration", "underline")
-            .text(properties.data[properties.curr_class_label][properties.data_types[i]][properties.curr_scoring_functions])
+	for (let i = 0; i < properties.data_types.length; ++i) {
+		properties.curr_data_type = properties.data_types[i]
+		if(init) {
+			properties.svg = currRow
+				.append('div')
+				.attr('class', 'col-sm-6')
 
-        properties.svg =  properties.svg
-            .append('svg')
-            .attr('width', 500)
-            .attr('height', 500)
-            .attr('class','centered')
+			properties.svg.append('h3')
+				.attr('id','h3_'+ properties.data_types[i])
+				.attr("align", "center")
+				.style("text-decoration", "underline")
+				.text(properties.curr_data_type)
 
-		properties.svg.on('click',()=>renderSingleBarchart(properties,true))
-		render(
-		    properties.data[properties.curr_class_label][properties.data_types[i]][properties.curr_scoring_functions],
-            properties,
-            init
-        )
+			properties.svg = properties.svg
+				.append('svg')
+				.attr('id', 'svg_' + properties.data_types[i])
+				.attr('width', 500)
+				.attr('height', 500)
+				.attr('class', 'centered')
+
+			properties.svg.on('click', () => renderSingleBarchart(properties, true, properties.data_types[i]))
+			render(
+				properties.data[properties.curr_class_label][properties.data_types[i]][properties.curr_scoring_functions],
+				properties,
+				init
+			)
+		}else{
+			properties.svg = d3.select('#svg_'+properties.data_types[i])
+			render(
+				properties.data[properties.curr_class_label][properties.data_types[i]][properties.curr_scoring_functions],
+				properties,
+				init
+			)
+		}
 	}
-	d3.select('#displayall').on('click',()=>renderSingleBarchart(properties,true)).text("Hide All")
-	d3.select('#prev').attr('disabled','disabled')
-	d3.select('#next').attr('disabled','disabled')
+	if(init) {
+        d3.select('#displayall').on('click', () => renderSingleBarchart(properties, true, properties.data_types[curr])).text("Hide All")
+        d3.select('#prev').attr('disabled', 'disabled')
+        d3.select('#next').attr('disabled', 'disabled')
+    }
 }
 
-function renderSingleBarchart(properties, init){
+function renderSingleBarchart(properties, init, extra){
+	if(extra)
+		properties.curr_data_type = extra
 
     properties.displayingAll = false
 
@@ -172,13 +197,20 @@ function renderSingleBarchart(properties, init){
 	properties.height = fullheight - properties.margins.top - properties.margins.bottom - properties.MAX_LABEL_SIZE_Y
 	properties.heightScale = d3.scaleLinear().range([properties.height, 0])
 	properties.widthScale = d3.scaleBand().rangeRound([0, properties.width]).padding(0.3)
-	properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(".1%"))
+	properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(properties.curr_scoring_functions.indexOf('chi2_') !== -1 ? '.5~s' : ".1%"))
 	properties.xAxis = d3.axisBottom(properties.widthScale)
 
 	if(init) {
 		properties.svg = currRow.append('div').attr('class','col-sm-12')
-		properties.svg.append('h3').attr("align", "center").style("text-decoration", "underline").text(properties.curr_data_type)
+		properties.svg
+			.append('h3')
+			.attr('id','h3_'+ properties.curr_data_type)
+			.attr("align", "center")
+			.style("text-decoration", "underline")
+			.text(properties.curr_data_type)
+
 		properties.svg = properties.svg.append('svg')
+			.attr('id', 'svg_' + properties.curr_data_type)
 			.attr('width', fullwidth)
 			.attr('height', fullheight)
 			.attr('class', 'centered')

@@ -9,27 +9,30 @@
 
 {% block content %}
     <div class="container-fluid">
-        <div class="row centered"><h2>Feature Ranking</h2></div>
+        <div class="row centered">
+            <div class="col-sm-4"> <h2>Feature Ranking</h2> </div>
+            <div class="col-sm-4" id="class_label_dropdown"> Class Label -- > </div>
+            <div class="col-sm-4" id="score_function_dropdown"> Score Function -- > </div>
+        </div>
         <div class="row text-center">
-            <div class="col-sm-2">
+            <div class="col-sm-3">
                 <button id="prev" type="button" class="btn btn-secondary"
                         onclick="get_next_prev(-1)">
                     <---
                 </button>
             </div>
-            <div class="col-sm-2" id="class_label_dropdown"></div>
-            <div class="col-sm-2">
+            <div class="col-sm-3">
                 <button id="displayall" type="button" class="btn btn-secondary">
                     Display all
                 </button>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-3">
                 <button type="button" class="btn btn-secondary">
                     Help
                 </button>
             </div>
-            <div class="col-sm-2" id="score_function_dropdown"></div>
-            <div class="col-sm-2">
+
+            <div class="col-sm-3">
                 <button id="next" type="button" class="btn btn-secondary"
                         onclick="get_next_prev(1)">
                     --->
@@ -47,7 +50,7 @@
             if(curr < 0)
                 curr = properties.data_types.length - 1
             properties.curr_data_type = properties.data_types[curr]
-            renderSingleBarchart(properties, false)
+            renderSingleBarchart(properties, false, undefined)
         }
 
         const graphData = {{data | safe}}
@@ -71,11 +74,11 @@
         properties.curr_scoring_functions = properties.scoring_functions[0]
         properties.curr_data_type = properties.data_types[0]
 
-        d3.select('#displayall').on('click',()=>renderMultipleBarcharts(graphData, properties))
+        d3.select('#displayall').on('click',()=>renderMultipleBarcharts(properties, true))
 
         dropdowns(properties)
 
-        renderSingleBarchart(properties, true)
+        renderSingleBarchart(properties, true, undefined)
 
 
     </script>
