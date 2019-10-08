@@ -24,7 +24,7 @@ function render(data, properties, init){
 		.offset([-10, 0])
 		.html(d =>
             '<strong>Column name: </strong>' + d.column_name + '</br>' +
-            '<strong>Value: </strong>' + (Math.round(d.column_value * 10000)/100)
+            '<strong>Value: </strong>' + d.column_value
         )
 
     properties.svg.call(tip)
@@ -168,8 +168,8 @@ function renderSingleBarchart(properties, init){
 			max = current_data[i].column_value
 
 	properties.heightMax = max
-	properties.width = fullwidth - margins.left - margins.right - properties.MAX_LABEL_SIZE_X
-	properties.height = fullheight - margins.top - margins.bottom - properties.MAX_LABEL_SIZE_Y
+	properties.width = fullwidth - properties.margins.left - properties.margins.right - properties.MAX_LABEL_SIZE_X
+	properties.height = fullheight - properties.margins.top - properties.margins.bottom - properties.MAX_LABEL_SIZE_Y
 	properties.heightScale = d3.scaleLinear().range([properties.height, 0])
 	properties.widthScale = d3.scaleBand().rangeRound([0, properties.width]).padding(0.3)
 	properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(".1%"))

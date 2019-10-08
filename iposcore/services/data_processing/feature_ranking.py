@@ -34,8 +34,8 @@ def retrieveValues(array, index, init):
         colunas.append(value[0])
         valores.append(value[index])
     aux = sort(colunas, valores)
-    aux[0] = (aux[0][:10] if init else (aux[0][-10:])[::-1])
-    aux[1] = (aux[1][:10] if init else (aux[1][-10:])[::-1])
+    aux[0] = (aux[0][:10] if not init else ((aux[0][-10:])[::-1]))
+    aux[1] = (aux[1][:10] if not init else ((aux[1][-10:])[::-1]))
     return aux
 
 
