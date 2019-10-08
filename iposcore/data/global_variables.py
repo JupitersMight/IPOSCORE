@@ -9,7 +9,7 @@ class GlobalVariables:
         database = 'test'
 
     class DatasetColumns:
-        class_label = ['complicação pós-cirúrgica','classificação clavien-dindo']
+        class_label = ['complicação pós-cirúrgica', 'classificação clavien-dindo']
 
         numerical_continuous = ['dias na UCI',
                                    'total pontos NAS',

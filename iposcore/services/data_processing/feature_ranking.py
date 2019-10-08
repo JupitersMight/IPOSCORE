@@ -6,10 +6,9 @@ from data.global_variables import GlobalVariables
 import json
 
 
-def sort(colunas,valores):
+def sort(colunas, valores):
     novas_colunas = []
     novos_valores = []
-
     while len(valores) != 0:
         index = 0
         curr_maximo = 0
@@ -25,7 +24,8 @@ def sort(colunas,valores):
         del valores[curr_index]
     return [novas_colunas, novos_valores]
 
-def retrieveValues(array, index):
+
+def retrieveValues(array, index, init):
     colunas = []
     valores = []
     for value in array:
@@ -34,10 +34,30 @@ def retrieveValues(array, index):
         colunas.append(value[0])
         valores.append(value[index])
     aux = sort(colunas, valores)
-    aux[0] = aux[0][:10]
-    aux[1] = aux[1][:10]
+    aux[0] = (aux[0][:10] if init else (aux[0][-10:])[::-1])
+    aux[1] = (aux[1][:10] if init else (aux[1][-10:])[::-1])
     return aux
 
+
+def classifiers_values(array, column, labels, label):
+    values = chi2(
+        labels[column].to_frame(name=column),
+        labels[label]
+    )
+    array.append(
+        [column,
+         mutual_info_classif(
+             labels[column].to_frame(name=column),
+             labels[label]
+         )[0],
+         mutual_info_regression(
+             labels[column].to_frame(name=column),
+             labels[label]
+         )[0],
+         values[0][0],
+         values[1][0]
+         ]
+    )
 
 class FeatureRanking:
 
@@ -66,73 +86,13 @@ class FeatureRanking:
                 labels = labels.reset_index(drop=True)
 
                 if column in GlobalVariables.DatasetColumns.binary:
-                    binary_m.append(
-                        [column,
-                         mutual_info_classif(
-                             labels[column].to_frame(name=column),
-                             labels[label]
-                         )[0],
-                         mutual_info_regression(
-                             labels[column].to_frame(name=column),
-                             labels[label]
-                         )[0],
-                         chi2(
-                             labels[column].to_frame(name=column),
-                             labels[label]
-                         )
-                         ]
-                    )
+                    classifiers_values(binary_m, column, labels, label)
                 elif column in GlobalVariables.DatasetColumns.categorical:
-                    categorical_m.append(
-                        [column,
-                         mutual_info_classif(
-                             labels[column].to_frame(name=column),
-                             labels[label]
-                         )[0],
-                         mutual_info_regression(
-                             labels[column].to_frame(name=column),
-                             labels[label]
-                         )[0],
-                         chi2(
-                             labels[column].to_frame(name=column),
-                             labels[label]
-                         )
-                         ]
-                    )
+                    classifiers_values(categorical_m, column, labels, label)
                 elif column in GlobalVariables.DatasetColumns.numerical_discrete:
-                    numerical_discrete_m.append(
-                        [column,
-                         mutual_info_classif(
-                             labels[column].to_frame(name=column),
-                             labels[label]
-                         )[0],
-                         mutual_info_regression(
-                             labels[column].to_frame(name=column),
-                             labels[label]
-                         )[0],
-                         chi2(
-                             labels[column].to_frame(name=column),
-                             labels[label]
-                         )
-                         ]
-                    )
+                    classifiers_values(numerical_discrete_m, column, labels, label)
                 elif column in GlobalVariables.DatasetColumns.numerical_continuous:
-                    numerical_continuous_m.append(
-                        [column,
-                         mutual_info_classif(
-                             labels[column].to_frame(name=column),
-                             labels[label]
-                         )[0],
-                         mutual_info_regression(
-                             labels[column].to_frame(name=column),
-                             labels[label]
-                         )[0],
-                         chi2(
-                             labels[column].to_frame(name=column),
-                             labels[label]
-                         )
-                         ]
-                    )
+                    classifiers_values(numerical_continuous_m, column, labels, label)
                 elif column in GlobalVariables.DatasetColumns.text:
                     cv = CountVectorizer(max_df=0.95, min_df=2, max_features=10000)
 
@@ -164,14 +124,14 @@ class FeatureRanking:
 
             arrays = [binary_m, categorical_m, numerical_discrete_m, numerical_continuous_m]
             column_types = ['Binary', 'Categorical', 'Numerical_Discrete', 'Numerical_Contiguous']
-            classifiers = ['mutual_info_classif', 'mutual_info_regression']#, 'chi2']
+            classifiers = ['mutual_info_classif', 'mutual_info_regression', 'chi2_stats', 'chi2_p-value']
             index = 0
             temp = {}
             for array in arrays:
                 classif_index = 1
                 temp['' + column_types[index]] = {}
                 for classif in classifiers:
-                    aux = retrieveValues(array, classif_index)
+                    aux = retrieveValues(array, classif_index, (True if classif == 'chi2_p-value' else False))
                     temp[''+column_types[index]][''+classifiers[classif_index-1]] = []
                     i = 0
                     for value in aux[0]:

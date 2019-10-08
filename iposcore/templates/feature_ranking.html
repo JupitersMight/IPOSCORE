@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 {% block head %}
     <script type="text/javascript" src="javascript/barchart.js"></script>
+    <script type="text/javascript" src="javascript/dropdown.js"></script>
     <script type="text/javascript" src="javascript/d3/d3-tip.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="javascript/d3/d3-tip.js" charset="utf-8"></script>
     <link rel="stylesheet" href="css/tooltip.css">
@@ -10,23 +11,25 @@
     <div class="container-fluid">
         <div class="row centered"><h2>Feature Ranking</h2></div>
         <div class="row text-center">
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <button id="prev" type="button" class="btn btn-secondary"
                         onclick="renderSingleBarchart(graphData, properties, false, get_next_prev(-1))">
                     <---
                 </button>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2" id="class_label_dropdown"></div>
+            <div class="col-sm-2">
                 <button id="displayall" type="button" class="btn btn-secondary">
                     Display all
                 </button>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <button type="button" class="btn btn-secondary">
                     Help
                 </button>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-2" id="score_function_dropdown"></div>
+            <div class="col-sm-2">
                 <button id="next" type="button" class="btn btn-secondary"
                         onclick="renderSingleBarchart(graphData, properties, false, get_next_prev(1))">
                     --->
@@ -37,119 +40,41 @@
     <!-- Content -->
     <div class="content-svgs container-fluid"></div>
     <script>
-
-        const graphData = {{data | safe}}
-
-        let curr = 0;
+        let curr = 0
 
         function get_next_prev(value){
-            curr = (curr + value)%4
+            curr = (curr + value)%data_types.length
             if(curr < 0)
-                curr = 3
+                curr = data_type.length - 1
             return curr
         }
 
-        const margins = {
-            top: 30,
-            right: 20,
-            bottom: 30,
-            left: 60
-        }
-
-        const MAX_LABEL_SIZE_Y = 200, MAX_LABEL_SIZE_X = 150
+        const graphData = {{data | safe}}
 
         const properties = {
-            margins,
-            heightMax : 1
+            data: graphData,
+            margins: {
+                top: 30,
+                right: 20,
+                bottom: 30,
+                left: 60
+            },
+            MAX_LABEL_SIZE_Y: 200,
+            MAX_LABEL_SIZE_X: 150,
+            displayingAll: false,
         }
-        const graphNames = Object.keys(graphData)
+        properties.class_labels = Object.keys(graphData)
+        properties.data_types = Object.keys(graphData[properties.class_labels[0]])
+        properties.scoring_functions = Object.keys(graphData[properties.class_labels[0]][properties.data_types[0]])
+        properties.curr_class_label = properties.class_labels[0]
+        properties.curr_scoring_functions = properties.scoring_functions[0]
+        properties.curr_data_type = properties.data_types[0]
 
-        function renderMultipleBarcharts(data, properties){
-            let container = d3.select('.content-svgs')
-            d3.select('.content-svgs').selectAll('svg').remove()
-            d3.select('.content-svgs').selectAll('.col-sm-6').remove()
-            d3.select('.content-svgs').selectAll('.row').remove()
-            d3.selectAll('.d3-tip').remove()
-            let currRow = container.append('div').attr('class','row')
-
-            let max = 0
-            for(let i = 0; i<graphNames.length; ++i){
-                for(let x = 0; x<data[graphNames[i]].length; ++x){
-                    if(max < data[graphNames[i]][x].column_value)
-                        max = data[graphNames[i]][x].column_value
-                }
-            }
-
-            properties.heightMax = max
-            properties.width = 500 - properties.margins.left - properties.margins.right - MAX_LABEL_SIZE_X
-            properties.height = 500 - properties.margins.top - properties.margins.bottom - MAX_LABEL_SIZE_Y
-            properties.heightScale = d3.scaleLinear().range([properties.height, 0])
-            properties.widthScale = d3.scaleBand().rangeRound([0, properties.width]).padding(0.3)
-            properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(".1%"))
-            properties.xAxis = d3.axisBottom(properties.widthScale)
-
-            for(let i = 0; i< graphNames.length; ++i){
-                properties.chartName = graphNames[i]
-                properties.svg = currRow.append('div').attr('class','col-sm-6')
-                properties.svg.append('h3').attr("align", "center").style("text-decoration", "underline").text(graphNames[i])
-                properties.svg =  properties.svg.append('svg').attr('width', 500).attr('height', 500).attr('class','centered')
-                properties.svg.on('click',()=>renderSingleBarchart(graphData,properties,true,i))
-                render(data[graphNames[i]],properties,true)
-            }
-            d3.select('#displayall').on('click',()=>renderSingleBarchart(graphData,properties,true,0)).text("Hide All")
-            d3.select('#prev').attr('disabled','disabled')
-            d3.select('#next').attr('disabled','disabled')
-        }
-
-        function renderSingleBarchart(data, properties, init, data_index){
-            curr = data_index
-            let currRow
-            if(init){
-                d3.select('.content-svgs').selectAll('svg').remove()
-                d3.select('.content-svgs').selectAll('.col-sm-6').remove()
-                d3.select('.content-svgs').selectAll('.row').remove()
-                d3.selectAll('.d3-tip').remove()
-                currRow = d3.select('.content-svgs').append('div').attr('class','row centered')
-            }
-            else
-                currRow = d3.select('.content-svgs').select('.row')
-
-            const fullwidth = 1024
-            const fullheight = 768
-
-            let max = 0
-            for(let i = 0; i < data[graphNames[data_index]].length; ++i)
-                if(max < data[graphNames[data_index]][i].column_value)
-                    max = data[graphNames[data_index]][i].column_value
-
-            properties.heightMax = max
-            properties.width = fullwidth - margins.left - margins.right - MAX_LABEL_SIZE_X
-            properties.height = fullheight - margins.top - margins.bottom - MAX_LABEL_SIZE_Y
-            properties.heightScale = d3.scaleLinear().range([properties.height, 0])
-            properties.widthScale = d3.scaleBand().rangeRound([0, properties.width]).padding(0.3)
-            properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(".1%"))
-            properties.xAxis = d3.axisBottom(properties.widthScale)
-            properties.chartName = graphNames[properties.curr ? properties.curr : curr]
-            if(init) {
-                properties.svg = currRow.append('div').attr('class','col-sm-12')
-                properties.svg.append('h3').attr("align", "center").style("text-decoration", "underline").text(properties.chartName)
-                properties.svg = properties.svg.append('svg')
-                    .attr('width', fullwidth)
-                    .attr('height', fullheight)
-                    .attr('class', 'centered')
-            }
-            d3.select('#displayall').on('click',()=>renderMultipleBarcharts(data, properties)).text("Display All")
-            d3.select('#prev').attr('disabled',null)
-            d3.select('#next').attr('disabled',null)
-            render(data[graphNames[data_index]], properties, init)
-        }
         d3.select('#displayall').on('click',()=>renderMultipleBarcharts(graphData, properties))
-        renderSingleBarchart(
-            graphData,
-            properties,
-            true,
-            0
-        )
+
+        dropdowns(properties)
+
+        renderSingleBarchart(properties, true)
 
 
     </script>
