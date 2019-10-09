@@ -29,7 +29,7 @@ def retrieveValues(array, index, init):
     colunas = []
     valores = []
     for value in array:
-        if value[1] == 0:
+        if value[index] == 0:
             continue
         colunas.append(value[0])
         valores.append(value[index])
@@ -58,6 +58,7 @@ def classifiers_values(array, column, labels, label):
          values[1][0]
          ]
     )
+
 
 class FeatureRanking:
 
