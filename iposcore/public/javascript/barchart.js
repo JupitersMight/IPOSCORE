@@ -24,7 +24,7 @@ function render(data, properties, init){
 		.offset([-10, 0])
 		.html(d =>
             '<strong>Column name: </strong>' + d.column_name + '</br>' +
-            '<strong>Value: </strong>' +  (d.column_value * (properties.curr_scoring_functions.indexOf('chi2_') !== -1 ? 1 : 100))
+            '<strong>Value: </strong>' +  ((Math.round(d.column_value*1000)/1000) * (properties.curr_scoring_functions.indexOf('chi2_') !== -1 ? 1 : 100))
         )
 
     properties.svg.call(tip)

@@ -4,39 +4,6 @@ import pandas as pd
 
 class Utils:
 
-    class data_column:
-        def __init__(self, name, age):
-            self.name = name
-            self.counter = age
-
-    @staticmethod
-    def distribution(column):
-        different_values = []
-        for value in column:
-            if value == 'n/a':
-                continue
-            is_in_array = False
-            for i in range(len(different_values)):
-                if value == different_values[i].name:
-                    is_in_array = True
-                    different_values[i].counter += 1
-                    break
-            if not is_in_array:
-                different_values.append(Utils.data_column(value, 1))
-        return different_values
-
-    @staticmethod
-    def number_of_missing_values(dataset):
-        missing_values = []
-        for column_name in dataset.columns:
-            counter = 0
-            for value in dataset[column_name]:
-                if value != 'n/a':
-                    continue
-                counter += 1
-            missing_values.append(counter)
-        return missing_values
-
     @staticmethod
     def calculate_meadian(dataset):
         median_values = []

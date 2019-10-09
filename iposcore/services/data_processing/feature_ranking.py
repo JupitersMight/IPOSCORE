@@ -29,10 +29,10 @@ def retrieveValues(array, index, init):
     colunas = []
     valores = []
     for value in array:
-        if value[index] == 0:
+        if round(value[index], 3) == 0.000 or pd.isna(value[index]):
             continue
         colunas.append(value[0])
-        valores.append(value[index])
+        valores.append(round(value[index], 3))
     aux = sort(colunas, valores)
     aux[0] = (aux[0][:10] if not init else ((aux[0][-10:])[::-1]))
     aux[1] = (aux[1][:10] if not init else ((aux[1][-10:])[::-1]))
