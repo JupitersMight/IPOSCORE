@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+    <script>
+        const graphData = {{data | safe}}
+        console.log(graphData)
+    </script>
+{% endblock %}

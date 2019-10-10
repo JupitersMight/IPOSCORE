@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, send_from_directory
 from services.data_processing.feature_ranking import FeatureRanking
+from services.data_processing.exploration import DataExploration
 from data.global_variables import GlobalVariables
 import pandas as pd
 
@@ -36,6 +37,13 @@ def feature_ranking():
     )
 
     return render_template("feature_ranking.html", data=feature_ranking)
+
+@app.route('/exploration')
+def exploration():
+    data = pd.read_csv(path.join(Path(__file__).resolve().parents[0], 'data', r'data.csv'), dtype=str)
+    exploration = DataExploration.explore(data)
+
+    return render_template('exploration.html', data=exploration)
 
 @app.route('/')
 def home():
