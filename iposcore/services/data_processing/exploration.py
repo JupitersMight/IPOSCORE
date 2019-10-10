@@ -133,8 +133,12 @@ class DataExploration:
                     json_data['Categorical'][column]['distribution'][value.name] = value.counter
 
         for column in data.columns:
-            if column in GlobalVariables.DatasetColumns.numerical_continuous\
-                    or column in GlobalVariables.DatasetColumns.numerical_discrete:
+            data_type = ''
+            if column in GlobalVariables.DatasetColumns.numerical_continuous:
+                data_type = 'Numerical_Continuous'
+            elif column in GlobalVariables.DatasetColumns.numerical_discrete:
+                data_type = 'Numerical_Discrete'
+            if data_type != '':
                 filtered_data = data[column].dropna().to_numpy()
                 index = 0
                 for value in filtered_data:
@@ -146,12 +150,36 @@ class DataExploration:
                 std_err = sem(filtered_data)
                 h = std_err * t.ppf((1 + confidence) / 2, n - 1)
 
-                json_data['Numerical_Continuous' if column in GlobalVariables.DatasetColumns.numerical_continuous else 'Numerical_Discrete'][column]['confidence_interval'] = {
+                json_data[data_type][column]['confidence_interval'] = {
                     'start': (m - h),
                     'finish': (m + h)
                 }
-                json_data['Numerical_Continuous' if column in GlobalVariables.DatasetColumns.numerical_continuous else 'Numerical_Discrete'][column]['mean'] = m
-                json_data['Numerical_Continuous' if column in GlobalVariables.DatasetColumns.numerical_continuous else 'Numerical_Discrete'][column]['median'] = calculate_meadian(filtered_data)
-                json_data['Numerical_Continuous' if column in GlobalVariables.DatasetColumns.numerical_continuous else 'Numerical_Discrete'][column]['standard_deviation'] = np.std(filtered_data)
+                json_data[data_type][column]['mean'] = m
+                json_data[data_type][column]['median'] = calculate_meadian(filtered_data)
+                json_data[data_type][column]['standard_deviation'] = np.std(filtered_data)
+
+        for column in data.columns:
+            data_type = ''
+            #if column in GlobalVariables.DatasetColumns.binary or checkprefix(column, GlobalVariables.DatasetColumns.prefix_for_generated_columns):
+                #data_type = 'Binary'
+            if column in GlobalVariables.DatasetColumns.numerical_continuous:
+                data_type = 'Numerical_Continuous'
+            elif column in GlobalVariables.DatasetColumns.numerical_discrete:
+                data_type = 'Numerical_Discrete'
+            elif column in GlobalVariables.DatasetColumns.categorical:
+                data_type = 'Categorical'
+            if data_type != '':
+                aux = data[[column, GlobalVariables.DatasetColumns.class_label[0],
+                            GlobalVariables.DatasetColumns.class_label[1]]].dropna().reset_index()
+                json_data[data_type][column]['dataset'] = []
+                for index in range(0, aux.shape[0]):
+                    row = aux.iloc[[index]]
+                    json_data[data_type][column]['dataset'].append({
+                        '' + column: row.iloc[0][column],
+                        GlobalVariables.DatasetColumns.class_label[0]: row.iloc[0][
+                            GlobalVariables.DatasetColumns.class_label[0]],
+                        GlobalVariables.DatasetColumns.class_label[1]: row.iloc[0][
+                            GlobalVariables.DatasetColumns.class_label[1]]
+                    })
 
         return json.dumps(json_data)

@@ -200,7 +200,9 @@ function renderSingleBarchart(properties, init, extra){
 	properties.height = fullheight - properties.margins.top - properties.margins.bottom - properties.MAX_LABEL_SIZE_Y
 	properties.heightScale = d3.scaleSqrt().range([properties.height, 0])
 	properties.widthScale = d3.scaleBand().rangeRound([0, properties.width]).padding(0.3)
-	properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(properties.curr_scoring_functions.indexOf('chi2_') !== -1 ? '.4~s' : ".1%"))
+	properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(
+		d3.format(
+			properties.curr_scoring_functions.indexOf('stats') !== -1 || properties.curr_scoring_functions.indexOf('p-value') !== -1 ? '.4~s' : ".1%"))
 	properties.xAxis = d3.axisBottom(properties.widthScale)
 
 	if(init) {

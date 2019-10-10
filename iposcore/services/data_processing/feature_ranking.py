@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from sklearn.feature_selection import mutual_info_classif, mutual_info_regression, chi2
+from sklearn.feature_selection import mutual_info_classif, mutual_info_regression, chi2, f_classif, f_regression
 from sklearn.feature_extraction.text import CountVectorizer
 from data.global_variables import GlobalVariables
 import json
@@ -32,7 +32,7 @@ def retrieveValues(array, index, init):
         if round(value[index], 3) == 0.000 or pd.isna(value[index]):
             continue
         colunas.append(value[0])
-        valores.append(round(value[index], 3))
+        valores.append(round(value[index], 7))
     aux = sort(colunas, valores)
     aux[0] = (aux[0][:10] if not init else ((aux[0][-10:])[::-1]))
     aux[1] = (aux[1][:10] if not init else ((aux[1][-10:])[::-1]))
@@ -40,10 +40,23 @@ def retrieveValues(array, index, init):
 
 
 def classifiers_values(array, column, labels, label):
-    values = chi2(
+    auxiliar = []
+    for value in labels[label]:
+        auxiliar.append(float(value))
+
+    values_chi2 = chi2(
         labels[column].to_frame(name=column),
-        labels[label]
+        auxiliar
     )
+    values_f_regression = f_regression(
+        pd.to_numeric(labels[column]).to_frame(name=column),
+        auxiliar
+    )
+    values_f_classif = f_classif(
+        labels[column].to_frame(name=column),
+        auxiliar
+    )
+
     array.append(
         [column,
          mutual_info_classif(
@@ -54,8 +67,12 @@ def classifiers_values(array, column, labels, label):
              labels[column].to_frame(name=column),
              labels[label]
          )[0],
-         values[0][0],
-         values[1][0]
+         values_chi2[0][0],
+         values_chi2[1][0],
+         values_f_regression[0][0],
+         values_f_regression[1][0],
+         values_f_classif[0][0],
+         values_f_classif[1][0]
          ]
     )
 
@@ -64,6 +81,7 @@ class FeatureRanking:
 
     @staticmethod
     def feature_ranking(data, columns, class_label):
+        np.seterr(divide='ignore', invalid='ignore')
         final_data = {}
         for label in class_label:
             binary_m = []
@@ -125,15 +143,24 @@ class FeatureRanking:
 
             arrays = [binary_m, categorical_m, numerical_discrete_m, numerical_continuous_m]
             column_types = ['Binary', 'Categorical', 'Numerical_Discrete', 'Numerical_Contiguous']
-            classifiers = ['mutual_info_classif', 'mutual_info_regression', 'chi2_stats', 'chi2_p-value']
+            classifiers = [
+                'mutual_info_classif',
+                'mutual_info_regression',
+                'chi2_stats',
+                'chi2_p-value',
+                'f_regression_stats',
+                'f_regression_p-value',
+                'f_classif_stats',
+                'f_classif_p-value',
+            ]
             index = 0
             temp = {}
             for array in arrays:
                 classif_index = 1
                 temp['' + column_types[index]] = {}
                 for classif in classifiers:
-                    aux = retrieveValues(array, classif_index, (True if classif == 'chi2_p-value' else False))
-                    temp[''+column_types[index]][''+classifiers[classif_index-1]] = []
+                    aux = retrieveValues(array, classif_index, (True if 'p-value' in classif else False))
+                    temp[''+column_types[index]][''+classifiers[classif_index-1]][label] = []
                     i = 0
                     for value in aux[0]:
                         x = {
