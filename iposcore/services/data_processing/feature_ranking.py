@@ -160,7 +160,7 @@ class FeatureRanking:
                 temp['' + column_types[index]] = {}
                 for classif in classifiers:
                     aux = retrieveValues(array, classif_index, (True if 'p-value' in classif else False))
-                    temp[''+column_types[index]][''+classifiers[classif_index-1]][label] = []
+                    temp[''+column_types[index]][''+classifiers[classif_index-1]] = []
                     i = 0
                     for value in aux[0]:
                         x = {

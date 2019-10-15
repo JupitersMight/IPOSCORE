@@ -1,12 +1,69 @@
 {% extends 'layout.html' %}
 
 {% block head %}
-
+    <script type="text/javascript" src="javascript/parallel_coordinates.js"></script>
+    <script type="text/javascript" src="javascript/dropdown.js"></script>
+    <link rel="stylesheet" href="css/parallel_coordinates.css">
+    <link rel="stylesheet" href="css/containers.css">
 {% endblock %}
 
 {% block content %}
+    <div class="container-fluid">
+        <div class="row centered">
+            <h2>Data Exploration</h2>
+        </div>
+        <div class="row centered">
+            <div class="col-sm-3" id="data_type"> Data Type -- > </div>
+            <div class="col-sm-3" id="attribute_selector"> Attribute -- > </div>
+            <div class="col-sm-3" id="visualization"> Visualization -- > </div>
+            <div class="col-sm-3" id="class_label_dropdown"> Class Label -- > </div>
+        </div>
+    </div>
+    <!-- Content -->
+    <div class="content-svgs container-fluid"></div>
     <script>
         const graphData = {{data | safe}}
         console.log(graphData)
+
+        const properties = {
+            data: graphData,
+            margin: {
+                top: 50,
+                right: 100,
+                bottom: 30,
+                left: 100
+            },
+            class_labels: ['complicação pós-cirúrgica', 'classificação clavien-dindo'],
+            visualizations: [
+                {
+                    name:'Box Plots',
+                },
+                {
+                    name:'Violin Charts'
+                },
+                {
+                    name: 'Parallel Coordinates',
+                    renderChart: (properties) => renderParallelCoordinate(properties)
+                }
+            ]
+        }
+        properties.data_types = Object.keys(graphData)
+        properties.curr_data_type = properties.data_types[1]
+        properties.curr_visualization = properties.visualizations[0]
+        properties.curr_class_label = properties.class_labels[0]
+        properties.curr_attribute = Object.keys(properties.data[properties.curr_data_type])[0]
+        properties.curr_data = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
+        properties.width = 960 - properties.margin.left - properties.margin.right
+        properties.height = 500 - properties.margin.top - properties.margin.bottom
+
+        properties.svg = d3.select(".content-svgs").append("svg")
+            .attr("width", properties.width + properties.margin.left + properties.margin.right)
+            .attr("height", properties.height + properties.margin.top + properties.margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + properties.margin.left + "," + properties.margin.top + ")")
+
+        renderParallelCoordinate(properties)
+
+        dropdowns_exploration(properties)
     </script>
 {% endblock %}

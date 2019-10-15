@@ -174,12 +174,16 @@ class DataExploration:
                 json_data[data_type][column]['dataset'] = []
                 for index in range(0, aux.shape[0]):
                     row = aux.iloc[[index]]
+                    column_value = row.iloc[0][column]
+                    class_label_1_name = GlobalVariables.DatasetColumns.class_label[0]
+                    class_label_2_name = GlobalVariables.DatasetColumns.class_label[1]
+                    class_label_1_value = row.iloc[0][GlobalVariables.DatasetColumns.class_label[0]]
+                    class_label_2_value = row.iloc[0][GlobalVariables.DatasetColumns.class_label[1]]
+
                     json_data[data_type][column]['dataset'].append({
-                        '' + column: row.iloc[0][column],
-                        GlobalVariables.DatasetColumns.class_label[0]: row.iloc[0][
-                            GlobalVariables.DatasetColumns.class_label[0]],
-                        GlobalVariables.DatasetColumns.class_label[1]: row.iloc[0][
-                            GlobalVariables.DatasetColumns.class_label[1]]
+                        column: column_value,
+                        class_label_2_name: class_label_2_value,
+                        class_label_1_name: class_label_1_value
                     })
 
         return json.dumps(json_data)
