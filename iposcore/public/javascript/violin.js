@@ -6,27 +6,29 @@ function fade(opacity, i) {
         .style('opacity', opacity)
 }
 
-function render(properties, init) {
+function renderViolin(properties, init) {
 
-    const widthScaleLinear = d3.scaleLinear().range([0, width])
-    const heightScale = d3.scaleBand().rangeRound([margin.top, height]).padding(0.3)
+    const widthScaleLinear = d3.scaleLinear().range([0, properties.width])
+    const heightScale = d3.scaleBand().rangeRound([properties.margin.top, properties.height]).padding(0.3)
     const xAxisLinear = d3.axisBottom(widthScaleLinear)
     const yAxis = d3.axisLeft(heightScale)
 
     const height_domain = []
     height_domain.push("All")
     if(properties.curr_class_label === 'complicação pós-cirúrgica')
-        height_domain.push(['0','1'])
+        for(let i = 0; i < 2; ++i)
+            height_domain.push(''+i)
     if(properties.curr_class_label === 'classificação clavien-dindo')
-        height_domain.push(['0','1','2','3','4','5','6','7'])
+        for(let i = 0; i < 8; ++i)
+            height_domain.push(''+i)
 
     const dataset = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
     const violins = []
-    for(let x = 0; x < height_domain; ++i){
+    for(let x = 0; x < height_domain.length; ++x){
         violins.push([])
         const curr_data =  x === 0? dataset : dataset.filter(d => d[properties.curr_class_label] === height_domain[x])
         for (let i = 0; i < curr_data.length; ++i){
-            violins[x].push(curr_data[properties.curr_attribute])
+            violins[x].push(curr_data[i][properties.curr_attribute])
         }
         violins[x].sort((a, b) => a - b)
     }
@@ -39,10 +41,9 @@ function render(properties, init) {
         if (max < violins[i][violins[i].length - 1])
             max = violins[i][violins[i].length - 1]
 
-    let thresholds = [0]
+    let thresholds = []
     for (let i = 0; i <= max; ++i)
-        if (i % 10 === 0)
-            thresholds.push(i)
+        thresholds.push(i)
 
     widthScaleLinear.domain([0, max])
     heightScale.domain(height_domain)
@@ -105,8 +106,8 @@ function render(properties, init) {
         .value(d => d)
 
     const area = d3.area()
-        .y0(d => -((d.length - min_ocur) / (max_ocur - min_ocur) * 3))
-        .y1(d => (d.length - min_ocur) / (max_ocur - min_ocur) * 3)
+        .y0(d => -((d.length - min_ocur) / (max_ocur - min_ocur) * heightScale.bandwidth() / 2))
+        .y1(d => (d.length - min_ocur) / (max_ocur - min_ocur) * heightScale.bandwidth() / 2)
         .x(d => widthScaleLinear(d.x0))
         .curve(d3.curveCatmullRom)
 
