@@ -65,26 +65,6 @@ function renderViolin(properties, init) {
             .attr('transform', 'translate(' + properties.margin.left + ',0)')
             .call(yAxis)
 
-        properties.svg.append('text')
-            .attr('id', 'usd')
-            .attr('class', 'xlabel')
-            .attr('transform', 'translate(' + (properties.margin.left + properties.width / 2) + ' ,' + (properties.height + properties.margin.bottom + 30) + ')')
-            .style('text-anchor', 'middle')
-            .attr('dy', '12')
-            .text('Number of days')
-            .style("fill", '#b3b3b3')
-            .style("font-size", "14px")
-
-
-        properties.svg.append('text')
-            .attr('x', (properties.width / 2) + properties.margin.left)
-            .attr("y", properties.margin.top / 2)
-            .attr("text-anchor", "middle")
-            .style("font-size", "20px")
-            .style('fill', '#b3b3b3')
-            .style('text-decoration', 'underline')
-            .text('Duration')
-
     } else {
         properties.svg.select('#axis-x').transition('xaxis_violin').duration(500).call(xAxisLinear)
         properties.svg.select('#axis-y').transition('yaxis_violin').duration(500).call(yAxis)
@@ -106,8 +86,8 @@ function renderViolin(properties, init) {
         .value(d => d)
 
     const area = d3.area()
-        .y0(d => -((d.length - min_ocur) / (max_ocur - min_ocur) * heightScale.bandwidth() / 2))
-        .y1(d => (d.length - min_ocur) / (max_ocur - min_ocur) * heightScale.bandwidth() / 2)
+        .y0(d => -((d.length - min_ocur) / (max_ocur - min_ocur) * heightScale.bandwidth() / height_domain.length))
+        .y1(d => (d.length - min_ocur) / (max_ocur - min_ocur) * heightScale.bandwidth() / height_domain.length)
         .x(d => widthScaleLinear(d.x0))
         .curve(d3.curveCatmullRom)
 

@@ -6,13 +6,7 @@ import numpy as np
 import json
 
 
-class column_value_counter:
-    def __init__(self, name, counter):
-        self.name = name
-        self.counter = counter
-
-
-def checkprefix(value, prefixs):
+def check_prefix(value, prefixs):
     for prefix in prefixs:
         if prefix in value:
             return True
@@ -31,23 +25,7 @@ def number_of_missing_values(dataset):
     return missing_values
 
 
-def distribution(column):
-    different_values = []
-    for value in column:
-        if pd.isna(value):
-            continue
-        is_in_array = False
-        for i in range(len(different_values)):
-            if value == different_values[i].name:
-                is_in_array = True
-                different_values[i].counter += 1
-                break
-        if not is_in_array:
-            different_values.append(column_value_counter(value, 1))
-    return different_values
-
-
-def calculate_meadian(column):
+def calculate_median(column):
     values = []
     for value in column:
         if pd.isna(value):
@@ -97,14 +75,14 @@ class DataExploration:
         json_data['Binary'][GlobalVariables.DatasetColumns.class_label[0]] = {}
         json_data['Categorical'][GlobalVariables.DatasetColumns.class_label[1]] = {}
         for value in data.columns:
-            if checkprefix(value, GlobalVariables.DatasetColumns.prefix_for_generated_columns):
+            if check_prefix(value, GlobalVariables.DatasetColumns.prefix_for_generated_columns):
                 json_data['Binary'][value] = {}
 
-        # Fill attribute with number of missings
+        # Fill json attributes with number of missings
         missings = number_of_missing_values(data)
         for value in missings:
             if value[0] in GlobalVariables.DatasetColumns.binary \
-                    or checkprefix(value[0], GlobalVariables.DatasetColumns.prefix_for_generated_columns)\
+                    or check_prefix(value[0], GlobalVariables.DatasetColumns.prefix_for_generated_columns)\
                     or value[0] == GlobalVariables.DatasetColumns.class_label[0]:
                 json_data['Binary'][value[0]]['missings'] = value[1]
             elif value[0] in GlobalVariables.DatasetColumns.categorical \
@@ -115,29 +93,17 @@ class DataExploration:
             elif value[0] in GlobalVariables.DatasetColumns.numerical_continuous:
                 json_data['Numerical_Continuous'][value[0]]['missings'] = value[1]
 
-        for column in data.columns:
-            if column in GlobalVariables.DatasetColumns.numerical_continuous \
-                    or column in GlobalVariables.DatasetColumns.text\
-                    or column in GlobalVariables.DatasetColumns.ignored_columns\
-                    or column in GlobalVariables.DatasetColumns.dates\
-                    or column in GlobalVariables.DatasetColumns.numerical_discrete:
-                continue
-            values = distribution(data[column])
-            if column in GlobalVariables.DatasetColumns.binary or checkprefix(column, GlobalVariables.DatasetColumns.prefix_for_generated_columns):
-                json_data['Binary'][column]['distribution'] = {}
-                for value in values:
-                    json_data['Binary'][column]['distribution'][value.name] = value.counter
-            elif column in GlobalVariables.DatasetColumns.categorical:
-                json_data['Categorical'][column]['distribution'] = {}
-                for value in values:
-                    json_data['Categorical'][column]['distribution'][value.name] = value.counter
-
+        # Fill json attributes with confidence intervals, mean, standard deviation and median
         for column in data.columns:
             data_type = ''
+            if column in GlobalVariables.DatasetColumns.binary or check_prefix(column, GlobalVariables.DatasetColumns.prefix_for_generated_columns):
+                data_type = 'Binary'
             if column in GlobalVariables.DatasetColumns.numerical_continuous:
                 data_type = 'Numerical_Continuous'
             elif column in GlobalVariables.DatasetColumns.numerical_discrete:
                 data_type = 'Numerical_Discrete'
+            elif column in GlobalVariables.DatasetColumns.categorical:
+                data_type = 'Categorical'
             if data_type != '':
                 filtered_data = data[column].dropna().to_numpy()
                 index = 0
@@ -155,14 +121,15 @@ class DataExploration:
                     'finish': (m + h)
                 }
                 json_data[data_type][column]['mean'] = m
-                json_data[data_type][column]['median'] = calculate_meadian(filtered_data)
+                json_data[data_type][column]['median'] = calculate_median(filtered_data)
                 json_data[data_type][column]['standard_deviation'] = np.std(filtered_data)
 
+        # Fill json attributes with dataset of attribute value and corresponding class labels
         for column in data.columns:
             data_type = ''
-            #if column in GlobalVariables.DatasetColumns.binary or checkprefix(column, GlobalVariables.DatasetColumns.prefix_for_generated_columns):
-                #data_type = 'Binary'
-            if column in GlobalVariables.DatasetColumns.numerical_continuous:
+            if column in GlobalVariables.DatasetColumns.binary or check_prefix(column, GlobalVariables.DatasetColumns.prefix_for_generated_columns):
+                data_type = 'Binary'
+            elif column in GlobalVariables.DatasetColumns.numerical_continuous:
                 data_type = 'Numerical_Continuous'
             elif column in GlobalVariables.DatasetColumns.numerical_discrete:
                 data_type = 'Numerical_Discrete'

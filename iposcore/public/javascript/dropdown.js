@@ -46,22 +46,23 @@ function dropdowns_feature_ranking(properties){
 
 function dropdowns_exploration(properties){
     let class_label_change = function(class_label){
-        properties.curr_class_label =class_label
-        //renderSingleBarchart(properties, false)
+        properties.curr_class_label = class_label
+        properties.curr_visualization.renderChart(properties, false)
     }
     let visualization_change = function(visualization){
-        properties.curr_scoring_functions  = visualization
-        //renderSingleBarchart(properties, false)
+        d3.select('.content-svgs').selectAll("svg > *").remove()
+        properties.curr_visualization  = properties.visualizations.find(d => d.name === visualization)
+        properties.curr_visualization.renderChart(properties, true)
     }
     let data_type_change = function(data_type){
         properties.curr_data_type = data_type
         update_attributes()
-        //renderSingleBarchart(properties, false)
+        properties.curr_visualization.renderChart(properties, false)
     }
     let attribute_change = function(attribute){
         properties.curr_attribute = attribute
         properties.curr_data = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
-        renderParallelCoordinate(properties)
+        properties.curr_visualization.renderChart(properties, false)
     }
 
     let dropdown_class = d3.select("#class_label_dropdown")
@@ -88,7 +89,7 @@ function dropdowns_exploration(properties){
         .data(properties.visualizations)
         .enter()
         .append("option")
-        .attr("value", d  => d)
+        .attr("value", d  => d.name)
         .text(d => d.name)
 
     dropdown_visualization.on("change", function(){
