@@ -8,7 +8,7 @@ class Utils:
     @staticmethod
     def is_digit(string):
         # Check if string is a valid number
-        return string in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+        return string in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
     @staticmethod
     def retrieve_numbers_acs(column):
@@ -17,19 +17,19 @@ class Utils:
         for value in column:
             if pd.isna(value):
                 continue
-            number = ''
+            number = ""
             can_start_again = True
             for i in range(0, len(value)):
-                if value[i] == '+':
+                if value[i] == "+":
                     can_start_again = True
                 if Utils.is_digit(value[i]) and can_start_again:
                     number += value[i]
                 else:
-                    if number != '' and (i + 1) < len(value) and ('' + value[i] + value[i + 1]) == ' -':
+                    if number != "" and (i + 1) < len(value) and ("" + value[i] + value[i + 1]) == " -":
                         if not (number in array):
                             array.append(number)
                         can_start_again = False
-                    number = ''
+                    number = ""
         return array
 
     @staticmethod
@@ -39,7 +39,7 @@ class Utils:
         for value in column:
             if pd.isna(value):
                 continue
-            number = ''
+            number = ""
             seq = False
             for i in range(0, len(value)):
                 if Utils.is_digit(value[i]):
@@ -47,10 +47,10 @@ class Utils:
                     seq = True
                 else:
                     seq = False
-                if (not seq) and (number != ''):
+                if (not seq) and (number != ""):
                     if not (number in array):
                         array.append(number)
-                    number = ''
+                    number = ""
         return array
 
     @staticmethod
@@ -91,9 +91,9 @@ class Utils:
 
     @staticmethod
     def check_if_number_valid(string):
-        # Checks if the number contains characters that aren't numbers or dots
+        # Checks if the number contains characters that aren"t numbers or dots
         for i in range(0, len(string)):
-            if (not Utils.is_digit(string[i])) and (not (string[i] == '.')):
+            if (not Utils.is_digit(string[i])) and (not (string[i] == ".")):
                 return True
         return False
 
@@ -105,13 +105,13 @@ class Utils:
                 if pd.isna(value):
                     index += 1
                     continue
-                if 'sem dados' in value or 'indefinido' in value or 'n/a' in value:
-                    data.at[index, column] = 'NaN'
-                if '%' in value:
-                    data.at[index, column] = value.replace('%', '')
+                if "sem dados" in value or "indefinido" in value or "n/a" in value:
+                    data.at[index, column] = "NaN"
+                if "%" in value:
+                    data.at[index, column] = value.replace("%", "")
                 if column in GlobalVariables.DatasetColumns.numerical_continuous:
-                    if ',' in value:
-                        data.at[index, column] = value.replace(',', '.')
+                    if "," in value:
+                        data.at[index, column] = value.replace(",", ".")
                 index += 1
 
         return data
@@ -126,16 +126,16 @@ class Utils:
                     if pd.isna(value):
                         index += 1
                         continue
-                    new_value = ''
+                    new_value = ""
                     second_comma = False
                     for i in range(0, len(value)):
                         if Utils.is_digit(value[i]):
                             new_value += value[i]
-                        elif value[i] == '.' or value[i] == ',':
+                        elif value[i] == "." or value[i] == ",":
                             if second_comma:
                                 break
                             else:
-                                new_value += '.'
+                                new_value += "."
                                 second_comma = True
                     data.at[index, column] = new_value
                     index += 1
@@ -150,30 +150,30 @@ class Utils:
                     if pd.isna(value) or (not Utils.check_if_number_valid(value)):
                         index += 1
                     else:
-                        data.at[index, column] = 'NaN'
+                        data.at[index, column] = "NaN"
                         index += 1
 
         return data
 
     @staticmethod
     def rename_columns(data):
-        data.rename(columns={data.columns[136]: 'Comorbilidades pré-operatórias'}, inplace=True)
+        data.rename(columns={data.columns[136]: "Comorbilidades pré-operatórias"}, inplace=True)
 
-        data.rename(columns={'risco médio': 'risco médio - complicações sérias (%)',
-                             'risco médio.1': 'risco médio - qualquer complicação (%)',
-                             'risco médio.2': 'risco médio - pneumonia (%)',
-                             'risco médio.3': 'risco médio - complicações cardíacas (%)',
-                             'risco médio.4': 'risco médio - infeção cirúrgica (%)',
-                             'risco médio.5': 'risco médio - ITU (%)',
-                             'risco médio.6': 'risco médio - tromboembolismo venoso (%)',
-                             'risco médio.7': 'risco médio - falência renal (%)',
-                             'risco médio.8': 'risco médio - ileus (%)',
-                             'risco médio.9': 'risco médio - fuga anastomótica (%)',
-                             'risco médio.10': 'risco médio - readmissão (%)',
-                             'risco médio.11': 'risco médio - reoperação (%)',
-                             'risco médio.12': 'risco médio - morte (%)',
-                             'risco médio.13': 'risco médio - Discharge to Nursing or Rehab Facility (%)'
+        data.rename(columns={"risco médio": "risco médio - complicações sérias (%)",
+                             "risco médio.1": "risco médio - qualquer complicação (%)",
+                             "risco médio.2": "risco médio - pneumonia (%)",
+                             "risco médio.3": "risco médio - complicações cardíacas (%)",
+                             "risco médio.4": "risco médio - infeção cirúrgica (%)",
+                             "risco médio.5": "risco médio - ITU (%)",
+                             "risco médio.6": "risco médio - tromboembolismo venoso (%)",
+                             "risco médio.7": "risco médio - falência renal (%)",
+                             "risco médio.8": "risco médio - ileus (%)",
+                             "risco médio.9": "risco médio - fuga anastomótica (%)",
+                             "risco médio.10": "risco médio - readmissão (%)",
+                             "risco médio.11": "risco médio - reoperação (%)",
+                             "risco médio.12": "risco médio - morte (%)",
+                             "risco médio.13": "risco médio - Discharge to Nursing or Rehab Facility (%)"
                              }, inplace=True)
 
-        # data.drop(columns=['data pedido anestesia'])
+        # data.drop(columns=["data pedido anestesia"])
         return data

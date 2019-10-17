@@ -1,13 +1,13 @@
-'use strict'
+"use strict"
 
 function renderParallelCoordinate(properties){
 
-    d3.select('.content-svgs').select('svg').selectAll('g').remove()
-    d3.select('.content-svgs').select('svg').selectAll('path').remove()
-    d3.select('.content-svgs').select('svg').selectAll('text').remove()
-    d3.select('.content-svgs').select('svg').selectAll('rect').remove()
-    d3.select('.content-svgs').select('svg').selectAll('line').remove()
-    properties.svg = d3.select('.content-svgs').select('svg').append("g").attr("transform", "translate(" + properties.margin.left + "," + properties.margin.top + ")")
+    d3.select(".content-svgs").select("svg").selectAll("g").remove()
+    d3.select(".content-svgs").select("svg").selectAll("path").remove()
+    d3.select(".content-svgs").select("svg").selectAll("text").remove()
+    d3.select(".content-svgs").select("svg").selectAll("rect").remove()
+    d3.select(".content-svgs").select("svg").selectAll("line").remove()
+    properties.svg = d3.select(".content-svgs").select("svg").append("g").attr("transform", "translate(" + properties.margin.left + "," + properties.margin.top + ")")
 
 
     let x = d3.scalePoint().range([0, properties.width], 1),

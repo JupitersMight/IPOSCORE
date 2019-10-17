@@ -58,25 +58,25 @@ class DataExploration:
         data = data.drop(columns=GlobalVariables.DatasetColumns.ignored_columns)
         # Setup for json data
         json_data = {
-            'Binary': {},
-            'Categorical': {},
-            'Numerical_Discrete': {},
-            'Numerical_Continuous': {}
+            "Binary": {},
+            "Categorical": {},
+            "Numerical_Discrete": {},
+            "Numerical_Continuous": {}
         }
         # Populate with attribute names
         for value in GlobalVariables.DatasetColumns.binary:
-            json_data['Binary'][value] = {}
+            json_data["Binary"][value] = {}
         for value in GlobalVariables.DatasetColumns.categorical:
-            json_data['Categorical'][value] = {}
+            json_data["Categorical"][value] = {}
         for value in GlobalVariables.DatasetColumns.numerical_discrete:
-            json_data['Numerical_Discrete'][value] = {}
+            json_data["Numerical_Discrete"][value] = {}
         for value in GlobalVariables.DatasetColumns.numerical_continuous:
-            json_data['Numerical_Continuous'][value] = {}
-        json_data['Binary'][GlobalVariables.DatasetColumns.class_label[0]] = {}
-        json_data['Categorical'][GlobalVariables.DatasetColumns.class_label[1]] = {}
+            json_data["Numerical_Continuous"][value] = {}
+        json_data["Binary"][GlobalVariables.DatasetColumns.class_label[0]] = {}
+        json_data["Categorical"][GlobalVariables.DatasetColumns.class_label[1]] = {}
         for value in data.columns:
             if check_prefix(value, GlobalVariables.DatasetColumns.prefix_for_generated_columns):
-                json_data['Binary'][value] = {}
+                json_data["Binary"][value] = {}
 
         # Fill json attributes with number of missings
         missings = number_of_missing_values(data)
@@ -84,27 +84,27 @@ class DataExploration:
             if value[0] in GlobalVariables.DatasetColumns.binary \
                     or check_prefix(value[0], GlobalVariables.DatasetColumns.prefix_for_generated_columns)\
                     or value[0] == GlobalVariables.DatasetColumns.class_label[0]:
-                json_data['Binary'][value[0]]['missings'] = value[1]
+                json_data["Binary"][value[0]]["missings"] = value[1]
             elif value[0] in GlobalVariables.DatasetColumns.categorical \
                     or value[0] == GlobalVariables.DatasetColumns.class_label[1]:
-                json_data['Categorical'][value[0]]['missings'] = value[1]
+                json_data["Categorical"][value[0]]["missings"] = value[1]
             elif value[0] in GlobalVariables.DatasetColumns.numerical_discrete:
-                json_data['Numerical_Discrete'][value[0]]['missings'] = value[1]
+                json_data["Numerical_Discrete"][value[0]]["missings"] = value[1]
             elif value[0] in GlobalVariables.DatasetColumns.numerical_continuous:
-                json_data['Numerical_Continuous'][value[0]]['missings'] = value[1]
+                json_data["Numerical_Continuous"][value[0]]["missings"] = value[1]
 
         # Fill json attributes with confidence intervals, mean, standard deviation and median
         for column in data.columns:
-            data_type = ''
+            data_type = ""
             if column in GlobalVariables.DatasetColumns.binary or check_prefix(column, GlobalVariables.DatasetColumns.prefix_for_generated_columns):
-                data_type = 'Binary'
+                data_type = "Binary"
             if column in GlobalVariables.DatasetColumns.numerical_continuous:
-                data_type = 'Numerical_Continuous'
+                data_type = "Numerical_Continuous"
             elif column in GlobalVariables.DatasetColumns.numerical_discrete:
-                data_type = 'Numerical_Discrete'
+                data_type = "Numerical_Discrete"
             elif column in GlobalVariables.DatasetColumns.categorical:
-                data_type = 'Categorical'
-            if data_type != '':
+                data_type = "Categorical"
+            if data_type != "":
                 filtered_data = data[column].dropna().to_numpy()
                 index = 0
                 for value in filtered_data:
@@ -116,29 +116,29 @@ class DataExploration:
                 std_err = sem(filtered_data)
                 h = std_err * t.ppf((1 + confidence) / 2, n - 1)
 
-                json_data[data_type][column]['confidence_interval'] = {
-                    'start': (m - h),
-                    'finish': (m + h)
+                json_data[data_type][column]["confidence_interval"] = {
+                    "start": (m - h),
+                    "finish": (m + h)
                 }
-                json_data[data_type][column]['mean'] = m
-                json_data[data_type][column]['median'] = calculate_median(filtered_data)
-                json_data[data_type][column]['standard_deviation'] = np.std(filtered_data)
+                json_data[data_type][column]["mean"] = m
+                json_data[data_type][column]["median"] = calculate_median(filtered_data)
+                json_data[data_type][column]["standard_deviation"] = np.std(filtered_data)
 
         # Fill json attributes with dataset of attribute value and corresponding class labels
         for column in data.columns:
-            data_type = ''
+            data_type = ""
             if column in GlobalVariables.DatasetColumns.binary or check_prefix(column, GlobalVariables.DatasetColumns.prefix_for_generated_columns):
-                data_type = 'Binary'
+                data_type = "Binary"
             elif column in GlobalVariables.DatasetColumns.numerical_continuous:
-                data_type = 'Numerical_Continuous'
+                data_type = "Numerical_Continuous"
             elif column in GlobalVariables.DatasetColumns.numerical_discrete:
-                data_type = 'Numerical_Discrete'
+                data_type = "Numerical_Discrete"
             elif column in GlobalVariables.DatasetColumns.categorical:
-                data_type = 'Categorical'
-            if data_type != '':
+                data_type = "Categorical"
+            if data_type != "":
                 aux = data[[column, GlobalVariables.DatasetColumns.class_label[0],
                             GlobalVariables.DatasetColumns.class_label[1]]].dropna().reset_index()
-                json_data[data_type][column]['dataset'] = []
+                json_data[data_type][column]["dataset"] = []
                 for index in range(0, aux.shape[0]):
                     row = aux.iloc[[index]]
                     column_value = row.iloc[0][column]
@@ -147,7 +147,7 @@ class DataExploration:
                     class_label_1_value = row.iloc[0][GlobalVariables.DatasetColumns.class_label[0]]
                     class_label_2_value = row.iloc[0][GlobalVariables.DatasetColumns.class_label[1]]
 
-                    json_data[data_type][column]['dataset'].append({
+                    json_data[data_type][column]["dataset"].append({
                         column: column_value,
                         class_label_2_name: class_label_2_value,
                         class_label_1_name: class_label_1_value

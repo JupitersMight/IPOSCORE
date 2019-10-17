@@ -1,9 +1,9 @@
-'use strict'
+"use strict"
 
 function fade(opacity, i) {
-    d3.select('#path_' + i)
+    d3.select("#path_" + i)
         .transition()
-        .style('opacity', opacity)
+        .style("opacity", opacity)
 }
 
 function renderViolin(properties, init) {
@@ -15,12 +15,12 @@ function renderViolin(properties, init) {
 
     const height_domain = []
     height_domain.push("All")
-    if(properties.curr_class_label === 'complicação pós-cirúrgica')
+    if(properties.curr_class_label === "complicação pós-cirúrgica")
         for(let i = 0; i < 2; ++i)
-            height_domain.push(''+i)
-    if(properties.curr_class_label === 'classificação clavien-dindo')
+            height_domain.push(""+i)
+    if(properties.curr_class_label === "classificação clavien-dindo")
         for(let i = 0; i < 8; ++i)
-            height_domain.push(''+i)
+            height_domain.push(""+i)
 
     const dataset = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
     const violins = []
@@ -51,30 +51,30 @@ function renderViolin(properties, init) {
     yAxis.scale(heightScale)
 
     if (init) {
-        properties.svg.append('g')
-            .attr('id', 'axis-x')
-            .attr('class', 'x axis')
+        properties.svg.append("g")
+            .attr("id", "axis-x")
+            .attr("class", "x axis")
             .style("font-size", "14px")
-            .attr('transform', 'translate(' + properties.margin.left + ',' + properties.height + ')')
+            .attr("transform", "translate(" + properties.margin.left + "," + properties.height + ")")
             .call(xAxisLinear)
 
-        properties.svg.append('g')
-            .attr('id', 'axis-y')
-            .attr('class', 'y axis')
+        properties.svg.append("g")
+            .attr("id", "axis-y")
+            .attr("class", "y axis")
             .style("font-size", "14px")
-            .attr('transform', 'translate(' + properties.margin.left + ',0)')
+            .attr("transform", "translate(" + properties.margin.left + ",0)")
             .call(yAxis)
 
     } else {
-        properties.svg.select('#axis-x').transition('xaxis_violin').duration(500).call(xAxisLinear)
-        properties.svg.select('#axis-y').transition('yaxis_violin').duration(500).call(yAxis)
+        properties.svg.select("#axis-x").transition("xaxis_violin").duration(500).call(xAxisLinear)
+        properties.svg.select("#axis-y").transition("yaxis_violin").duration(500).call(yAxis)
     }
     let curr = 0
     const tip = d3.tip()
-        .attr('class', 'd3-tip')
+        .attr("class", "d3-tip")
         .offset([-10, 0])
-        .html(d => '<strong>' + 'Category: ' + shared_data.data[curr].category +
-            '</br> Most common duration: ' + shared_data.data[curr].days + ' days</strong>')
+        .html(d => "<strong>" + "Category: " + shared_data.data[curr].category +
+            "</br> Most common duration: " + shared_data.data[curr].days + " days</strong>")
 
     properties.svg.call(tip)
 
@@ -91,17 +91,17 @@ function renderViolin(properties, init) {
         .x(d => widthScaleLinear(d.x0))
         .curve(d3.curveCatmullRom)
 
-    const violins_graphs = properties.svg.selectAll('.violins')
+    const violins_graphs = properties.svg.selectAll(".violins")
         .data(violins)
 
     violins_graphs.exit().remove()
     violins_graphs.enter()
-        .append('path')
-        .attr('id', (d, i) => 'path_' + i)
-        .attr('class', 'violins')
+        .append("path")
+        .attr("id", (d, i) => "path_" + i)
+        .attr("class", "violins")
         .merge(violins_graphs)
-        .style('stroke-width', 0)
-        .attr('d', (d) => {
+        .style("stroke-width", 0)
+        .attr("d", (d) => {
             min_ocur = null
             max_ocur = 0
             let value = null
@@ -121,23 +121,23 @@ function renderViolin(properties, init) {
             if (max_ocur < ocur) max_ocur = ocur
             return area(histoChart(d))
         })
-        .on('mouseover', (d, i) => {
+        .on("mouseover", (d, i) => {
             fade(0.5, i)
             curr = i
             tip.show(d)
         })
-        .on('mouseout', (d, i) => {
+        .on("mouseout", (d, i) => {
             fade(1, i)
             curr = i
             tip.hide(d)
         })
-        .transition('violin').duration(500)
-        .attr('transform', (d, i) =>
-            'translate(' +
+        .transition("violin").duration(500)
+        .attr("transform", (d, i) =>
+            "translate(" +
             properties.margin.left +
-            ',' +
+            "," +
             (heightScale(height_domain[i]) + heightScale.bandwidth() / 2) +
-            ')'
+            ")"
         )
-        .style('fill', '#238443')
+        .style("fill", "#238443")
 }

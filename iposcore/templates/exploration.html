@@ -1,4 +1,4 @@
-{% extends 'layout.html' %}
+{% extends "layout.html" %}
 
 {% block head %}
     <script type="text/javascript" src="javascript/parallel_coordinates.js"></script>
@@ -35,18 +35,18 @@
                 bottom: 30,
                 left: 100
             },
-            class_labels: ['complicação pós-cirúrgica', 'classificação clavien-dindo'],
+            class_labels: ["complicação pós-cirúrgica", "classificação clavien-dindo"],
             visualizations: [
                 {
-                    name:'Box Plot',
+                    name:"Box Plot",
                     renderChart: (properties, init) => renderBoxplot(properties, init)
                 },
                 {
-                    name:'Violin Charts',
+                    name:"Violin Charts",
                     renderChart: (properties, init) => renderViolin(properties, init)
                 },
                 {
-                    name: 'Parallel Coordinates',
+                    name: "Parallel Coordinates",
                     renderChart: (properties, init) => renderParallelCoordinate(properties, init)
                 }
             ]

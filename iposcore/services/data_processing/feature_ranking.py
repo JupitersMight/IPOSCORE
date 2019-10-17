@@ -86,19 +86,19 @@ class FeatureRanking:
     @staticmethod
     def feature_ranking(data, columns, class_label):
         # No need to display warning
-        np.seterr(divide='ignore', invalid='ignore')
+        np.seterr(divide="ignore", invalid="ignore")
         # All possible data types
-        column_types = ['Binary', 'Categorical', 'Numerical_Discrete', 'Numerical_Contiguous']
+        column_types = ["Binary", "Categorical", "Numerical_Discrete", "Numerical_Contiguous"]
         # All statistics of score functions used
         classifiers = [
-            'mutual_info_classif',
-            'mutual_info_regression',
-            'chi2_stats',
-            'chi2_p-value',
-            'f_regression_stats',
-            'f_regression_p-value',
-            'f_classif_stats',
-            'f_classif_p-value',
+            "mutual_info_classif",
+            "mutual_info_regression",
+            "chi2_stats",
+            "chi2_p-value",
+            "f_regression_stats",
+            "f_regression_p-value",
+            "f_classif_stats",
+            "f_classif_p-value",
         ]
         # Initialize json data structure
         final_data = {}
@@ -167,12 +167,12 @@ class FeatureRanking:
             # Fill json with score function statistical data
             for index in range(0, len(arrays)):
                 for classif_index in range(1, len(classifiers)):
-                    aux = retrieveValues(arrays[index], classif_index, (True if 'p-value' in classifiers[classif_index] else False))
+                    aux = retrieveValues(arrays[index], classif_index, (True if "p-value" in classifiers[classif_index] else False))
                     temp = []
                     for i in range(0, len(aux[0])):
                         x = {
-                            'column_name': aux[0][i],
-                            'column_value': aux[1][i]
+                            "column_name": aux[0][i],
+                            "column_value": aux[1][i]
                         }
                         temp.append(x)
                     final_data[column_types[index]][classifiers[classif_index]][label] = temp

@@ -1,4 +1,4 @@
-{% extends 'layout.html' %}
+{% extends "layout.html" %}
 {% block head %}
     <script type="text/javascript" src="javascript/barchart.js"></script>
     <script type="text/javascript" src="javascript/dropdown.js"></script>
@@ -71,7 +71,7 @@
         properties.curr_scoring_functions = properties.scoring_functions[0]
         properties.curr_data_type = properties.data_types[0]
 
-        d3.select('#displayall').on('click',()=>renderMultipleBarcharts(properties, true))
+        d3.select("#displayall").on("click",()=>renderMultipleBarcharts(properties, true))
 
         dropdowns_feature_ranking(properties)
 

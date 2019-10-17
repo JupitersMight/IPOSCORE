@@ -8,11 +8,11 @@ class DataClean:
 
     @staticmethod
     def clean_data():
-        dataset_name = 'ipodata.xlsx'
-        sheet_name = 'Folha1'
+        dataset_name = "ipodata.xlsx"
+        sheet_name = "Folha1"
 
         directory = Path(__file__).resolve().parents[2]
-        data = pd.read_excel(path.join(directory, 'data', dataset_name), sheet_name=sheet_name, dtype=str, header=1)
+        data = pd.read_excel(path.join(directory, "data", dataset_name), sheet_name=sheet_name, dtype=str, header=1)
 
         data = Utils.rename_columns(data)
         data = Utils.change_to_default_na(data)
@@ -21,12 +21,12 @@ class DataClean:
         data = pd.concat(
             [
                 data,
-                Utils.create_dataframe(data, 'Intervenções_ICD10', 'ICD_', False),
-                Utils.create_dataframe(data, 'classificação ACS complicações específicas', 'ACS_CE_', False),
-                Utils.create_dataframe(data, 'ACS_procedimento', 'ACS_', True)
+                Utils.create_dataframe(data, "Intervenções_ICD10", "ICD_", False),
+                Utils.create_dataframe(data, "classificação ACS complicações específicas", "ACS_CE_", False),
+                Utils.create_dataframe(data, "ACS_procedimento", "ACS_", True)
             ],
             axis=1,
             sort=False
         )
 
-        data.to_csv(path.abspath(path.join(directory, 'data', 'post_clean.csv')), index=False)
+        data.to_csv(path.abspath(path.join(directory, "data", "post_clean.csv")), index=False)

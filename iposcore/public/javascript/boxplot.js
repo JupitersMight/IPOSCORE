@@ -1,4 +1,4 @@
-'use strict'
+"use strict"
 
 function renderBoxplot(properties, init){
 
@@ -20,13 +20,13 @@ function renderBoxplot(properties, init){
 
         boxPlotData.push(record);
     }
-    let height_domain = ['All']
-     if(properties.curr_class_label === 'complicação pós-cirúrgica')
+    let height_domain = ["All"]
+     if(properties.curr_class_label === "complicação pós-cirúrgica")
         for(let i = 0; i < 2; ++i)
-            height_domain.push(''+i)
-    if(properties.curr_class_label === 'classificação clavien-dindo')
+            height_domain.push(""+i)
+    if(properties.curr_class_label === "classificação clavien-dindo")
         for(let i = 0; i < 8; ++i)
-            height_domain.push(''+i)
+            height_domain.push(""+i)
 
     // Compute an ordinal xScale for the keys in boxPlotData
     let yScale = d3.scalePoint()
@@ -103,7 +103,7 @@ function renderBoxplot(properties, init){
     return yScale(datum.key)
     }
     )
-    .attr("fill", '#238443')
+    .attr("fill", "#238443")
     .attr("stroke", "#000")
     .attr("stroke-width", 1);
 

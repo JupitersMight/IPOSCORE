@@ -16,7 +16,7 @@ class Cache:
     def fill_cache():
         if not Cache.filled:
             Cache.feature_ranking = FeatureRanking.feature_ranking(
-                pd.read_csv(path.join(Path(__file__).resolve().parents[0], 'data', r'data.csv'), dtype=str),
+                pd.read_csv(path.join(Path(__file__).resolve().parents[0], "data", r"data.csv"), dtype=str),
                 [
                     GlobalVariables.DatasetColumns.numerical_continuous,
                     GlobalVariables.DatasetColumns.numerical_discrete,
@@ -26,5 +26,5 @@ class Cache:
                  ],
                 GlobalVariables.DatasetColumns.class_label
             )
-            Cache.exploration = DataExploration.explore(pd.read_csv(path.join(Path(__file__).resolve().parents[0], 'data', r'data.csv'), dtype=str))
+            Cache.exploration = DataExploration.explore(pd.read_csv(path.join(Path(__file__).resolve().parents[0], "data", r"data.csv"), dtype=str))
             Cache.filled = True

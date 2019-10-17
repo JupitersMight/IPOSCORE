@@ -1,4 +1,4 @@
-'use strict'
+"use strict"
 
 function dropdowns_feature_ranking(properties){
     let class_label_change = function(class_label){
@@ -22,7 +22,7 @@ function dropdowns_feature_ranking(properties){
         .text(d => d[0].toUpperCase() + d.slice(1,d.length))// capitalize 1st letter
 
     dropdown_class.on("change", function(){
-        let class_label = d3.select(this).select('select').property('value')
+        let class_label = d3.select(this).select("select").property("value")
         class_label_change(class_label)
     })
 
@@ -38,7 +38,7 @@ function dropdowns_feature_ranking(properties){
         .text(d => d[0].toUpperCase() + d.slice(1,d.length))// capitalize 1st letter
 
     dropdown_score.on("change", function(){
-        let score_function = d3.select(this).select('select').property('value')
+        let score_function = d3.select(this).select("select").property("value")
         scoring_function_change(score_function)
     })
 }
@@ -50,7 +50,7 @@ function dropdowns_exploration(properties){
         properties.curr_visualization.renderChart(properties, false)
     }
     let visualization_change = function(visualization){
-        d3.select('.content-svgs').selectAll("svg > *").remove()
+        d3.select(".content-svgs").selectAll("svg > *").remove()
         properties.curr_visualization  = properties.visualizations.find(d => d.name === visualization)
         properties.curr_visualization.renderChart(properties, true)
     }
@@ -77,7 +77,7 @@ function dropdowns_exploration(properties){
         .text(d => d)
 
     dropdown_class.on("change", function(){
-        let class_label = d3.select(this).select('select').property('value')
+        let class_label = d3.select(this).select("select").property("value")
         class_label_change(class_label)
     })
 
@@ -93,7 +93,7 @@ function dropdowns_exploration(properties){
         .text(d => d.name)
 
     dropdown_visualization.on("change", function(){
-        let visualization = d3.select(this).select('select').property('value')
+        let visualization = d3.select(this).select("select").property("value")
         visualization_change(visualization)
     })
 
@@ -109,13 +109,13 @@ function dropdowns_exploration(properties){
         .text(d => d)
 
     dropdown_data_types.on("change", function(){
-        let data_type = d3.select(this).select('select').property('value')
+        let data_type = d3.select(this).select("select").property("value")
         data_type_change(data_type)
     })
 
     let dropdown_attributes = d3.select("#attribute_selector")
 
-    dropdown_attributes.selectAll('option').remove()
+    dropdown_attributes.selectAll("option").remove()
 
     dropdown_attributes
         .append("select")
@@ -127,15 +127,15 @@ function dropdowns_exploration(properties){
         .text(d => d)
 
     dropdown_attributes.on("change", function(){
-        let attribute = d3.select(this).select('select').property('value')
+        let attribute = d3.select(this).select("select").property("value")
         attribute_change(attribute)
     })
 
     function update_attributes(){
         let dropdown_attributes = d3.select("#attribute_selector")
 
-        dropdown_attributes.selectAll('select').remove()
-        dropdown_attributes.selectAll('option').remove()
+        dropdown_attributes.selectAll("select").remove()
+        dropdown_attributes.selectAll("option").remove()
 
         dropdown_attributes
             .append("select")
