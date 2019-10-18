@@ -2,6 +2,7 @@
 {% block head %}
     <script type="text/javascript" src="javascript/barchart.js"></script>
     <script type="text/javascript" src="javascript/dropdown.js"></script>
+    <script type="text/javascript" src="javascript/initFeatureRanking.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -13,8 +14,7 @@
         </div>
         <div class="row text-center">
             <div class="col-sm-3">
-                <button id="prev" type="button" class="btn btn-secondary"
-                        onclick="get_next_prev(-1)">
+                <button id="prev" type="button" class="btn btn-secondary">
                     <---
                 </button>
             </div>
@@ -28,10 +28,8 @@
                     Help
                 </button>
             </div>
-
             <div class="col-sm-3">
-                <button id="next" type="button" class="btn btn-secondary"
-                        onclick="get_next_prev(1)">
+                <button id="next" type="button" class="btn btn-secondary">
                     --->
                 </button>
             </div>
@@ -39,43 +37,5 @@
     </div>
     <!-- Content -->
     <div class="content-svgs container-fluid"></div>
-    <script>
-        let curr = 0
-
-        function get_next_prev(value){
-            curr = (curr + value) % properties.data_types.length
-            if(curr < 0)
-                curr = properties.data_types.length - 1
-            properties.curr_data_type = properties.data_types[curr]
-            renderSingleBarchart(properties, false, undefined)
-        }
-
-        const graphData = {{data | safe}}
-
-        const properties = {
-            data: graphData,
-            margins: {
-                top: 30,
-                right: 20,
-                bottom: 30,
-                left: 90
-            },
-            MAX_LABEL_SIZE_Y: 200,
-            MAX_LABEL_SIZE_X: 150,
-            displayingAll: false,
-        }
-        properties.class_labels = Object.keys(graphData)
-        properties.data_types = Object.keys(graphData[properties.class_labels[0]])
-        properties.scoring_functions = Object.keys(graphData[properties.class_labels[0]][properties.data_types[0]])
-        properties.curr_class_label = properties.class_labels[0]
-        properties.curr_scoring_functions = properties.scoring_functions[0]
-        properties.curr_data_type = properties.data_types[0]
-
-        d3.select("#displayall").on("click",()=>renderMultipleBarcharts(properties, true))
-
-        dropdowns_feature_ranking(properties)
-
-        renderSingleBarchart(properties, true, undefined)
-
-    </script>
+    <script> init({{data | safe}}) </script>
 {% endblock %}

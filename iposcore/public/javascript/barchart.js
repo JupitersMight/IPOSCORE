@@ -111,9 +111,10 @@ function renderMultipleBarcharts(properties, init){
 
 	let max = 0
 	for(let i = 0; i<properties.data_types.length; ++i){
-		for(let x = 0; x<properties.data[properties.curr_class_label][properties.data_types[i]][properties.curr_scoring_functions].length; ++x){
-			if(max < properties.data[properties.curr_class_label][properties.data_types[i]][properties.curr_scoring_functions][x].column_value)
-				max = properties.data[properties.curr_class_label][properties.data_types[i]][properties.curr_scoring_functions][x].column_value
+		for(let x = 0; x<properties.data[properties.data_types[i]][properties.curr_scoring_function][properties.curr_class_label].length; ++x){
+			const currentValue = properties.data[properties.data_types[i]][properties.curr_scoring_function][properties.curr_class_label][x]
+			if(max < currentValue.column_value)
+				max = currentValue.column_value
 		}
 	}
 
@@ -122,7 +123,9 @@ function renderMultipleBarcharts(properties, init){
 	properties.height = 700 - properties.margins.top - properties.margins.bottom - properties.MAX_LABEL_SIZE_Y
 	properties.heightScale = d3.scaleSqrt().range([properties.height, 0])
 	properties.widthScale = d3.scaleBand().rangeRound([0, properties.width]).padding(0.3)
-	properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(properties.curr_scoring_functions.indexOf("chi2_") !== -1 ? ".4~s" : ".1%"))
+	properties.yAxis = d3
+		.axisLeft(properties.heightScale)
+		.tickFormat(d3.format(properties.curr_scoring_function.indexOf("chi2_") !== -1 ? ".4~s" : ".1%"))
 	properties.xAxis = d3.axisBottom(properties.widthScale)
 
 
@@ -148,14 +151,14 @@ function renderMultipleBarcharts(properties, init){
 
 			properties.svg.on("click", () => renderSingleBarchart(properties, true, properties.data_types[i]))
 			render(
-				properties.data[properties.curr_class_label][properties.data_types[i]][properties.curr_scoring_functions],
+				properties.data[properties.data_types[i]][properties.curr_scoring_function][properties.curr_class_label],
 				properties,
 				init
 			)
 		}else{
 			properties.svg = d3.select("#svg_"+properties.data_types[i])
 			render(
-				properties.data[properties.curr_class_label][properties.data_types[i]][properties.curr_scoring_functions],
+				properties.data[properties.data_types[i]][properties.curr_scoring_function][properties.curr_class_label],
 				properties,
 				init
 			)
@@ -174,7 +177,7 @@ function renderSingleBarchart(properties, init, extra){
 
     properties.displayingAll = false
 
-    const current_data = properties.data[properties.curr_class_label][properties.curr_data_type][properties.curr_scoring_functions]
+    const current_data = properties.data[properties.curr_data_type][properties.curr_scoring_function][properties.curr_class_label]
 
 	const fullwidth = 1024
 	const fullheight = 768
@@ -202,7 +205,7 @@ function renderSingleBarchart(properties, init, extra){
 	properties.widthScale = d3.scaleBand().rangeRound([0, properties.width]).padding(0.3)
 	properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(
 		d3.format(
-			properties.curr_scoring_functions.indexOf("stats") !== -1 || properties.curr_scoring_functions.indexOf("p-value") !== -1 ? ".4~s" : ".1%"))
+			properties.curr_scoring_function.indexOf("stats") !== -1 || properties.curr_scoring_function.indexOf("p-value") !== -1 ? ".4~s" : ".1%"))
 	properties.xAxis = d3.axisBottom(properties.widthScale)
 
 	if(init) {

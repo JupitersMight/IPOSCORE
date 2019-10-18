@@ -166,8 +166,9 @@ class FeatureRanking:
             arrays = [binary_m, categorical_m, numerical_discrete_m, numerical_continuous_m]
             # Fill json with score function statistical data
             for index in range(0, len(arrays)):
-                for classif_index in range(1, len(classifiers)):
-                    aux = retrieveValues(arrays[index], classif_index, (True if "p-value" in classifiers[classif_index] else False))
+                for classif_index in range(0, len(classifiers)):
+                    # classif_index +1 because array has string in position 0
+                    aux = retrieveValues(arrays[index], classif_index + 1, (True if "p-value" in classifiers[classif_index] else False))
                     temp = []
                     for i in range(0, len(aux[0])):
                         x = {
