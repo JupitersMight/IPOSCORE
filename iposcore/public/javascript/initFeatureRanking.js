@@ -34,8 +34,8 @@ function init(graphData){
     properties.curr_scoring_function = properties.scoring_functions[0]
     properties.curr_data_type = properties.data_types[0]
 
-    d3.select('#prev').on("click",()=>get_next_prev(-1, properties))
-    d3.select('#next').on("click",()=>get_next_prev(1, properties))
+    d3.select("#prev").on("click",()=>get_next_prev(-1, properties))
+    d3.select("#next").on("click",()=>get_next_prev(1, properties))
     d3.select("#displayall").on("click",()=>renderMultipleBarcharts(properties, true))
 
     dropdowns_feature_ranking(properties)

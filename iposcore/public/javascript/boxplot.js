@@ -52,7 +52,7 @@ function renderBoxplot(properties, init){
     let axisG = svg.append("g").attr("transform", "translate(25,0)");
     let axisTopG = svg.append("g").attr("transform", "translate(35,0)");
 
-    // Setup the group the box plot elements will render in
+    // Setup the group the box plot elements will renderBarchart in
     let g = svg.append("g")
     .attr("transform", "translate(20,5)");
 
@@ -107,7 +107,7 @@ function renderBoxplot(properties, init){
     .attr("stroke", "#000")
     .attr("stroke-width", 1);
 
-    // Now render all the horizontal lines at once - the whiskers and the median
+    // Now renderBarchart all the horizontal lines at once - the whiskers and the median
     let horizontalLineConfigs = [
     // Top whisker
     {

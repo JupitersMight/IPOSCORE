@@ -6,7 +6,7 @@ function fade(opacity, d) {
 		.style("opacity", opacity)
 }
 
-function render(data, properties, init){
+function renderBarchart(data, properties, init){
 
 	properties.heightScale.domain([0,properties.heightMax])
 
@@ -150,14 +150,14 @@ function renderMultipleBarcharts(properties, init){
 				.attr("class", "centered")
 
 			properties.svg.on("click", () => renderSingleBarchart(properties, true, properties.data_types[i]))
-			render(
+			renderBarchart(
 				properties.data[properties.data_types[i]][properties.curr_scoring_function][properties.curr_class_label],
 				properties,
 				init
 			)
 		}else{
 			properties.svg = d3.select("#svg_"+properties.data_types[i])
-			render(
+			renderBarchart(
 				properties.data[properties.data_types[i]][properties.curr_scoring_function][properties.curr_class_label],
 				properties,
 				init
@@ -172,6 +172,9 @@ function renderMultipleBarcharts(properties, init){
 }
 
 function renderSingleBarchart(properties, init, extra){
+	if(!init){
+		d3.select("div#slider-fill > *").remove()
+	}
 	if(extra)
 		properties.curr_data_type = extra
 
@@ -189,6 +192,7 @@ function renderSingleBarchart(properties, init, extra){
 		d3.select(".content-svgs").selectAll(".row").remove()
 		d3.selectAll(".d3-tip").remove()
 		currRow = d3.select(".content-svgs").append("div").attr("class","row centered")
+		currRow.append("div").attr("class", "col-sm-12").attr("id", "slider-div")
 	}
 	else
 		currRow = d3.select(".content-svgs").select(".row")
@@ -205,26 +209,55 @@ function renderSingleBarchart(properties, init, extra){
 	properties.widthScale = d3.scaleBand().rangeRound([0, properties.width]).padding(0.3)
 	properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(
 		d3.format(
-			properties.curr_scoring_function.indexOf("stats") !== -1 || properties.curr_scoring_function.indexOf("p-value") !== -1 ? ".4~s" : ".1%"))
+			properties.curr_scoring_function.indexOf("stats") !== -1 ||
+			properties.curr_scoring_function.indexOf("p-value") !== -1 ?
+				".4~s" :
+				".1%"
+		)
+	)
 	properties.xAxis = d3.axisBottom(properties.widthScale)
+	properties.maxSlidderValue = current_data.length
 
 	if(init) {
+		// Create container for slider
+		properties.slidderContainer = d3.select("#slider-div")
+			.append("div")
+			.attr("class", "row align-items-center")
+		// Create container for value of slider
+		properties.slidderContainer
+			.append("div")
+			.attr("class", "col-sm")
+			.append("p")
+			.attr("id", "value-fill")
+			.style("border-style", "solid")
+			.style("border-width", "thin")
+		// Create container for slider
+		properties.slidderContainer
+			.append("div")
+			.attr("class", "col-sm")
+			.append("div")
+			.attr("id", "slider-fill")
+		//Create container where title and bar chart will appear
 		properties.svg = currRow.append("div").attr("class","col-sm-12")
+		//Add title for barchart
 		properties.svg
 			.append("h3")
 			.attr("id","h3_"+ properties.curr_data_type)
 			.attr("align", "center")
 			.style("text-decoration", "underline")
 			.text(properties.curr_data_type)
-
+		// Define SVG
 		properties.svg = properties.svg.append("svg")
 			.attr("id", "svg_" + properties.curr_data_type)
 			.attr("width", fullwidth)
 			.attr("height", fullheight)
 			.attr("class", "centered")
 	}
+	// Add the display all button and activate the prev and next buttons
 	d3.select("#displayall").on("click",()=>renderMultipleBarcharts(properties, true)).text("Display All")
 	d3.select("#prev").attr("disabled",null)
 	d3.select("#next").attr("disabled",null)
-	render(current_data, properties, init)
+	fillerSlider(properties, current_data)
+	// Render barchart
+	renderBarchart(current_data.slice(0, 10), properties, init)
 }

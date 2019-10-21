@@ -33,7 +33,8 @@ def retrieveValues(array, index, init):
     for value in array:
         if round(value[index], 5) == 0.00000 or pd.isna(value[index]):
             continue
-        colunas.append(value[0])
+        # Name of column is always last place of array
+        colunas.append(value[len(value)-1])
         valores.append(round(value[index], 7))
     aux = sort(colunas, valores)
     aux[0] = (aux[0] if not init else (aux[0][::-1]))
@@ -62,7 +63,6 @@ def classifiers_values(array, column, labels, label):
 
     array.append(
         [
-            column,
             mutual_info_classif(
                 labels[column].to_frame(name=column),
                 labels[label]
@@ -76,7 +76,8 @@ def classifiers_values(array, column, labels, label):
             values_f_regression[0][0],
             values_f_regression[1][0],
             values_f_classif[0][0],
-            values_f_classif[1][0]
+            values_f_classif[1][0],
+            column
          ]
     )
 
@@ -167,8 +168,11 @@ class FeatureRanking:
             # Fill json with score function statistical data
             for index in range(0, len(arrays)):
                 for classif_index in range(0, len(classifiers)):
-                    # classif_index +1 because array has string in position 0
-                    aux = retrieveValues(arrays[index], classif_index + 1, (True if "p-value" in classifiers[classif_index] else False))
+                    aux = retrieveValues(
+                        arrays[index],
+                        classif_index,
+                        (True if "p-value" in classifiers[classif_index] else False)
+                    )
                     temp = []
                     for i in range(0, len(aux[0])):
                         x = {
