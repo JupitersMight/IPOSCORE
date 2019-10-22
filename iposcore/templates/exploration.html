@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block head %}
+    <script type="text/javascript" src="javascript/initExploration.js"></script>
     <script type="text/javascript" src="javascript/parallel_coordinates.js"></script>
     <script type="text/javascript" src="javascript/violin.js"></script>
     <script type="text/javascript" src="javascript/boxplot.js"></script>
@@ -23,49 +24,5 @@
     </div>
     <!-- Content -->
     <div class="content-svgs container-fluid"></div>
-    <script>
-        const graphData = {{data | safe}}
-        console.log(graphData)
-
-        const properties = {
-            data: graphData,
-            margin: {
-                top: 50,
-                right: 100,
-                bottom: 30,
-                left: 100
-            },
-            class_labels: ["complicação pós-cirúrgica", "classificação clavien-dindo"],
-            visualizations: [
-                {
-                    name:"Box Plot",
-                    renderChart: (properties, init) => renderBoxplot(properties, init)
-                },
-                {
-                    name:"Violin Charts",
-                    renderChart: (properties, init) => renderViolin(properties, init)
-                },
-                {
-                    name: "Parallel Coordinates",
-                    renderChart: (properties, init) => renderParallelCoordinate(properties, init)
-                }
-            ]
-        }
-        properties.data_types = Object.keys(graphData)
-        properties.curr_data_type = properties.data_types[1]
-        properties.curr_visualization = properties.visualizations[0]
-        properties.curr_class_label = properties.class_labels[0]
-        properties.curr_attribute = Object.keys(properties.data[properties.curr_data_type])[0]
-        properties.curr_data = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
-        properties.width = 960 - properties.margin.left - properties.margin.right
-        properties.height = 500 - properties.margin.top - properties.margin.bottom
-
-        properties.svg = d3.select(".content-svgs").append("svg")
-            .attr("width", properties.width + properties.margin.left + properties.margin.right)
-            .attr("height", properties.height + properties.margin.top + properties.margin.bottom)
-
-        renderViolin(properties, true)
-
-        dropdowns_exploration(properties)
-    </script>
+    <script> initExploration({{data | safe}}) </script>
 {% endblock %}

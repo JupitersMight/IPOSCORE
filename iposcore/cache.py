@@ -26,5 +26,5 @@ class Cache:
                  ],
                 GlobalVariables.DatasetColumns.class_label
             )
-            #Cache.exploration = DataExploration.explore(pd.read_csv(path.join(Path(__file__).resolve().parents[0], "data", r"data.csv"), dtype=str))
+            Cache.exploration = DataExploration.explore(pd.read_csv(path.join(Path(__file__).resolve().parents[0], "data", r"data.csv"), dtype=str))
             Cache.filled = True

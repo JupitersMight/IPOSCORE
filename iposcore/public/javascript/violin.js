@@ -1,11 +1,5 @@
 "use strict"
 
-function fade(opacity, i) {
-    d3.select("#path_" + i)
-        .transition()
-        .style("opacity", opacity)
-}
-
 function renderViolin(properties, init) {
 
     const widthScaleLinear = d3.scaleLinear().range([0, properties.width])
@@ -13,14 +7,7 @@ function renderViolin(properties, init) {
     const xAxisLinear = d3.axisBottom(widthScaleLinear)
     const yAxis = d3.axisLeft(heightScale)
 
-    const height_domain = []
-    height_domain.push("All")
-    if(properties.curr_class_label === "complicação pós-cirúrgica")
-        for(let i = 0; i < 2; ++i)
-            height_domain.push(""+i)
-    if(properties.curr_class_label === "classificação clavien-dindo")
-        for(let i = 0; i < 8; ++i)
-            height_domain.push(""+i)
+    const height_domain = properties.violinChartHeightDomains[properties.curr_class_label]
 
     const dataset = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
     const violins = []
@@ -122,12 +109,16 @@ function renderViolin(properties, init) {
             return area(histoChart(d))
         })
         .on("mouseover", (d, i) => {
-            fade(0.5, i)
+            d3.select("#path_" + i)
+                .transition()
+                .style("opacity", 0.5)
             curr = i
             tip.show(d)
         })
         .on("mouseout", (d, i) => {
-            fade(1, i)
+            d3.select("#path_" + i)
+                .transition()
+                .style("opacity", 1)
             curr = i
             tip.hide(d)
         })

@@ -127,9 +127,9 @@ class DataExploration:
         # Fill json attributes with dataset of attribute value and corresponding class labels
         for column in data.columns:
             data_type = ""
-            if column in GlobalVariables.DatasetColumns.binary or check_prefix(column, GlobalVariables.DatasetColumns.prefix_for_generated_columns):
-                data_type = "Binary"
-            elif column in GlobalVariables.DatasetColumns.numerical_continuous:
+            #if column in GlobalVariables.DatasetColumns.binary or check_prefix(column, GlobalVariables.DatasetColumns.prefix_for_generated_columns):
+                #data_type = "Binary"
+            if column in GlobalVariables.DatasetColumns.numerical_continuous:
                 data_type = "Numerical_Continuous"
             elif column in GlobalVariables.DatasetColumns.numerical_discrete:
                 data_type = "Numerical_Discrete"

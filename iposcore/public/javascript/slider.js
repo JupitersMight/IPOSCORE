@@ -13,7 +13,7 @@ function fillerSlider(properties){
         .tickFormat(d3.format(""))
         .tickValues(values)
         .default(Math.round(properties.maxSlidderValue/3))
-        .fill("#2196f3")
+        .fill("#158896")
         .on("onchange", val => {
             d3.select("#value-fill").text(d3.format("")(val))
             d3.selectAll(".d3-tip").remove()
