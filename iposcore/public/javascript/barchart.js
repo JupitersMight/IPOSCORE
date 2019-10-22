@@ -1,13 +1,8 @@
 "use strict"
 
-function fade(opacity, d) {
-	d3.select("#" + d.id)
-		.transition()
-		.style("opacity", opacity)
-}
-
 function renderBarchart(data, properties, init){
 
+	// Domain of Y AXIS
 	properties.heightScale.domain([0,properties.heightMax])
 
     const width_domain = []
@@ -15,20 +10,26 @@ function renderBarchart(data, properties, init){
     for (let i = 0; i < data.length; ++i)
         width_domain.push(data[i].column_name)
 
+	// Domain of X AXIS
 	properties.widthScale.domain(width_domain)
+
+	// SET scales for each axis
 	properties.xAxis.scale(properties.widthScale)
 	properties.yAxis.scale(properties.heightScale)
 
+	// tooltip that will pop up when mouseover columns
     const tip = d3.tip()
 		.attr("class", "d3-tip")
 		.offset([-10, 0])
 		.html(d =>
             "<strong>Column name: </strong>" + d.column_name + "</br>" +
-            "<strong>Value: </strong>" +  ((Math.round(d.column_value*1000)/1000) * (properties.curr_scoring_functions.indexOf("chi2_") !== -1 ? 1 : 100))
+            "<strong>Value: </strong>" +  ((Math.round(d.column_value*1000000)/1000000) * (properties.curr_scoring_function.indexOf("chi2_") !== -1 ? 1 : 100))
         )
 
+    // Connect tooltip to SVG
     properties.svg.call(tip)
 
+    // Create bars for each value
 	const bar = properties.svg.selectAll(".bar")
 		.data(data)
 
@@ -39,11 +40,17 @@ function renderBarchart(data, properties, init){
 		.attr("id", (d,i) => d.id = properties.curr_data_type+"_bar_" + i)
 		.attr("pointer-events","all")
 		.on("mouseover", function(d) {
-			fade(0.5, d)
+			// Fade
+			d3.select("#" + d.id)
+				.transition()
+				.style("opacity", 0.5)
 			tip.show(d,this)
 		})
 		.on("mouseout", function(d) {
-			fade(1, d)
+			// Fade
+			d3.select("#" + d.id)
+				.transition()
+				.style("opacity", 1)
 			tip.hide(d,this)
 		})
 		.transition("bar").duration(500)
@@ -53,14 +60,14 @@ function renderBarchart(data, properties, init){
 		.attr("width", properties.widthScale.bandwidth())
 		.attr("height",  d => properties.height - properties.heightScale(d.column_value))
 
-	// Add the axes
+	// If first render add the axes
 	if (init) {
-		properties.svg.append("g")
-			.attr("id", "axis-x")
-			.attr("class", "x axis")
-			.style("font-size", "10px")
-			.attr("transform", "translate(" + properties.margins.left + "," + (properties.height + properties.margins.top) + ")")
-			.call(properties.xAxis)
+        properties.svg.append("g")
+            .attr("id", "axis-x")
+            .attr("class", "x axis")
+            .style("font-size", "10px")
+            .attr("transform", "translate(" + properties.margins.left + "," + (properties.height + properties.margins.top) + ")")
+            .call(properties.xAxis)
             .selectAll("text")
             .attr("y", 0)
             .attr("x", 9)
@@ -68,14 +75,16 @@ function renderBarchart(data, properties, init){
             .attr("transform", "rotate(45)")
             .style("text-anchor", "start")
 
-		properties.svg.append("g")
-			.attr("id", "axis-y")
-			.attr("class", "y axis")
-			.style("font-size", "14px")
-			.attr("transform", "translate(" + properties.margins.left + "," + properties.margins.top+")")
-			.call(properties.yAxis)
+        properties.svg.append("g")
+            .attr("id", "axis-y")
+            .attr("class", "y axis")
+            .style("font-size", "14px")
+            .attr("transform", "translate(" + properties.margins.left + "," + properties.margins.top + ")")
+            .call(properties.yAxis)
 
-	} else {
+    }
+    // Else update current axis
+	else {
 		properties.svg.select("#axis-x").transition("xaxis_bar_"+properties.curr_data_type).duration(500).call(properties.xAxis)
             .selectAll("text")
             .attr("y", 0)
@@ -90,174 +99,4 @@ function renderBarchart(data, properties, init){
 		else
 			d3.select("h3").text(properties.curr_data_type)
 	}
-
-
-}
-
-function renderMultipleBarcharts(properties, init){
-    properties.displayingAll = true
-
-	let container = d3.select(".content-svgs")
-	let currRow
-	if(init){
-		container.selectAll("svg").remove()
-		container.selectAll(".col-sm-6").remove()
-		container.selectAll(".row").remove()
-		d3.selectAll(".d3-tip").remove()
-		currRow = d3.select(".content-svgs").append("div").attr("class","row centered")
-	}
-	else
-		currRow = d3.select(".content-svgs").select(".row")
-
-	let max = 0
-	for(let i = 0; i<properties.data_types.length; ++i){
-		for(let x = 0; x<properties.data[properties.data_types[i]][properties.curr_scoring_function][properties.curr_class_label].length; ++x){
-			const currentValue = properties.data[properties.data_types[i]][properties.curr_scoring_function][properties.curr_class_label][x]
-			if(max < currentValue.column_value)
-				max = currentValue.column_value
-		}
-	}
-
-	properties.heightMax = max
-	properties.width = 500 - properties.margins.left - properties.margins.right - properties.MAX_LABEL_SIZE_X
-	properties.height = 700 - properties.margins.top - properties.margins.bottom - properties.MAX_LABEL_SIZE_Y
-	properties.heightScale = d3.scaleSqrt().range([properties.height, 0])
-	properties.widthScale = d3.scaleBand().rangeRound([0, properties.width]).padding(0.3)
-	properties.yAxis = d3
-		.axisLeft(properties.heightScale)
-		.tickFormat(d3.format(properties.curr_scoring_function.indexOf("chi2_") !== -1 ? ".4~s" : ".1%"))
-	properties.xAxis = d3.axisBottom(properties.widthScale)
-
-
-	for (let i = 0; i < properties.data_types.length; ++i) {
-		properties.curr_data_type = properties.data_types[i]
-		if(init) {
-			properties.svg = currRow
-				.append("div")
-				.attr("class", "col-sm-6")
-
-			properties.svg.append("h3")
-				.attr("id","h3_"+ properties.data_types[i])
-				.attr("align", "center")
-				.style("text-decoration", "underline")
-				.text(properties.curr_data_type)
-
-			properties.svg = properties.svg
-				.append("svg")
-				.attr("id", "svg_" + properties.data_types[i])
-				.attr("width", 500)
-				.attr("height", 700)
-				.attr("class", "centered")
-
-			properties.svg.on("click", () => renderSingleBarchart(properties, true, properties.data_types[i]))
-			renderBarchart(
-				properties.data[properties.data_types[i]][properties.curr_scoring_function][properties.curr_class_label],
-				properties,
-				init
-			)
-		}else{
-			properties.svg = d3.select("#svg_"+properties.data_types[i])
-			renderBarchart(
-				properties.data[properties.data_types[i]][properties.curr_scoring_function][properties.curr_class_label],
-				properties,
-				init
-			)
-		}
-	}
-	if(init) {
-        d3.select("#displayall").on("click", () => renderSingleBarchart(properties, true, properties.data_types[curr])).text("Hide All")
-        d3.select("#prev").attr("disabled", "disabled")
-        d3.select("#next").attr("disabled", "disabled")
-    }
-}
-
-function renderSingleBarchart(properties, init, extra){
-	if(!init){
-		d3.select("div#slider-fill > *").remove()
-	}
-	if(extra)
-		properties.curr_data_type = extra
-
-    properties.displayingAll = false
-
-    const current_data = properties.data[properties.curr_data_type][properties.curr_scoring_function][properties.curr_class_label]
-
-	const fullwidth = 1024
-	const fullheight = 768
-
-    let currRow
-	if(init){
-		d3.select(".content-svgs").selectAll("svg").remove()
-		d3.select(".content-svgs").selectAll(".col-sm-6").remove()
-		d3.select(".content-svgs").selectAll(".row").remove()
-		d3.selectAll(".d3-tip").remove()
-		currRow = d3.select(".content-svgs").append("div").attr("class","row centered")
-		currRow.append("div").attr("class", "col-sm-12").attr("id", "slider-div")
-	}
-	else
-		currRow = d3.select(".content-svgs").select(".row")
-
-	let max = 0
-	for(let i = 0; i < current_data.length; ++i)
-		if(max < current_data[i].column_value)
-			max = current_data[i].column_value
-
-	properties.heightMax = max
-	properties.width = fullwidth - properties.margins.left - properties.margins.right - properties.MAX_LABEL_SIZE_X
-	properties.height = fullheight - properties.margins.top - properties.margins.bottom - properties.MAX_LABEL_SIZE_Y
-	properties.heightScale = d3.scaleSqrt().range([properties.height, 0])
-	properties.widthScale = d3.scaleBand().rangeRound([0, properties.width]).padding(0.3)
-	properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(
-		d3.format(
-			properties.curr_scoring_function.indexOf("stats") !== -1 ||
-			properties.curr_scoring_function.indexOf("p-value") !== -1 ?
-				".4~s" :
-				".1%"
-		)
-	)
-	properties.xAxis = d3.axisBottom(properties.widthScale)
-	properties.maxSlidderValue = current_data.length
-
-	if(init) {
-		// Create container for slider
-		properties.slidderContainer = d3.select("#slider-div")
-			.append("div")
-			.attr("class", "row align-items-center")
-		// Create container for value of slider
-		properties.slidderContainer
-			.append("div")
-			.attr("class", "col-sm")
-			.append("p")
-			.attr("id", "value-fill")
-			.style("border-style", "solid")
-			.style("border-width", "thin")
-		// Create container for slider
-		properties.slidderContainer
-			.append("div")
-			.attr("class", "col-sm")
-			.append("div")
-			.attr("id", "slider-fill")
-		//Create container where title and bar chart will appear
-		properties.svg = currRow.append("div").attr("class","col-sm-12")
-		//Add title for barchart
-		properties.svg
-			.append("h3")
-			.attr("id","h3_"+ properties.curr_data_type)
-			.attr("align", "center")
-			.style("text-decoration", "underline")
-			.text(properties.curr_data_type)
-		// Define SVG
-		properties.svg = properties.svg.append("svg")
-			.attr("id", "svg_" + properties.curr_data_type)
-			.attr("width", fullwidth)
-			.attr("height", fullheight)
-			.attr("class", "centered")
-	}
-	// Add the display all button and activate the prev and next buttons
-	d3.select("#displayall").on("click",()=>renderMultipleBarcharts(properties, true)).text("Display All")
-	d3.select("#prev").attr("disabled",null)
-	d3.select("#next").attr("disabled",null)
-	fillerSlider(properties, current_data)
-	// Render barchart
-	renderBarchart(current_data.slice(0, 10), properties, init)
 }

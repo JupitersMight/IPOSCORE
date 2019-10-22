@@ -4,6 +4,7 @@ function fillerSlider(properties){
 
     let values = d3.range(1, properties.maxSlidderValue)
 
+
     let sliderFill = d3.sliderBottom()
         .min(1)
         .max(properties.maxSlidderValue)
@@ -35,3 +36,10 @@ function fillerSlider(properties){
 
     d3.select("#value-fill").text(d3.format("")(sliderFill.value()))
 }
+
+/** play with transition
+ * gTransition
+      .transition()
+      .duration(200)
+      .call(sliderTransition);
+ */
