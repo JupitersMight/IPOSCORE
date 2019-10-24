@@ -17,20 +17,23 @@ function initExploration(graphData){
     properties.visualizations = [
         {
             name:"Violin Charts",
-            renderChart: (properties, init) => renderViolin(properties, init)
+            renderChart: (properties, init) => renderViolin(properties, init),
+            prep: (properties) => preparationViolin(properties)
         },
-        /*{
+        {
             name:"Box Plot",
-            renderChart: (properties, init) => renderBoxplot(properties, init)
-        },*/
+            renderChart: (properties, init) => renderBoxplot(properties, init),
+            prep: (properties) => preparationBoxplot(properties)
+        },
         {
             name: "Parallel Coordinates",
-            renderChart: (properties, init) => renderParallelCoordinate(properties, init)
+            renderChart: (properties, init) => renderParallelCoordinate(properties, init),
+            prep: (properties) => preparationParallel(properties)
         }
     ]
 
     //Init with default values
-    properties.curr_data_type = properties.data_types[0]
+    properties.curr_data_type = properties.data_types[1]
     properties.curr_visualization = properties.visualizations[0]
     properties.curr_class_label = properties.class_labels[0]
     properties.curr_attribute = Object.keys(properties.data[properties.curr_data_type])[0]
@@ -41,26 +44,31 @@ function initExploration(graphData){
     const fullheight = 768
     properties.width = fullwidth - properties.margin.left - properties.margin.right
     properties.height = fullheight - properties.margin.top - properties.margin.bottom
-
-    properties.svg = d3.select(".content-svgs").append("svg")
+    properties.svg = d3.select(".content-svgs")
+        .append("div")
+        .attr("class","row centered")
+        .append("div")
+        .attr("class","col-sm-12")
+        .append("svg")
         .attr("width", properties.width + properties.margin.left + properties.margin.right)
         .attr("height", properties.height + properties.margin.top + properties.margin.bottom)
 
-    properties.violinChartHeightDomains = {
+    properties.yAxisDomain = {
         "complicação pós-cirúrgica": [],
         "classificação clavien-dindo": []
     }
-    for(let i = 0; i<Object.keys(properties.violinChartHeightDomains).length; ++i){
+    for(let i = 0; i<Object.keys(properties.yAxisDomain).length; ++i){
         const height_domain = []
         height_domain.push("All")
-        if(Object.keys(properties.violinChartHeightDomains)[i] === "complicação pós-cirúrgica")
+        if(Object.keys(properties.yAxisDomain)[i] === "complicação pós-cirúrgica")
             for(let i = 0; i < 2; ++i)
                 height_domain.push(""+i)
-        if(Object.keys(properties.violinChartHeightDomains)[i] === "classificação clavien-dindo")
+        if(Object.keys(properties.yAxisDomain)[i] === "classificação clavien-dindo")
             for(let i = 0; i < 8; ++i)
                 height_domain.push(""+i)
-        properties.violinChartHeightDomains[Object.keys(properties.violinChartHeightDomains)[i]] = height_domain
+        properties.yAxisDomain[Object.keys(properties.yAxisDomain)[i]] = height_domain
     }
+    properties.threshold_spacing = properties.curr_data_type === "Numerical_Continuous" ? 0.1 : 1
 
     // Fill dropdowns
     dropdown(
@@ -73,10 +81,13 @@ function initExploration(graphData){
             function(visualization){
                 d3.select(".content-svgs").selectAll("svg > *").remove()
                 properties.curr_visualization  = properties.visualizations.find(d => d.name === visualization)
+                properties.curr_visualization.prep(properties)
                 properties.curr_visualization.renderChart(properties, true)
             },
             function(data_type){
                 properties.curr_data_type = data_type
+                properties.curr_attribute = Object.keys(properties.data[properties.curr_data_type])[0]
+                properties.threshold_spacing = properties.curr_data_type === "Numerical_Continuous" ? 0.01 : 1
                 // Update attribute
                 let dropdown_attributes = d3.select("#attribute_selector")
 
@@ -116,5 +127,27 @@ function initExploration(graphData){
         ]
     )
 
+    preparationViolin(properties)
     renderViolin(properties, true)
+}
+
+function preparationViolin(properties){
+    d3.select(".content-svgs").selectAll("svg>*").remove()
+    properties.widthScaleLinear = d3.scaleLinear().range([0, properties.width])
+    properties.heightScale = d3.scaleBand().rangeRound([properties.margin.top, properties.height]).padding(0.3)
+    properties.xAxisLinear = d3.axisBottom(properties.widthScaleLinear)
+    properties.yAxis = d3.axisLeft(properties.heightScale)
+    properties.svg = d3.select(".content-svgs").select("svg")
+}
+
+function preparationParallel(properties){
+    //TODO
+}
+
+function preparationBoxplot(properties){
+    // Compute a global y scale based on the global counts
+    properties.heightScale = d3.scaleBand().rangeRound([properties.margin.top, properties.height]).padding(0.3)
+    properties.widthScaleLinear = d3.scaleLinear().range([0, properties.width])
+    properties.xAxisLinear = d3.axisBottom(properties.widthScaleLinear)
+    properties.yAxis = d3.axisLeft(properties.heightScale)
 }

@@ -25,10 +25,10 @@ function renderBarchart(data, properties, init){
             "<strong>Column name: </strong>" + d.column_name + "</br>" +
             "<strong>Value: </strong>" +  (
             	(Math.round(d.column_value*1000000)/1000000) *
-					properties.curr_scoring_function.indexOf("_stats") !== -1 ||
+				(properties.curr_scoring_function.indexOf("_stats") !== -1 ||
                     properties.curr_scoring_function.indexOf("_p-value") !== -1 ?
 					1 :
-					100
+					100)
 			)
 		)
 

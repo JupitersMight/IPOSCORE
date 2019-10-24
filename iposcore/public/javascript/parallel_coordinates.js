@@ -2,11 +2,7 @@
 
 function renderParallelCoordinate(properties){
 
-    d3.select(".content-svgs").select("svg").selectAll("g").remove()
-    d3.select(".content-svgs").select("svg").selectAll("path").remove()
-    d3.select(".content-svgs").select("svg").selectAll("text").remove()
-    d3.select(".content-svgs").select("svg").selectAll("rect").remove()
-    d3.select(".content-svgs").select("svg").selectAll("line").remove()
+    d3.select(".content-svgs").select("svg>*").remove()
     properties.svg = d3.select(".content-svgs").select("svg").append("g").attr("transform", "translate(" + properties.margin.left + "," + properties.margin.top + ")")
 
 

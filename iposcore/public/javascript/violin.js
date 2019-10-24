@@ -2,26 +2,19 @@
 
 function renderViolin(properties, init) {
 
-    const widthScaleLinear = d3.scaleLinear().range([0, properties.width])
-    const heightScale = d3.scaleBand().rangeRound([properties.margin.top, properties.height]).padding(0.3)
-    const xAxisLinear = d3.axisBottom(widthScaleLinear)
-    const yAxis = d3.axisLeft(heightScale)
-
-    const height_domain = properties.violinChartHeightDomains[properties.curr_class_label]
+    const height_domain = properties.yAxisDomain[properties.curr_class_label]
 
     const dataset = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
+
     const violins = []
-    for(let x = 0; x < height_domain.length; ++x){
+    for(let x = 0; x < height_domain.length; ++x) {
         violins.push([])
-        const curr_data =  x === 0? dataset : dataset.filter(d => d[properties.curr_class_label] === height_domain[x])
-        for (let i = 0; i < curr_data.length; ++i){
+        const curr_data = x === 0 ? dataset : dataset.filter(d => d[properties.curr_class_label] === height_domain[x])
+        for (let i = 0; i < curr_data.length; ++i) {
             violins[x].push(curr_data[i][properties.curr_attribute])
         }
         violins[x].sort((a, b) => a - b)
     }
-
-    let min_ocur = null
-    let max_ocur = 0
 
     let max = 0
     for (let i = 0; i < violins.length; ++i)
@@ -29,13 +22,20 @@ function renderViolin(properties, init) {
             max = violins[i][violins[i].length - 1]
 
     let thresholds = []
-    for (let i = 0; i <= max; ++i)
+    for (let i = 0; i <= max; i += properties.threshold_spacing)
         thresholds.push(i)
 
-    widthScaleLinear.domain([0, max])
-    heightScale.domain(height_domain)
-    xAxisLinear.scale(widthScaleLinear)
-    yAxis.scale(heightScale)
+    let temp = properties.threshold_spacing
+    let threshold_multiplier = 1
+    while(temp < 1){
+        temp *= 10
+        threshold_multiplier *= 10
+    }
+
+    properties.widthScaleLinear.domain([0, max])
+    properties.heightScale.domain(height_domain)
+    properties.xAxisLinear.scale(properties.widthScaleLinear)
+    properties.yAxis.scale(properties.heightScale)
 
     if (init) {
         properties.svg.append("g")
@@ -43,18 +43,18 @@ function renderViolin(properties, init) {
             .attr("class", "x axis")
             .style("font-size", "14px")
             .attr("transform", "translate(" + properties.margin.left + "," + properties.height + ")")
-            .call(xAxisLinear)
+            .call(properties.xAxisLinear)
 
         properties.svg.append("g")
             .attr("id", "axis-y")
             .attr("class", "y axis")
             .style("font-size", "14px")
             .attr("transform", "translate(" + properties.margin.left + ",0)")
-            .call(yAxis)
+            .call(properties.yAxis)
 
     } else {
-        properties.svg.select("#axis-x").transition("xaxis_violin").duration(500).call(xAxisLinear)
-        properties.svg.select("#axis-y").transition("yaxis_violin").duration(500).call(yAxis)
+        properties.svg.select("#axis-x").transition("xaxis_violin").duration(500).call(properties.xAxisLinear)
+        properties.svg.select("#axis-y").transition("yaxis_violin").duration(500).call(properties.yAxis)
     }
     let curr = 0
     const tip = d3.tip()
@@ -72,10 +72,11 @@ function renderViolin(properties, init) {
         .thresholds(thresholds)
         .value(d => d)
 
+    let max_ocur = 0
     const area = d3.area()
-        .y0(d => -((d.length - min_ocur) / (max_ocur - min_ocur) * heightScale.bandwidth() / height_domain.length))
-        .y1(d => (d.length - min_ocur) / (max_ocur - min_ocur) * heightScale.bandwidth() / height_domain.length)
-        .x(d => widthScaleLinear(d.x0))
+        .y0(d => -((d.length) / (max_ocur) * properties.heightScale.bandwidth() / 2))
+        .y1(d => d.length / max_ocur * properties.heightScale.bandwidth() / 2)
+        .x(d => properties.widthScaleLinear(d.x0))
         .curve(d3.curveCatmullRom)
 
     const violins_graphs = properties.svg.selectAll(".violins")
@@ -89,22 +90,18 @@ function renderViolin(properties, init) {
         .merge(violins_graphs)
         .style("stroke-width", 0)
         .attr("d", (d) => {
-            min_ocur = null
             max_ocur = 0
             let value = null
             let ocur = 0
             for (let x = 0; x < d.length; ++x) {
-                let current_value = d[x]
+                let current_value = Math.round(d[x]*threshold_multiplier)/threshold_multiplier
                 if (current_value !== value) {
-                    if (ocur !== 1) {
-                        if (min_ocur == null || min_ocur > ocur) min_ocur = ocur
+                    if (ocur !== 1)
                         if (max_ocur < ocur) max_ocur = ocur
-                    }
                     ocur = 1
                     value = current_value
                 } else ++ocur
             }
-            if (min_ocur == null || min_ocur > ocur && ocur !== 0) min_ocur = ocur
             if (max_ocur < ocur) max_ocur = ocur
             return area(histoChart(d))
         })
@@ -127,7 +124,7 @@ function renderViolin(properties, init) {
             "translate(" +
             properties.margin.left +
             "," +
-            (heightScale(height_domain[i]) + heightScale.bandwidth() / 2) +
+            (properties.heightScale(height_domain[i]) + properties.heightScale.bandwidth() / 2) +
             ")"
         )
         .style("fill", "#238443")
