@@ -90,23 +90,23 @@ function renderBoxplot(properties, init){
         // Top whisker
         {
             x1: function(datum, i) { return properties.widthScaleLinear(datum.whiskers[0]) },
-            y1: function(datum, i) { return properties.heightScale(height_domain[i]) },
+            y1: function(datum, i) { return properties.heightScale(height_domain[i]) + barWidth - barWidth / 2 },
             x2: function(datum, i) { return properties.widthScaleLinear(datum.whiskers[0]) },
-            y2: function(datum, i) { return properties.heightScale(height_domain[i]) + barWidth / 2 }
+            y2: function(datum, i) { return properties.heightScale(height_domain[i]) + barWidth + barWidth / 2 }
         },
         // Median line
         {
             x1: function(datum, i) { return properties.widthScaleLinear(datum.quartile[1]) },
-            y1: function(datum, i) { return properties.heightScale(height_domain[i]) },
+            y1: function(datum, i) { return properties.heightScale(height_domain[i]) + barWidth - barWidth / 2},
             x2: function(datum, i) { return properties.widthScaleLinear(datum.quartile[1]) },
-            y2: function(datum, i) { return properties.heightScale(height_domain[i]) + barWidth / 2 }
+            y2: function(datum, i) { return properties.heightScale(height_domain[i]) + barWidth + barWidth / 2}
         },
         // Bottom whisker
         {
             x1: function(datum, i) { return properties.widthScaleLinear(datum.whiskers[1]) },
-            y1: function(datum, i) { return properties.heightScale(height_domain[i]) },
+            y1: function(datum, i) { return properties.heightScale(height_domain[i]) + barWidth - barWidth / 2 },
             x2: function(datum, i) { return properties.widthScaleLinear(datum.whiskers[1]) },
-            y2: function(datum, i) { return properties.heightScale(height_domain[i]) + barWidth / 2 }
+            y2: function(datum, i) { return properties.heightScale(height_domain[i]) + barWidth + barWidth / 2 }
         }
     ]
 
