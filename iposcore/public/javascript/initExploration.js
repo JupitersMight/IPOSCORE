@@ -21,6 +21,11 @@ function initExploration(graphData){
             prep: (properties) => preparationViolin(properties)
         },
         {
+            name:"Histogram",
+            renderChart: (properties, init) => renderHistogram(properties, init),
+            prep: (properties) => preparationHistogram(properties)
+        },
+        {
             name:"Box Plot",
             renderChart: (properties, init) => renderBoxplot(properties, init),
             prep: (properties) => preparationBoxplot(properties)
@@ -145,9 +150,10 @@ function preparationParallel(properties){
 }
 
 function preparationBoxplot(properties){
-    // Compute a global y scale based on the global counts
-    properties.heightScale = d3.scaleBand().rangeRound([properties.margin.top, properties.height]).padding(0.3)
-    properties.widthScaleLinear = d3.scaleLinear().range([0, properties.width])
-    properties.xAxisLinear = d3.axisBottom(properties.widthScaleLinear)
-    properties.yAxis = d3.axisLeft(properties.heightScale)
+    //TODO
 }
+
+function preparationHistogram(properties){
+    //TODO
+}
+

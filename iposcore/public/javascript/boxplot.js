@@ -1,6 +1,14 @@
 "use strict"
 
 function renderBoxplot(properties, init){
+    init = true
+    d3.select(".content-svgs").selectAll("svg>*").remove()
+
+    properties.heightScale = d3.scaleBand().rangeRound([properties.margin.top, properties.height]).padding(0.3)
+    properties.widthScaleLinear = d3.scaleLinear().range([0, properties.width])
+    properties.xAxisLinear = d3.axisBottom(properties.widthScaleLinear)
+    properties.yAxis = d3.axisLeft(properties.heightScale)
+    properties.svg = d3.select(".content-svgs").select("svg")
 
     const height_domain = properties.yAxisDomain[properties.curr_class_label]
 

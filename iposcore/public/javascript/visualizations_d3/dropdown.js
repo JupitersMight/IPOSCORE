@@ -1,5 +1,11 @@
 "use strict"
 
+/**
+ * Create one or multiple dropdowns
+ * @param list_of_functions - array of functions executed when an option is selected, each function corresponds to 1 dropdown
+ * @param list_of_dropdowns_id - array of HTML id's, each id corresponds to 1 dropdown
+ * @param list_of_data - array of arrays of names, each array of names will correspond to all the options displayed in the dropdown
+ */
 function dropdown(list_of_functions, list_of_dropdowns_id, list_of_data){
     for(let i = 0; i<list_of_dropdowns_id.length; ++i) {
         let dropdown_class = d3.select(list_of_dropdowns_id[i])

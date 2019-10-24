@@ -1,16 +1,27 @@
 "use strict"
 
+/**
+ *
+ * @param data - Format : {
+ *  [
+ *     column_name: "name",
+ *     column_value: "value"
+ *  ]
+ * }
+ * @param properties - Object shared amongst views containing axis, scales, data, and other information
+ * @param init - Flag to render extra components if it's the first rendering
+ */
 function renderBarchart(data, properties, init){
 
 	// Domain of Y AXIS
 	properties.heightScale.domain([0,properties.heightMax])
 
+	// Domain of X AXIS
     const width_domain = []
 
     for (let i = 0; i < data.length; ++i)
         width_domain.push(data[i].column_name)
 
-	// Domain of X AXIS
 	properties.widthScale.domain(width_domain)
 
 	// SET scales for each axis
@@ -18,19 +29,7 @@ function renderBarchart(data, properties, init){
 	properties.yAxis.scale(properties.heightScale)
 
 	// tooltip that will pop up when mouseover columns
-    const tip = d3.tip()
-		.attr("class", "d3-tip")
-		.offset([-10, 0])
-		.html(d =>
-            "<strong>Column name: </strong>" + d.column_name + "</br>" +
-            "<strong>Value: </strong>" +  (
-            	(Math.round(d.column_value*1000000)/1000000) *
-				(properties.curr_scoring_function.indexOf("_stats") !== -1 ||
-                    properties.curr_scoring_function.indexOf("_p-value") !== -1 ?
-					1 :
-					100)
-			)
-		)
+    const tip = properties.tip
 
     // Connect tooltip to SVG
     properties.svg.call(tip)
@@ -87,7 +86,6 @@ function renderBarchart(data, properties, init){
             .style("font-size", "14px")
             .attr("transform", "translate(" + properties.margins.left + "," + properties.margins.top + ")")
             .call(properties.yAxis)
-
     }
     // Else update current axis
 	else {
