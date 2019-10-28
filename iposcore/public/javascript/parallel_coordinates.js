@@ -2,10 +2,6 @@
 
 function renderParallelCoordinate(properties){
 
-    d3.select(".content-svgs").select("svg>*").remove()
-    properties.svg = d3.select(".content-svgs").select("svg").append("g").attr("transform", "translate(" + properties.margin.left + "," + properties.margin.top + ")")
-
-
     let x = d3.scalePoint().range([0, properties.width], 1),
         y = {},
         dragging = {};

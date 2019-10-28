@@ -301,9 +301,10 @@ function defineBoxForSVG(properties, data_type, currRow, fullwidth, fullheight, 
 /**
  *
  * @param properties - Object shared amongst views containing axis, scales, data, and other information
- * @param currRow - Container for the svg
+ * @param currRow - Container
  */
 function defineBoxForSlider(properties, currRow){
+	// Add a Column for the container
     currRow.append("div").attr("class", "col-sm-12").attr("id", "slider-div")
     // Create container for slider
     properties.slidderContainer = d3.select("#slider-div")
