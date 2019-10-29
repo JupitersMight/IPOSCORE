@@ -2,26 +2,26 @@
 
 function renderViolin(properties, init) {
 
-    properties.containerViolin.svg.call(properties.containerViolin.tip)
+    properties.svg.call(properties.containerViolin.tip)
 
     if (init) {
-        properties.containerViolin.svg.append("g")
+        properties.svg.append("g")
             .attr("id", "axis-x")
             .attr("class", "x axis")
             .style("font-size", "14px")
             .attr("transform", "translate(" + properties.margin.left + "," + properties.height + ")")
-            .call(properties.containerViolin.xAxisLinear)
+            .call(properties.xAxisLinear)
 
-        properties.containerViolin.svg.append("g")
+        properties.svg.append("g")
             .attr("id", "axis-y")
             .attr("class", "y axis")
             .style("font-size", "14px")
             .attr("transform", "translate(" + properties.margin.left + ",0)")
-            .call(properties.containerViolin.yAxis)
+            .call(properties.yAxis)
 
     } else {
-        properties.containerViolin.svg.select("#axis-x").transition("xaxis_violin").duration(500).call(properties.containerViolin.xAxisLinear)
-        properties.containerViolin.svg.select("#axis-y").transition("yaxis_violin").duration(500).call(properties.containerViolin.yAxis)
+        properties.svg.select("#axis-x").transition("xaxis_violin").duration(500).call(properties.xAxisLinear)
+        properties.svg.select("#axis-y").transition("yaxis_violin").duration(500).call(properties.yAxis)
     }
 
     let curr = 0
@@ -35,12 +35,12 @@ function renderViolin(properties, init) {
 
     let max_ocur = 0
     const area = d3.area()
-        .y0(d => -((d.length) / (max_ocur) * properties.containerViolin.heightScale.bandwidth() / 2))
-        .y1(d => d.length / max_ocur * properties.containerViolin.heightScale.bandwidth() / 2)
-        .x(d => properties.containerViolin.widthScaleLinear(d.x0))
+        .y0(d => -((d.length) / (max_ocur) * properties.heightScale.bandwidth() / 2))
+        .y1(d => d.length / max_ocur * properties.heightScale.bandwidth() / 2)
+        .x(d => properties.widthScaleLinear(d.x0))
         .curve(d3.curveCatmullRom)
 
-    const violins_graphs = properties.containerViolin.svg.selectAll(".violins")
+    const violins_graphs = properties.svg.selectAll(".violins")
         .data(properties.containerViolin.data)
 
     violins_graphs.exit().remove()
@@ -85,7 +85,7 @@ function renderViolin(properties, init) {
             "translate(" +
             properties.margin.left +
             "," +
-            (properties.containerViolin.heightScale(properties.containerViolin.height_domain[i]) + properties.containerViolin.heightScale.bandwidth() / 2) +
+            (properties.heightScale(properties.containerViolin.height_domain[i]) + properties.heightScale.bandwidth() / 2) +
             ")"
         )
         .style("fill", "#238443")

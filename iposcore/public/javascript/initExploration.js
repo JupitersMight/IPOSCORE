@@ -75,24 +75,24 @@ function initExploration(graphData){
     }
     properties.threshold_spacing = properties.curr_data_type === "Numerical_Continuous" ? 0.1 : 1
     // Initiate properties for each view
+    // Common for each view
+    properties.widthScaleLinear = d3.scaleLinear().range([0, properties.width])
+    properties.heightScale = d3.scaleBand().rangeRound([properties.margin.top, properties.height]).padding(0.3)
+    properties.xAxisLinear = d3.axisBottom(properties.widthScaleLinear)
+    properties.yAxis = d3.axisLeft(properties.heightScale)
+    properties.svg = d3.select(".content-svgs").select("svg")
 
     // Properties for violin
     properties.containerViolin = {}
-
-    properties.containerViolin.widthScaleLinear = d3.scaleLinear().range([0, properties.width])
-    properties.containerViolin.heightScale = d3.scaleBand().rangeRound([properties.margin.top, properties.height]).padding(0.3)
-    properties.containerViolin.xAxisLinear = d3.axisBottom(properties.widthScaleLinear)
-    properties.containerViolin.yAxis = d3.axisLeft(properties.heightScale)
-    properties.containerViolin.svg = d3.select(".content-svgs").select("svg")
 
     // Properties for Parallel
     properties.containerParallel = {}
 
     // Properties for Boxplot
+    properties.containerBoxplot = {}
 
     // Properties for Histogram
-
-
+    properties.containerHistogram = {}
 
     // Fill dropdowns
     dropdown(
@@ -165,6 +165,7 @@ function preparationViolin(properties, init){
     if(init) {
         d3.select(".content-svgs").selectAll("svg>*").remove()
     }
+    properties.svg = d3.select(".content-svgs").select("svg")
     // Retrieve height domain of current label
     properties.containerViolin.height_domain = properties.yAxisDomain[properties.curr_class_label]
 
@@ -207,10 +208,10 @@ function preparationViolin(properties, init){
     }
 
     // Setters for domain and ranges of axis and scales
-    properties.containerViolin.widthScaleLinear.domain([0, properties.containerViolin.max])
-    properties.containerViolin.heightScale.domain(properties.containerViolin.height_domain)
-    properties.containerViolin.xAxisLinear.scale(properties.containerViolin.widthScaleLinear)
-    properties.containerViolin.yAxis.scale(properties.containerViolin.heightScale)
+    properties.widthScaleLinear.domain([0, properties.containerViolin.max])
+    properties.heightScale.domain(properties.containerViolin.height_domain)
+    properties.xAxisLinear.scale(properties.widthScaleLinear)
+    properties.yAxis.scale(properties.heightScale)
 
     // Tooltip displayed
     properties.containerViolin.tip = d3.tip()
@@ -228,7 +229,61 @@ function preparationParallel(properties){
 }
 
 function preparationBoxplot(properties){
-    //TODO
+    properties.svg = d3.select(".content-svgs").select("svg")
+    d3.select(".content-svgs").selectAll("svg>*").remove()
+
+    properties.containerBoxplot.height_domain = properties.yAxisDomain[properties.curr_class_label]
+
+    const dataset = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
+
+    const boxs_data = []
+    for(let x = 0; x < properties.containerBoxplot.height_domain.length; ++x) {
+        boxs_data.push([])
+        const curr_data = x === 0 ? dataset : dataset.filter(d => d[properties.curr_class_label] === properties.containerBoxplot.height_domain[x])
+        for (let i = 0; i < curr_data.length; ++i) {
+            boxs_data[x].push(curr_data[i][properties.curr_attribute])
+        }
+        boxs_data[x].sort((a, b) => a - b)
+    }
+
+    // Prepare the data for the box plots
+    properties.containerBoxplot.boxPlotData = []
+    for (let x = 0; x< boxs_data.length; ++x){
+
+        let record = {}
+        boxs_data[x] = boxs_data[x].sort((a, b) => a - b)
+        let localMin = boxs_data[x][0]
+        let localMax = boxs_data[x][boxs_data[x].length-1]
+
+        record["key"] = x == 0 ? "All" : ""+x
+        record["counts"] = boxs_data[x]
+        record["quartile"] = [
+            d3.quantile(boxs_data[x], 0.25),
+            d3.quantile(boxs_data[x], 0.5),
+            d3.quantile(boxs_data[x], 0.75)
+        ]
+        record["whiskers"] = [localMin, localMax]
+
+        properties.containerBoxplot.boxPlotData.push(record)
+    }
+
+    let max = 0
+    for (let i = 0; i < properties.containerBoxplot.boxPlotData.length; ++i)
+        if (max < properties.containerBoxplot.boxPlotData[i].counts[properties.containerBoxplot.boxPlotData[i].counts.length - 1])
+            max = properties.containerBoxplot.boxPlotData[i].counts[properties.containerBoxplot.boxPlotData[i].counts.length - 1]
+
+
+    properties.widthScaleLinear.domain([0, max])
+    properties.heightScale.domain(properties.containerBoxplot.height_domain)
+    properties.xAxisLinear.scale(properties.widthScaleLinear)
+    properties.yAxis.scale(properties.heightScale)
+
+    // Tooltip displayed
+    properties.containerBoxplot.tip = d3.tip()
+        .attr("class", "d3-tip")
+        .offset([-10, 0])
+        .html(d => "<strong></strong>")
+
 }
 
 function preparationHistogram(properties){
