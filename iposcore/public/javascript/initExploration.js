@@ -291,6 +291,8 @@ function preparationBoxplot(properties){
 
 function preparationHistogram(properties){
     d3.select(".content-svgs").selectAll("svg>*").remove()
+    d3.select(".content-svgs").selectAll("select > *").remove()
+    d3.select(".content-svgs").selectAll("select").remove()
     properties.svg = d3.select(".content-svgs").select("svg")
 
     const dataset = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
@@ -312,5 +314,6 @@ function preparationHistogram(properties){
 
     properties.widthScaleLinear.domain([-1, properties.containerHistogram.max])
 
+    properties.containerHistogram.current = 0
 }
 
