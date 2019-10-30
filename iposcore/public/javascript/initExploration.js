@@ -94,6 +94,9 @@ function initExploration(graphData){
     // Properties for Histogram
     properties.containerHistogram = {}
 
+    properties.containerHistogram.heightScale = d3.scaleLinear().range([properties.height, 0])
+    properties.containerHistogram.yAxis = d3.axisLeft(properties.containerHistogram.heightScale)
+
     // Fill dropdowns
     dropdown(
         // List of functions for each dropdown
@@ -287,6 +290,27 @@ function preparationBoxplot(properties){
 }
 
 function preparationHistogram(properties){
-    //TODO
+    d3.select(".content-svgs").selectAll("svg>*").remove()
+    properties.svg = d3.select(".content-svgs").select("svg")
+
+    const dataset = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
+
+    properties.containerHistogram.hists_data = []
+    for(let x = 0; x < properties.yAxisDomain[properties.curr_class_label].length; ++x) {
+        properties.containerHistogram.hists_data.push([])
+        const curr_data = x === 0 ? dataset : dataset.filter(d => d[properties.curr_class_label] === properties.yAxisDomain[properties.curr_class_label][x])
+        for (let i = 0; i < curr_data.length; ++i) {
+            properties.containerHistogram.hists_data[x].push(curr_data[i][properties.curr_attribute])
+        }
+        properties.containerHistogram.hists_data[x].sort((a, b) => a - b)
+    }
+
+    properties.containerHistogram.max = 0
+    for (let i = 0; i < properties.containerHistogram.hists_data.length; ++i)
+        if (properties.containerHistogram.max < properties.containerHistogram.hists_data[i][properties.containerHistogram.hists_data[i].length - 1])
+            properties.containerHistogram.max = properties.containerHistogram.hists_data[i][properties.containerHistogram.hists_data[i].length - 1]
+
+    properties.widthScaleLinear.domain([-1, properties.containerHistogram.max])
+
 }
 
