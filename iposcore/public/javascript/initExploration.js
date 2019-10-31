@@ -78,8 +78,10 @@ function initExploration(graphData){
     // Common for each view
     properties.widthScaleLinear = d3.scaleLinear().range([0, properties.width])
     properties.heightScale = d3.scaleBand().rangeRound([properties.margin.top, properties.height]).padding(0.3)
+    properties.heightScaleLinear = d3.scaleLinear().range([properties.height, 0])
     properties.xAxisLinear = d3.axisBottom(properties.widthScaleLinear)
     properties.yAxis = d3.axisLeft(properties.heightScale)
+    properties.yAxisLinear = d3.axisLeft(properties.heightScaleLinear)
     properties.svg = d3.select(".content-svgs").select("svg")
 
     // Properties for violin
@@ -94,8 +96,7 @@ function initExploration(graphData){
     // Properties for Histogram
     properties.containerHistogram = {}
 
-    properties.containerHistogram.heightScale = d3.scaleLinear().range([properties.height, 0])
-    properties.containerHistogram.yAxis = d3.axisLeft(properties.containerHistogram.heightScale)
+    properties.containerHistogram.yAxis =
 
     // Fill dropdowns
     dropdown(
@@ -131,7 +132,7 @@ function initExploration(graphData){
                     .data(Object.keys(properties.data[properties.curr_data_type]))
                     .enter()
                     .append("option")
-                    .attr("value", d  => d)
+                    .attr("value", d => d)
                     .text(d => d)
                 // Render new vizualization
                 properties.curr_visualization.prep(properties, false)
@@ -167,6 +168,8 @@ function initExploration(graphData){
 function preparationViolin(properties, init){
     if(init) {
         d3.select(".content-svgs").selectAll("svg>*").remove()
+        d3.select(".content-svgs").selectAll("select > *").remove()
+        d3.select(".content-svgs").selectAll("select").remove()
     }
     properties.svg = d3.select(".content-svgs").select("svg")
     // Retrieve height domain of current label
@@ -223,16 +226,20 @@ function preparationViolin(properties, init){
         .html(d => "<strong></strong>")
 }
 
-function preparationParallel(properties){
+function preparationParallel(properties, init){
     d3.select(".content-svgs").select("svg>*").remove()
+    d3.select(".content-svgs").selectAll("select > *").remove()
+    d3.select(".content-svgs").selectAll("select").remove()
     properties.svg = d3.select(".content-svgs")
         .select("svg")
         .append("g")
         .attr("transform", "translate(" + properties.margin.left + "," + properties.margin.top + ")")
 }
 
-function preparationBoxplot(properties){
+function preparationBoxplot(properties, init){
     properties.svg = d3.select(".content-svgs").select("svg")
+    d3.select(".content-svgs").selectAll("select > *").remove()
+    d3.select(".content-svgs").selectAll("select").remove()
     d3.select(".content-svgs").selectAll("svg>*").remove()
 
     properties.containerBoxplot.height_domain = properties.yAxisDomain[properties.curr_class_label]
@@ -281,15 +288,24 @@ function preparationBoxplot(properties){
     properties.xAxisLinear.scale(properties.widthScaleLinear)
     properties.yAxis.scale(properties.heightScale)
 
+    function average(array){
+        let acc = 0
+        for(let i = 0; i < array.length; ++i)
+            acc += Number(array[i])
+        return acc / array.length
+    }
     // Tooltip displayed
     properties.containerBoxplot.tip = d3.tip()
         .attr("class", "d3-tip")
         .offset([-10, 0])
-        .html(d => "<strong></strong>")
-
+        .html(d => "<strong> Average: " + average(d.counts) + " / Median: " + d.quartile[1] + "<br>" +
+            "</strong> Min: "+ d.whiskers[0]+ " / Max: " + d.whiskers[1] + " <br>" +
+            "</strong> Quartile 1: "+ d.quartile[0]+ " / Quartile 3: " + d.quartile[2] + " <br>"
+        )
+    properties.svg.call(properties.containerBoxplot.tip)
 }
 
-function preparationHistogram(properties){
+function preparationHistogram(properties, init){
     d3.select(".content-svgs").selectAll("svg>*").remove()
     d3.select(".content-svgs").selectAll("select > *").remove()
     d3.select(".content-svgs").selectAll("select").remove()
@@ -307,13 +323,21 @@ function preparationHistogram(properties){
         properties.containerHistogram.hists_data[x].sort((a, b) => a - b)
     }
 
-    properties.containerHistogram.max = 0
+    let max = 0
     for (let i = 0; i < properties.containerHistogram.hists_data.length; ++i)
-        if (properties.containerHistogram.max < properties.containerHistogram.hists_data[i][properties.containerHistogram.hists_data[i].length - 1])
-            properties.containerHistogram.max = properties.containerHistogram.hists_data[i][properties.containerHistogram.hists_data[i].length - 1]
+        if (max < properties.containerHistogram.hists_data[i][properties.containerHistogram.hists_data[i].length - 1])
+            max = properties.containerHistogram.hists_data[i][properties.containerHistogram.hists_data[i].length - 1]
 
-    properties.widthScaleLinear.domain([-1, properties.containerHistogram.max])
+    properties.widthScaleLinear.domain([0, max])
 
     properties.containerHistogram.current = 0
+
+    // Tooltip displayed
+    properties.containerHistogram.tip = d3.tip()
+        .attr("class", "d3-tip")
+        .offset([-10, 0])
+        .html(d => "<strong> Occurrences: " + d.length)
+
+    properties.svg.call(properties.containerHistogram.tip)
 }
 
