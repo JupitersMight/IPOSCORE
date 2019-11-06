@@ -34,7 +34,7 @@ function renderViolin(properties, init) {
             .attr("dy", "1em")
             .style("text-anchor", "middle")
             .style("font-size", "20px")
-            .text(properties.curr_class_label)
+            .text(properties.curr_class_label + (properties.curr_class_label === properties.class_labels[1]? "(Grade)":""))
 
     } else {
         properties.svg.select("#axis-x").transition("xaxis_violin").duration(500).call(properties.xAxisLinear)

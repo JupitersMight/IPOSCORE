@@ -322,7 +322,8 @@ function preparationBoxplot(properties, init){
 
 function preparationHistogram(properties, init){
     d3.select(".content-svgs").selectAll("svg>*").remove()
-    properties.svg = d3.select(".content-svgs").select("svg")
+    properties.svg = d3.select(".content-svgs").select("svg").append("g")
+        .attr("transform", "translate(" + properties.margin.left + ",0)")
 
     const dataset = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
 
@@ -332,7 +333,16 @@ function preparationHistogram(properties, init){
     properties.containerHistogram.hists_data_extra_info = []
     for(let x = 0; x < properties.yAxisDomain[properties.curr_class_label].length; ++x) {
         properties.containerHistogram.hists_data.push([])
-        const curr_data = x === 0 ? dataset : dataset.filter(d => d[properties.curr_class_label] === properties.yAxisDomain[properties.curr_class_label][x])
+        let compare
+        if(properties.curr_class_label === properties.class_labels[0]) {
+            if (properties.yAxisDomain[properties.curr_class_label][x] === "No")
+                compare = "0"
+            else if (properties.yAxisDomain[properties.curr_class_label][x] === "Yes")
+                compare = "1"
+        }
+        else
+            compare = properties.yAxisDomain[properties.curr_class_label][x]
+        const curr_data = x === 0 ? dataset : dataset.filter(d => d[properties.curr_class_label] === compare)
         // Calculate mean
         let mean = 0
         for (let i = 0; i < curr_data.length; ++i) {
@@ -367,7 +377,7 @@ function preparationHistogram(properties, init){
         if (max < properties.containerHistogram.hists_data[i][properties.containerHistogram.hists_data[i].length - 1])
             max = properties.containerHistogram.hists_data[i][properties.containerHistogram.hists_data[i].length - 1]
 
-    properties.widthScaleLinear.domain([-1, (max+Math.round(max/3))])
+    properties.widthScaleLinear.domain([-1, max+properties.threshold_spacing*2])
 
     // Tooltip displayed
     properties.containerHistogram.tip = d3.tip()

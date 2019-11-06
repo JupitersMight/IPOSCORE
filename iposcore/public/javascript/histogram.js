@@ -18,7 +18,6 @@ function renderHistogram(properties, init){
     for (let i = properties.widthScaleLinear.domain()[0]; i <= properties.widthScaleLinear.domain()[1]; i += properties.threshold_spacing)
         ticks.push(i)
 
-    // set the parameters for the histogram
     let histogram = d3.histogram()
 
     histogram
@@ -75,6 +74,7 @@ function renderHistogram(properties, init){
             )
             .attr("width", d => properties.widthScaleLinear(d.x1) - properties.widthScaleLinear(d.x0))
             .attr("height", d => properties.height - properties.heightScaleLinear(d.length))
+            .attr("z-index", d => 1000-d.length)
             .style("fill", "#158896")
             .style("opacity", 0.4)
             .on('mouseover', function (d, i) {
@@ -112,15 +112,33 @@ function renderHistogram(properties, init){
             .attr("transform", "translate(" + properties.margin.left + "," + properties.height + ")")
             .call(properties.xAxisLinear)
 
+        properties.svg.append("text")
+            .attr("id","text_axis_x")
+            .attr("transform","translate(" + (properties.margin.left + properties.width/2) + " ," + (properties.height + properties.margin.top + 20) + ")")
+            .style("text-anchor", "middle")
+            .style("font-size", "20px")
+            .text(properties.curr_attribute)
+
         svg.append("g")
             .attr("id", "axis-y")
             .attr("class", "y axis")
             .style("font-size", "14px")
             .attr("transform", "translate(" + properties.margin.left + ",0)")
             .call( properties.yAxisLinear)
+
+        properties.svg.append("text")
+            .attr("id","text_axis_y")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - properties.margin.left)
+            .attr("x",0 - (properties.height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .style("font-size", "20px")
+            .text("Number of Occurances")
     }
     else {
         properties.svg.select("#axis-x").transition("xaxis_violin").duration(500).call(properties.xAxisLinear)
         properties.svg.select("#axis-y").transition("yaxis_violin").duration(500).call(properties.yAxisLinear)
+        properties.svg.select("#text_axis_x").text(properties.curr_attribute)
     }
 }
