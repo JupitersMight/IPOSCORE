@@ -7,9 +7,9 @@ function initExploration(graphData){
     properties.data = graphData
     properties.margin = {
         top: 50,
-        right: 100,
+        right: 30,
         bottom: 30,
-        left: 100
+        left: 60
     }
 
     properties.class_labels = ["complicação pós-cirúrgica", "classificação clavien-dindo"]
@@ -65,9 +65,10 @@ function initExploration(graphData){
     for(let i = 0; i<Object.keys(properties.yAxisDomain).length; ++i){
         const height_domain = []
         height_domain.push("All")
-        if(Object.keys(properties.yAxisDomain)[i] === "complicação pós-cirúrgica")
-            for(let i = 0; i < 2; ++i)
-                height_domain.push(""+i)
+        if(Object.keys(properties.yAxisDomain)[i] === "complicação pós-cirúrgica") {
+            height_domain.push("No")
+            height_domain.push("Yes")
+        }
         if(Object.keys(properties.yAxisDomain)[i] === "classificação clavien-dindo")
             for(let i = 0; i < 8; ++i)
                 height_domain.push(""+i)
@@ -168,10 +169,11 @@ function initExploration(graphData){
 function preparationViolin(properties, init){
     if(init) {
         d3.select(".content-svgs").selectAll("svg>*").remove()
-        d3.select(".content-svgs").selectAll("select > *").remove()
-        d3.select(".content-svgs").selectAll("select").remove()
+        properties.svg = d3.select(".content-svgs").select("svg")
+            .append("g")
+            .attr("transform", "translate(" + properties.margin.left + ",0)")
     }
-    properties.svg = d3.select(".content-svgs").select("svg")
+
     // Retrieve height domain of current label
     properties.containerViolin.height_domain = properties.yAxisDomain[properties.curr_class_label]
 
@@ -184,7 +186,16 @@ function preparationViolin(properties, init){
         // Push an empty array to fill with values
         properties.containerViolin.data.push([])
         // Select the data based on height domain, if in the first position ("all") all the dataset
-        const curr_data = x === 0 ? dataset : dataset.filter(d => d[properties.curr_class_label] === properties.containerViolin.height_domain[x])
+        let compare
+        if(properties.curr_class_label === properties.class_labels[0]) {
+            if (properties.containerViolin.height_domain[x] === "No")
+                compare = "0"
+            else if (properties.containerViolin.height_domain[x] === "Yes")
+                compare = "1"
+        }
+        else
+            compare = properties.containerViolin.height_domain[x]
+        const curr_data = x === 0 ? dataset : dataset.filter(d => d[properties.curr_class_label] === compare)
         for (let i = 0; i < curr_data.length; ++i) {
             properties.containerViolin.data[x].push(curr_data[i][properties.curr_attribute])
         }
@@ -228,8 +239,6 @@ function preparationViolin(properties, init){
 
 function preparationParallel(properties, init){
     d3.select(".content-svgs").select("svg>*").remove()
-    d3.select(".content-svgs").selectAll("select > *").remove()
-    d3.select(".content-svgs").selectAll("select").remove()
     properties.svg = d3.select(".content-svgs")
         .select("svg")
         .append("g")
@@ -237,10 +246,9 @@ function preparationParallel(properties, init){
 }
 
 function preparationBoxplot(properties, init){
-    properties.svg = d3.select(".content-svgs").select("svg")
-    d3.select(".content-svgs").selectAll("select > *").remove()
-    d3.select(".content-svgs").selectAll("select").remove()
     d3.select(".content-svgs").selectAll("svg>*").remove()
+    properties.svg = d3.select(".content-svgs").select("svg").append("g")
+        .attr("transform", "translate(" + properties.margin.left + ",0)")
 
     properties.containerBoxplot.height_domain = properties.yAxisDomain[properties.curr_class_label]
 
@@ -249,7 +257,14 @@ function preparationBoxplot(properties, init){
     const boxs_data = []
     for(let x = 0; x < properties.containerBoxplot.height_domain.length; ++x) {
         boxs_data.push([])
-        const curr_data = x === 0 ? dataset : dataset.filter(d => d[properties.curr_class_label] === properties.containerBoxplot.height_domain[x])
+        let compare
+        if(properties.containerBoxplot.height_domain[x] === "No")
+            compare = "0"
+        else if(properties.containerBoxplot.height_domain[x] === "Yes")
+            compare = "1"
+        else
+            compare = properties.containerBoxplot.height_domain[x]
+        const curr_data = x === 0 ? dataset : dataset.filter(d => d[properties.curr_class_label] === compare)
         for (let i = 0; i < curr_data.length; ++i) {
             boxs_data[x].push(curr_data[i][properties.curr_attribute])
         }
@@ -307,20 +322,44 @@ function preparationBoxplot(properties, init){
 
 function preparationHistogram(properties, init){
     d3.select(".content-svgs").selectAll("svg>*").remove()
-    d3.select(".content-svgs").selectAll("select > *").remove()
-    d3.select(".content-svgs").selectAll("select").remove()
     properties.svg = d3.select(".content-svgs").select("svg")
 
     const dataset = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
 
+    // Treated data for histogram bins
     properties.containerHistogram.hists_data = []
+    // Array with object {mean ,standard_deviation}
+    properties.containerHistogram.hists_data_extra_info = []
     for(let x = 0; x < properties.yAxisDomain[properties.curr_class_label].length; ++x) {
         properties.containerHistogram.hists_data.push([])
         const curr_data = x === 0 ? dataset : dataset.filter(d => d[properties.curr_class_label] === properties.yAxisDomain[properties.curr_class_label][x])
+        // Calculate mean
+        let mean = 0
         for (let i = 0; i < curr_data.length; ++i) {
-            properties.containerHistogram.hists_data[x].push(curr_data[i][properties.curr_attribute])
+            mean += Number(curr_data[i][properties.curr_attribute])
+            properties.containerHistogram.hists_data[x].push(Number(curr_data[i][properties.curr_attribute]))
         }
+        mean = mean / curr_data.length
+        // Sort hist data
         properties.containerHistogram.hists_data[x].sort((a, b) => a - b)
+        //Calculate Standard Deviation
+        let acc = 0
+        for (let i = 0; i < curr_data.length; ++i) {
+            acc = acc + (mean - Number(curr_data[i][properties.curr_attribute]))*(mean - Number(curr_data[i][properties.curr_attribute]))
+        }
+        const std = Math.sqrt(acc/(curr_data.length-1))
+        //Unique Values
+        let uniques = []
+        const max = d3.max(properties.containerHistogram.hists_data[x]) + properties.threshold_spacing*2
+        for(let i = -1; i < max; i += properties.threshold_spacing){
+            uniques.push(i)
+        }
+        // Push extra info
+        properties.containerHistogram.hists_data_extra_info.push({
+            mean,
+            std,
+            uniques
+        })
     }
 
     let max = 0
@@ -328,9 +367,7 @@ function preparationHistogram(properties, init){
         if (max < properties.containerHistogram.hists_data[i][properties.containerHistogram.hists_data[i].length - 1])
             max = properties.containerHistogram.hists_data[i][properties.containerHistogram.hists_data[i].length - 1]
 
-    properties.widthScaleLinear.domain([0, max])
-
-    properties.containerHistogram.current = 0
+    properties.widthScaleLinear.domain([-1, (max+Math.round(max/3))])
 
     // Tooltip displayed
     properties.containerHistogram.tip = d3.tip()

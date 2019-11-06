@@ -2,14 +2,33 @@
 
 function renderHistogram(properties, init){
     init = true
-    // append the svg object to the body of the page
     let svg = properties.svg
+
+    let min_val = properties.containerHistogram.hists_data[0][0]
+    let max_val = 0
+    for(let i = 0; i < properties.containerHistogram.hists_data.length; ++i){
+        let curr_min = d3.min(properties.containerHistogram.hists_data[i])
+        let curr_max = d3.max(properties.containerHistogram.hists_data[i])
+        if(curr_min < min_val)
+            min_val = curr_min
+        if(curr_max > max_val)
+            max_val = curr_max
+    }
+    let ticks = []
+    for (let i = properties.widthScaleLinear.domain()[0]; i <= properties.widthScaleLinear.domain()[1]; i += properties.threshold_spacing)
+        ticks.push(i)
 
     // set the parameters for the histogram
     let histogram = d3.histogram()
+
+    histogram
         .domain(properties.widthScaleLinear.domain())
-        .thresholds(properties.widthScaleLinear.ticks(40))
+        .thresholds(ticks)
         .value(d => d)
+
+    const lineFunction = d3.line()
+        .x(d => properties.margin.left + properties.widthScaleLinear(ticks[d.indice]))
+        .y(d => properties.heightScaleLinear(d.value))
 
 
     let max = 0
@@ -17,39 +36,73 @@ function renderHistogram(properties, init){
         if (d3.max(histogram(properties.containerHistogram.hists_data[i]), d => d.length) > max)
             max = d3.max(histogram(properties.containerHistogram.hists_data[i]), d => d.length)
 
-
     properties.heightScaleLinear.domain([0,max + Math.round(max/5)])
 
-    const colors = ["PALETURQUOISE", "AQUAMARINE", "TURQUOISE", "MEDIUMTURQUOISE", "DARKTURQUOISE", "CADETBLUE", "STEELBLUE", "LIGHTSTEELBLUE", "POWDERBLUE"]
+    const colors = ["Red", "Green", "Blue", "Yellow", "Magenta", "Cyan", "Orange", "Purple", "BLACK"]
 
-    let bins = histogram(properties.containerHistogram.hists_data[properties.containerHistogram.current])
-    // append the bars for series i
-    let bars = svg.selectAll("rect")
-        .data(bins)
+    for(let x = 0; x < properties.containerHistogram.hists_data.length; ++x) {
+        let lineData = []
+        let bins = histogram(properties.containerHistogram.hists_data[x])
+        let curr_max = 0
+        for(let i = 0; i < bins.length; ++i)
+            if(curr_max < bins[i].length)
+                curr_max = bins[i].length
 
-    bars.exit().remove()
-    bars.enter()
-        .append("rect").merge(bars)
-        .attr("id",(d, i) => "rect_"+i)
-        .attr("x", 1)
-        .attr("transform", d =>
-            "translate(" + (properties.margin.left + properties.widthScaleLinear(d.x0)) + "," + properties.heightScaleLinear(d.length) + ")"
-        )
-        .attr("width", d => properties.widthScaleLinear(d.x1) - properties.widthScaleLinear(d.x0))
-        .attr("height", d =>  properties.height - properties.heightScaleLinear(d.length))
-        .style("fill", colors[properties.containerHistogram.current])
-        .on('mouseover', function(d, i) {
-            d3.select('#rect_' + i)
-                .transition()
-                .style('opacity', 0.5)
-            properties.containerHistogram.tip.show(d, this)
+        const mean = properties.containerHistogram.hists_data_extra_info[x].mean
+        const std =  properties.containerHistogram.hists_data_extra_info[x].std
+        const uniques = properties.containerHistogram.hists_data_extra_info[x].uniques
+        // This is the first part of the formula for the norm
+        const ni1 = 1 / (Math.sqrt(2 * Math.PI * std * std))
+
+        for(let c=0; c<uniques.length; c++){
+            // This is the second part of the formula for the norm
+            let ni2 = Math.exp(-1*((uniques[c]-mean)*(uniques[c]-mean))/(2* (std*std)))
+
+            lineData.push(Math.round(ni1*ni2*max))
+        }
+
+        // append the bars for series i
+        let bars = svg.selectAll("rect"+x)
+            .data(bins)
+
+        bars.exit().remove()
+        bars.enter()
+            .append("rect").merge(bars)
+            .attr("id", (d, i) => "rect_" + i)
+            .attr("x", 1)
+            .attr("transform", d =>
+                "translate(" + (properties.margin.left + properties.widthScaleLinear(d.x0)) + "," + properties.heightScaleLinear(d.length) + ")"
+            )
+            .attr("width", d => properties.widthScaleLinear(d.x1) - properties.widthScaleLinear(d.x0))
+            .attr("height", d => properties.height - properties.heightScaleLinear(d.length))
+            .style("fill", "#158896")
+            .style("opacity", 0.4)
+            .on('mouseover', function (d, i) {
+                d3.selectAll('#rect' + x).select('#rect_' + i)
+                    .transition()
+                    .style('opacity', 0.2)
+                properties.containerHistogram.tip.show(d, this)
+            })
+            .on('mouseout', function (d, i) {
+                d3.selectAll('#rect' + x).select('#rect_' + i)
+                    .transition()
+                    .style('opacity', 0.4)
+                properties.containerHistogram.tip.hide(d, this)
+            })
+
+        lineData = lineData.map( function(d, i)
+        {
+            return {
+                value: d,
+                indice: i
+            }
         })
-        .on('mouseout', function(d, i) {
-            d3.select('#rect_' + i)
-                .transition()
-                .style('opacity', 1)
-            properties.containerHistogram.tip.hide(d, this)
-        })
+        svg.append("path")
+            .attr("d", lineFunction(lineData))
+            .attr("stroke", colors[x])
+            .attr("stroke-width", 2)
+            .attr("fill", "none");
+    }
 
     if(init) {
         svg.append("g")
@@ -65,26 +118,6 @@ function renderHistogram(properties, init){
             .style("font-size", "14px")
             .attr("transform", "translate(" + properties.margin.left + ",0)")
             .call( properties.yAxisLinear)
-
-        if(d3.select("#hist_drop").empty()){
-            let dropdown_class = d3.select(".content-svgs").select(".row")
-
-            dropdown_class
-                .append("select")
-                .attr("id","hist_drop")
-                .selectAll("option")
-                .data(properties.yAxisDomain[properties.curr_class_label])
-                .enter()
-                .append("option")
-                .attr("value", d => d)
-                .text(d => d)
-
-            dropdown_class.on("change", function () {
-                let value = d3.select(this).select("select").property("value")
-                properties.containerHistogram.current = ((value == "All") ? 0 : (Number(value) + 1))
-                renderHistogram(properties, init)
-            })
-        }
     }
     else {
         properties.svg.select("#axis-x").transition("xaxis_violin").duration(500).call(properties.xAxisLinear)

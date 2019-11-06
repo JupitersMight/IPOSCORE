@@ -12,6 +12,13 @@ function renderViolin(properties, init) {
             .attr("transform", "translate(" + properties.margin.left + "," + properties.height + ")")
             .call(properties.xAxisLinear)
 
+        properties.svg.append("text")
+            .attr("id","text_axis_x")
+            .attr("transform","translate(" + (properties.margin.left + properties.width/2) + " ," + (properties.height + properties.margin.top + 20) + ")")
+            .style("text-anchor", "middle")
+            .style("font-size", "20px")
+            .text(properties.curr_attribute)
+
         properties.svg.append("g")
             .attr("id", "axis-y")
             .attr("class", "y axis")
@@ -19,9 +26,24 @@ function renderViolin(properties, init) {
             .attr("transform", "translate(" + properties.margin.left + ",0)")
             .call(properties.yAxis)
 
+        properties.svg.append("text")
+            .attr("id","text_axis_y")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - properties.margin.left)
+            .attr("x",0 - (properties.height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .style("font-size", "20px")
+            .text(properties.curr_class_label)
+
     } else {
         properties.svg.select("#axis-x").transition("xaxis_violin").duration(500).call(properties.xAxisLinear)
         properties.svg.select("#axis-y").transition("yaxis_violin").duration(500).call(properties.yAxis)
+        properties.svg.select("#text_axis_x").text(properties.curr_attribute)
+        if(properties.curr_class_label === properties.class_labels[1])
+            properties.svg.select("#text_axis_y").text(properties.curr_class_label+"(Grade)")
+        else
+            properties.svg.select("#text_axis_y").text(properties.curr_class_label)
     }
 
     let curr = 0
