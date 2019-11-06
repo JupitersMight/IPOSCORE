@@ -47,7 +47,7 @@ function initExploration(graphData){
     // SVG Setup
     const fullwidth = 1024
     const fullheight = 768
-    properties.width = fullwidth - properties.margin.left - properties.margin.right
+    properties.width = fullwidth - properties.margin.left - properties.margin.right - properties.margin.left
     properties.height = fullheight - properties.margin.top - properties.margin.bottom
     properties.svg = d3.select(".content-svgs")
         .append("div")
@@ -55,7 +55,7 @@ function initExploration(graphData){
         .append("div")
         .attr("class","col-sm-12")
         .append("svg")
-        .attr("width", properties.width + properties.margin.left + properties.margin.right)
+        .attr("width", properties.width + properties.margin.left + properties.margin.left + properties.margin.right)
         .attr("height", properties.height + properties.margin.top + properties.margin.bottom)
     // Axis for charts
     properties.yAxisDomain = {
