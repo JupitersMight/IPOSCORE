@@ -18,25 +18,28 @@ function initExploration(graphData){
         {
             name:"Violin Charts",
             renderChart: (properties, init) => renderViolin(properties, init),
-            prep: (properties, init) => preparationViolin(properties, init)
+            prep: (properties, init) => preparationViolin(properties, init),
+            data_types: ["Categorical", "Numerical_Discrete", "Numerical_Continuous"]
         },
         {
             name:"Histogram",
             renderChart: (properties, init) => renderHistogram(properties, init),
-            prep: (properties) => preparationHistogram(properties)
+            prep: (properties) => preparationHistogram(properties),
+            data_types: ["Binary", "Categorical", "Numerical_Discrete", "Numerical_Continuous"]
         },
         {
             name:"Box Plot",
             renderChart: (properties, init) => renderBoxplot(properties, init),
-            prep: (properties) => preparationBoxplot(properties)
+            prep: (properties) => preparationBoxplot(properties),
+            data_types: ["Numerical_Discrete", "Numerical_Contiguous"]
         },
         {
             name: "Parallel Coordinates",
             renderChart: (properties, init) => renderParallelCoordinate(properties, init),
-            prep: (properties) => preparationParallel(properties)
+            prep: (properties) => preparationParallel(properties),
+            data_types: ["Binary", "Categorical", "Numerical_Discrete", "Numerical_Continuous"]
         }
     ]
-
     // Init with default values
     properties.curr_data_type = properties.data_types[1]
     properties.curr_visualization = properties.visualizations[0]
@@ -44,6 +47,8 @@ function initExploration(graphData){
     properties.curr_attribute = Object.keys(properties.data[properties.curr_data_type])[0]
     // First data selected
     properties.curr_data = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
+    // Setup available visualizations
+    properties.available_visualizations = properties.visualizations.filter(curr => curr.data_types.includes(properties.curr_data_type))
     // SVG Setup
     const fullwidth = 1024
     const fullheight = 768
@@ -97,8 +102,6 @@ function initExploration(graphData){
     // Properties for Histogram
     properties.containerHistogram = {}
 
-    properties.containerHistogram.yAxis =
-
     // Fill dropdowns
     dropdown(
         // List of functions for each dropdown
@@ -110,7 +113,6 @@ function initExploration(graphData){
                 properties.curr_visualization.renderChart(properties, false)
             },
             function(visualization){
-                d3.select(".content-svgs").selectAll("svg > *").remove()
                 properties.curr_visualization  = properties.visualizations.find(d => d.name === visualization)
                 properties.curr_data = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
                 properties.curr_visualization.prep(properties, true)
@@ -121,6 +123,7 @@ function initExploration(graphData){
                 properties.curr_attribute = Object.keys(properties.data[properties.curr_data_type])[0]
                 properties.curr_data = properties.data[properties.curr_data_type][properties.curr_attribute].dataset
                 properties.threshold_spacing = properties.curr_data_type === "Numerical_Continuous" ? 0.01 : 1
+                properties.available_visualizations = properties.visualizations.filter(curr => curr.data_types.includes(properties.curr_data_type))
                 // Update attribute
                 let dropdown_attributes = d3.select("#attribute_selector")
 
@@ -135,9 +138,30 @@ function initExploration(graphData){
                     .append("option")
                     .attr("value", d => d)
                     .text(d => d)
+                // Update Available Visualizations
+                let dropdown_visualizations = d3.select("#visualization")
+
+                dropdown_visualizations.selectAll("select").remove()
+                dropdown_visualizations.selectAll("option").remove()
+
+                dropdown_visualizations
+                    .append("select")
+                    .selectAll("option")
+                    .data(properties.available_visualizations.map((d) => d.name))
+                    .enter()
+                    .append("option")
+                    .attr("value", d => d)
+                    .text(d => d)
                 // Render new vizualization
-                properties.curr_visualization.prep(properties, false)
-                properties.curr_visualization.renderChart(properties, false)
+                if(!properties.available_visualizations.includes(properties.curr_visualization)) {
+                    properties.curr_visualization = properties.available_visualizations[0]
+                    properties.curr_visualization.prep(properties, true)
+                    properties.curr_visualization.renderChart(properties, true)
+                }
+                else{
+                    properties.curr_visualization.prep(properties, false)
+                    properties.curr_visualization.renderChart(properties, false)
+                }
             },
             function(attribute){
                 properties.curr_attribute = attribute
@@ -156,7 +180,7 @@ function initExploration(graphData){
         // List of arrays for dropdown options
         [
             properties.class_labels,
-            properties.visualizations.map((d) => d.name),
+            properties.available_visualizations.map((d) => d.name),
             properties.data_types,
             Object.keys(properties.data[properties.curr_data_type])
         ]

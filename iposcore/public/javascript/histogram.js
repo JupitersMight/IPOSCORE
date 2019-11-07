@@ -74,7 +74,6 @@ function renderHistogram(properties, init){
             )
             .attr("width", d => properties.widthScaleLinear(d.x1) - properties.widthScaleLinear(d.x0))
             .attr("height", d => properties.height - properties.heightScaleLinear(d.length))
-            .attr("z-index", d => 1000-d.length)
             .style("fill", "#158896")
             .style("opacity", 0.4)
             .on('mouseover', function (d, i) {
@@ -101,7 +100,10 @@ function renderHistogram(properties, init){
             .attr("d", lineFunction(lineData))
             .attr("stroke", colors[x])
             .attr("stroke-width", 2)
-            .attr("fill", "none");
+            .attr("fill", "none")
+
+        svg.append("circle").attr("cx",800).attr("cy",30+30*x).attr("r", 6).style("fill", colors[x])
+        svg.append("text").attr("x", 820).attr("y", 30+30*x).text(properties.yAxisDomain[properties.curr_class_label][x]).style("font-size", "15px").attr("alignment-baseline","middle")
     }
 
     if(init) {
