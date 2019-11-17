@@ -27,7 +27,7 @@ def sort(colunas, valores):
 
 
 # Filter out values of no interest
-def retrieveValues(array, index, init):
+def retrieveValues(array, index):
     colunas = []
     valores = []
     for value in array:
@@ -37,8 +37,8 @@ def retrieveValues(array, index, init):
         colunas.append(value[len(value)-1])
         valores.append(round(value[index], 7))
     aux = sort(colunas, valores)
-    aux[0] = (aux[0] if not init else (aux[0][::-1]))
-    aux[1] = (aux[1] if not init else (aux[1][::-1]))
+    aux[0] = aux[0][::-1]
+    aux[1] = aux[1][::-1]
     return aux
 
 
@@ -63,19 +63,8 @@ def classifiers_values(array, column, labels, label):
 
     array.append(
         [
-            mutual_info_classif(
-                labels[column].to_frame(name=column),
-                labels[label]
-            )[0],
-            mutual_info_regression(
-                labels[column].to_frame(name=column),
-                labels[label]
-            )[0],
-            values_chi2[0][0],
             values_chi2[1][0],
-            values_f_regression[0][0],
             values_f_regression[1][0],
-            values_f_classif[0][0],
             values_f_classif[1][0],
             column
          ]
@@ -92,14 +81,9 @@ class FeatureRanking:
         column_types = ["Binary", "Categorical", "Numerical_Discrete", "Numerical_Contiguous"]
         # All statistics of score functions used
         classifiers = [
-            "mutual_info_classif",
-            "mutual_info_regression",
-            "chi2_stats",
             "chi2_p-value",
-            "f_regression_stats",
             "f_regression_p-value",
-            "f_classif_stats",
-            "f_classif_p-value",
+            "ANOVA_p-value",
         ]
         # Initialize json data structure
         final_data = {}
@@ -170,8 +154,7 @@ class FeatureRanking:
                 for classif_index in range(0, len(classifiers)):
                     aux = retrieveValues(
                         arrays[index],
-                        classif_index,
-                        (True if "p-value" in classifiers[classif_index] else False)
+                        classif_index
                     )
                     temp = []
                     for i in range(0, len(aux[0])):

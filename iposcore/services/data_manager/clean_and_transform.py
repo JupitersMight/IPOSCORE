@@ -29,4 +29,14 @@ class DataClean:
             sort=False
         )
 
-        data.to_csv(path.abspath(path.join(directory, "data", "post_clean.csv")), index=False)
+        index = 0
+        for value in data["% Sobrevida estimada em 10 anos"]:
+            if pd.isna(value):
+                index += 1
+                continue
+            data.at[index, "% Sobrevida estimada em 10 anos"] = float(value) * 100
+
+        data.to_csv(path.abspath(path.join(directory, "data", "data.csv")), index=False)
+
+
+DataClean.clean_data()

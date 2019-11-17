@@ -296,13 +296,13 @@ function preparationBoxplot(properties, init){
     }
 
     // Prepare the data for the box plots
+    let min_whisker = 0
+    let max_whisker = 0
     properties.containerBoxplot.boxPlotData = []
     for (let x = 0; x< boxs_data.length; ++x){
 
         let record = {}
         boxs_data[x] = boxs_data[x].sort((a, b) => a - b)
-        let localMin = boxs_data[x][0]
-        let localMax = boxs_data[x][boxs_data[x].length-1]
 
         record["key"] = x == 0 ? "All" : ""+x
         record["counts"] = boxs_data[x]
@@ -311,8 +311,17 @@ function preparationBoxplot(properties, init){
             d3.quantile(boxs_data[x], 0.5),
             d3.quantile(boxs_data[x], 0.75)
         ]
-        record["whiskers"] = [localMin, localMax]
-
+        const IQR = record.quartile[2]-record.quartile[0]
+        const lowerWhisker = record.quartile[0] - 1.5*IQR
+        const higherWhisker = record.quartile[2] + 1.5*IQR
+        record["whiskers"] = [
+            lowerWhisker,
+            higherWhisker
+        ]
+        if(min_whisker > lowerWhisker)
+            min_whisker = lowerWhisker
+        if(max_whisker < higherWhisker)
+            max_whisker = higherWhisker
         properties.containerBoxplot.boxPlotData.push(record)
     }
 
@@ -322,7 +331,7 @@ function preparationBoxplot(properties, init){
             max = properties.containerBoxplot.boxPlotData[i].counts[properties.containerBoxplot.boxPlotData[i].counts.length - 1]
 
 
-    properties.widthScaleLinear.domain([0, max])
+    properties.widthScaleLinear.domain([min_whisker < 0 ? min_whisker:0, max_whisker > max ? max_whisker : max])
     properties.heightScale.domain(properties.containerBoxplot.height_domain)
     properties.xAxisLinear.scale(properties.widthScaleLinear)
     properties.yAxis.scale(properties.heightScale)
@@ -382,17 +391,10 @@ function preparationHistogram(properties, init){
             acc = acc + (mean - Number(curr_data[i][properties.curr_attribute]))*(mean - Number(curr_data[i][properties.curr_attribute]))
         }
         const std = Math.sqrt(acc/(curr_data.length-1))
-        //Unique Values
-        let uniques = []
-        const max = d3.max(properties.containerHistogram.hists_data[x]) + properties.threshold_spacing*2
-        for(let i = -1; i < max; i += properties.threshold_spacing){
-            uniques.push(i)
-        }
         // Push extra info
         properties.containerHistogram.hists_data_extra_info.push({
             mean,
             std,
-            uniques
         })
     }
 

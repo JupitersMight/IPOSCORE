@@ -14,7 +14,7 @@ function init(graphData){
             top: 30,
             right: 20,
             bottom: 30,
-            left: 90
+            left: 60
     }
 
     properties.MAX_LABEL_SIZE_Y = 200
@@ -244,15 +244,7 @@ function setUpProperties(properties, width, height, max){
 	properties.height = height - properties.margins.top - properties.margins.bottom - properties.MAX_LABEL_SIZE_Y
 	properties.heightScale = d3.scaleSqrt().range([properties.height, 0])
 	properties.widthScale = d3.scaleBand().rangeRound([0, properties.width]).padding(0.3)
-	properties.yAxis = d3.axisLeft(properties.heightScale)
-		.tickFormat(
-		    d3.format(
-		        properties.curr_scoring_function.indexOf("_stats") !== -1 ||
-                    properties.curr_scoring_function.indexOf("_p-value") !== -1?
-                    ".4~s" :
-                    ".1%"
-            )
-        )
+	properties.yAxis = d3.axisLeft(properties.heightScale).tickFormat(d3.format(".4~s"))
 	properties.xAxis = d3.axisBottom(properties.widthScale)
     // Tool tip
     properties.tip = d3.tip()
@@ -260,13 +252,8 @@ function setUpProperties(properties, width, height, max){
 		.offset([-10, 0])
 		.html(d =>
             "<strong>Column name: </strong>" + d.column_name + "</br>" +
-            "<strong>Value: </strong>" +  (
-            	(Math.round(d.column_value*1000000)/1000000) *
-				(properties.curr_scoring_function.indexOf("_stats") !== -1 ||
-                    properties.curr_scoring_function.indexOf("_p-value") !== -1 ?
-					1 :
-					100)
-			)
+            "<strong>Value: </strong>" +
+            	(Math.round(d.column_value*1000000)/1000000) * 1
 		)
 }
 
@@ -296,6 +283,8 @@ function defineBoxForSVG(properties, data_type, currRow, fullwidth, fullheight, 
         .attr("width", fullwidth)
         .attr("height", fullheight)
         .attr("class", "centered")
+		.append("g")
+		.attr("transform", "translate(" + properties.margins.left + ",0)")
 }
 
 /**

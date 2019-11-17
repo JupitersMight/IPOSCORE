@@ -48,11 +48,13 @@ function renderViolin(properties, init) {
 
     let curr = 0
 
+    const threshholds = properties.curr_data_type === "Numerical_Continuous"? properties.widthScaleLinear.ticks(40) : properties.containerViolin.thresholds
+
     const histoChart = d3.histogram()
 
     histoChart
         .domain([0, properties.containerViolin.max])
-        .thresholds(properties.containerViolin.thresholds)
+        .thresholds(threshholds)
         .value(d => d)
 
     let max_ocur = 0
@@ -77,7 +79,8 @@ function renderViolin(properties, init) {
             let value = null
             let ocur = 0
             for (let x = 0; x < d.length; ++x) {
-                let current_value = Math.round(d[x]*properties.containerViolin.threshold_multiplier)/properties.containerViolin.threshold_multiplier
+                let current_value = properties.curr_data_type === "Numerical_Continuous"? findCloseValue(d[x],threshholds):
+                Math.round(d[x]*properties.containerViolin.threshold_multiplier)/properties.containerViolin.threshold_multiplier
                 if (current_value !== value) {
                     if (ocur !== 1)
                         if (max_ocur < ocur) max_ocur = ocur
@@ -111,4 +114,12 @@ function renderViolin(properties, init) {
             ")"
         )
         .style("fill", "#238443")
+}
+
+function findCloseValue(value, threshholds){
+    for(let i = 0; i < threshholds.length; ++i){
+        let diff = value - threshholds[i]
+        if(diff < 0) return threshholds[i-1]
+    }
+    return threshholds[threshholds.length-1]
 }

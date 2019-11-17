@@ -15,9 +15,15 @@ function renderHistogram(properties, init){
             max_val = curr_max
     }
     let ticks = []
-    for (let i = properties.widthScaleLinear.domain()[0]; i <= properties.widthScaleLinear.domain()[1]; i += properties.threshold_spacing)
-        ticks.push(i)
-
+    if(!(properties.curr_data_type === "Numerical_Continuous")) {
+        for (let i = properties.widthScaleLinear.domain()[0]; i <= properties.widthScaleLinear.domain()[1]; i += properties.threshold_spacing)
+            ticks.push(i)
+        if(ticks.length > 40)
+            ticks = properties.widthScaleLinear.ticks(40)
+    }
+    else{
+        ticks = properties.widthScaleLinear.ticks(40)
+    }
     let histogram = d3.histogram()
 
     histogram
@@ -35,30 +41,39 @@ function renderHistogram(properties, init){
         if (d3.max(histogram(properties.containerHistogram.hists_data[i]), d => d.length) > max)
             max = d3.max(histogram(properties.containerHistogram.hists_data[i]), d => d.length)
 
+    const lines = []
+    for(let x = 0; x < properties.containerHistogram.hists_data.length; ++x) {
+        let lineData = []
+        let bins = histogram(properties.containerHistogram.hists_data[x])
+        let curr_max = 0
+        for (let i = 0; i < bins.length; ++i)
+            if (curr_max < bins[i].length)
+                curr_max = bins[i].length
+
+        const mean = properties.containerHistogram.hists_data_extra_info[x].mean
+        const std = properties.containerHistogram.hists_data_extra_info[x].std
+        const uniques = ticks
+        // This is the first part of the formula for the norm
+        const ni1 = 1 / (Math.sqrt(2 * Math.PI * std * std))
+
+        for (let c = 0; c < uniques.length; c++) {
+            // This is the second part of the formula for the norm
+            let ni2 = Math.exp(-1 * ((uniques[c] - mean) * (uniques[c] - mean)) / (2 * (std * std)))
+
+            const value = ni1 * ni2
+            lineData.push(Math.round(value * max))
+            if(lineData[c] > max)
+                max = lineData[c]
+        }
+        lines.push(lineData)
+    }
+
     properties.heightScaleLinear.domain([0,max + Math.round(max/5)])
 
     const colors = ["Red", "Green", "Blue", "Yellow", "Magenta", "Cyan", "Orange", "Purple", "BLACK"]
 
     for(let x = 0; x < properties.containerHistogram.hists_data.length; ++x) {
-        let lineData = []
         let bins = histogram(properties.containerHistogram.hists_data[x])
-        let curr_max = 0
-        for(let i = 0; i < bins.length; ++i)
-            if(curr_max < bins[i].length)
-                curr_max = bins[i].length
-
-        const mean = properties.containerHistogram.hists_data_extra_info[x].mean
-        const std =  properties.containerHistogram.hists_data_extra_info[x].std
-        const uniques = properties.containerHistogram.hists_data_extra_info[x].uniques
-        // This is the first part of the formula for the norm
-        const ni1 = 1 / (Math.sqrt(2 * Math.PI * std * std))
-
-        for(let c=0; c<uniques.length; c++){
-            // This is the second part of the formula for the norm
-            let ni2 = Math.exp(-1*((uniques[c]-mean)*(uniques[c]-mean))/(2* (std*std)))
-
-            lineData.push(Math.round(ni1*ni2*max))
-        }
 
         // append the bars for series i
         let bars = svg.selectAll("rect"+x)
@@ -89,7 +104,7 @@ function renderHistogram(properties, init){
                 properties.containerHistogram.tip.hide(d, this)
             })
 
-        lineData = lineData.map( function(d, i)
+        lines[x] = lines[x].map( function(d, i)
         {
             return {
                 value: d,
@@ -97,7 +112,7 @@ function renderHistogram(properties, init){
             }
         })
         svg.append("path")
-            .attr("d", lineFunction(lineData))
+            .attr("d", lineFunction(lines[x]))
             .attr("stroke", colors[x])
             .attr("stroke-width", 2)
             .attr("fill", "none")

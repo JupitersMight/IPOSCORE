@@ -13,8 +13,14 @@
  */
 function renderBarchart(data, properties, init){
 
+	// Calculate maximum height for each rendering
+	let max_height = 0
+	for (let i = 0; i < data.length; ++i)
+        if(max_height < data[i].column_value)
+        	max_height = data[i].column_value
+
 	// Domain of Y AXIS
-	properties.heightScale.domain([0,properties.heightMax])
+	properties.heightScale.domain([0,max_height])
 
 	// Domain of X AXIS
     const width_domain = []
@@ -86,6 +92,16 @@ function renderBarchart(data, properties, init){
             .style("font-size", "14px")
             .attr("transform", "translate(" + properties.margins.left + "," + properties.margins.top + ")")
             .call(properties.yAxis)
+
+		properties.svg.append("text")
+            .attr("id","text_axis_y")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - properties.margins.left)
+            .attr("x",0 - (properties.height / 2))
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .style("font-size", "20px")
+            .text("p-value")
     }
     // Else update current axis
 	else {
