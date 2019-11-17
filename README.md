@@ -29,11 +29,11 @@ Open the folder of the project
 
 Click the path to the folder
 
-![Alt text](installation_images/folder2.PNG?raw=true "Step 3")
+![Alt text](installation_images/folder2.png?raw=true "Step 3")
 
 And write "cmd"
 
-![Alt text](installation_images/folder3.PNG?raw=true "Step 3")
+![Alt text](installation_images/folder3.png?raw=true "Step 3")
 
 Press the "Enter" key on the keyboard and new window will pop up
 
@@ -45,7 +45,7 @@ In this window write "python get-pip.py" and press the "Enter" key on the keyboa
 
 After it is done write in the same window "pip install Flask pandas numpy scipy sklearn" and press the "Enter" key on the keyboard
 
-![Alt text](installation_images/cmd2.PNG?raw=true "Step 3")
+![Alt text](installation_images/cm2.PNG?raw=true "Step 3")
 
 After it is done write "python web_server.py"
 
