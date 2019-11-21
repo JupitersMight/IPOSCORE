@@ -115,13 +115,13 @@ class FeatureRanking:
                 labels = labels.dropna()
                 labels = labels.reset_index(drop=True)
 
-                if column in GlobalVariables.DatasetColumns.binary:
+                if (column in GlobalVariables.DatasetColumns.binary) and not(column in GlobalVariables.DatasetColumns.ignored_feature_in_ranking):
                     classifiers_values(binary_m, column, labels, label)
-                elif column in GlobalVariables.DatasetColumns.categorical:
+                elif (column in GlobalVariables.DatasetColumns.categorical) and not(column in GlobalVariables.DatasetColumns.ignored_feature_in_ranking):
                     classifiers_values(categorical_m, column, labels, label)
-                elif column in GlobalVariables.DatasetColumns.numerical_discrete:
+                elif (column in GlobalVariables.DatasetColumns.numerical_discrete) and not(column in GlobalVariables.DatasetColumns.ignored_feature_in_ranking):
                     classifiers_values(numerical_discrete_m, column, labels, label)
-                elif column in GlobalVariables.DatasetColumns.numerical_continuous:
+                elif (column in GlobalVariables.DatasetColumns.numerical_continuous) and not(column in GlobalVariables.DatasetColumns.ignored_feature_in_ranking):
                     classifiers_values(numerical_continuous_m, column, labels, label)
                 #elif column in GlobalVariables.DatasetColumns.text:
                 #    cv = CountVectorizer(max_df=0.95, min_df=2, max_features=10000)

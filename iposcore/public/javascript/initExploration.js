@@ -31,7 +31,7 @@ function initExploration(graphData){
             name:"Box Plot",
             renderChart: (properties, init) => renderBoxplot(properties, init),
             prep: (properties) => preparationBoxplot(properties),
-            data_types: ["Numerical_Discrete", "Numerical_Contiguous"]
+            data_types: ["Numerical_Discrete", "Numerical_Continuous"]
         },
         {
             name: "Parallel Coordinates",
@@ -221,7 +221,7 @@ function preparationViolin(properties, init){
             compare = properties.containerViolin.height_domain[x]
         const curr_data = x === 0 ? dataset : dataset.filter(d => d[properties.curr_class_label] === compare)
         for (let i = 0; i < curr_data.length; ++i) {
-            properties.containerViolin.data[x].push(curr_data[i][properties.curr_attribute])
+            properties.containerViolin.data[x].push(Number(curr_data[i][properties.curr_attribute]))
         }
         // Sort inserted values for future use
         properties.containerViolin.data[x].sort((a, b) => a - b)
@@ -229,10 +229,16 @@ function preparationViolin(properties, init){
 
     // Get the maximum value displayed of all violins for the X-Axis range setter
     properties.containerViolin.max = 0
+    properties.containerViolin.min = null
     for (let i = 0; i <properties.containerViolin.data.length; ++i) {
+        const min_value = properties.containerViolin.data[i][0]
         const max_value_of_index = properties.containerViolin.data[i][properties.containerViolin.data[i].length - 1]
         if (properties.containerViolin.max < max_value_of_index)
             properties.containerViolin.max = max_value_of_index
+        if(properties.containerViolin.min === null)
+            properties.containerViolin.min = min_value
+        if(properties.containerViolin.min > min_value)
+            properties.containerViolin.min = min_value
     }
 
     // Thresholds for bins in histogram
@@ -249,7 +255,7 @@ function preparationViolin(properties, init){
     }
 
     // Setters for domain and ranges of axis and scales
-    properties.widthScaleLinear.domain([0, properties.containerViolin.max])
+    properties.widthScaleLinear.domain([properties.containerViolin.min, properties.containerViolin.max])
     properties.heightScale.domain(properties.containerViolin.height_domain)
     properties.xAxisLinear.scale(properties.widthScaleLinear)
     properties.yAxis.scale(properties.heightScale)
@@ -290,7 +296,7 @@ function preparationBoxplot(properties, init){
             compare = properties.containerBoxplot.height_domain[x]
         const curr_data = x === 0 ? dataset : dataset.filter(d => d[properties.curr_class_label] === compare)
         for (let i = 0; i < curr_data.length; ++i) {
-            boxs_data[x].push(curr_data[i][properties.curr_attribute])
+            boxs_data[x].push(Number(curr_data[i][properties.curr_attribute]))
         }
         boxs_data[x].sort((a, b) => a - b)
     }

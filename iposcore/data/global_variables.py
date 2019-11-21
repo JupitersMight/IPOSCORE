@@ -1,13 +1,6 @@
 
 class GlobalVariables:
 
-    class DatabaseConfigurations:
-        user = "work"
-        password = "123"
-        host = "127.0.0.1"
-        port = "5432"
-        database = "test"
-
     class DatasetColumns:
         class_label = ["complicação pós-cirúrgica", "classificação clavien-dindo"]
 
@@ -159,6 +152,10 @@ class GlobalVariables:
                            "nº IPO",
                            "classificação ACS complicações específicas"
                            ]#4
+
+        ignored_feature_in_ranking = [
+            "óbito até 1 ano "
+        ]
 
         prefix_for_generated_columns = ["ACS_",
                                         "ICD_",

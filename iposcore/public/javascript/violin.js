@@ -53,7 +53,7 @@ function renderViolin(properties, init) {
     const histoChart = d3.histogram()
 
     histoChart
-        .domain([0, properties.containerViolin.max])
+        .domain([properties.containerViolin.min, properties.containerViolin.max])
         .thresholds(threshholds)
         .value(d => d)
 
